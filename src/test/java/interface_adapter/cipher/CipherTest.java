@@ -4,12 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.charset.StandardCharsets;
+
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import interface_adapter.crypto.cipher.ChaCha20Cipher;
+import interface_adapter.crypto.random_generator.SecureRandomGenerator;
+import interface_adapter.crypto.random_generator.RandomGenerator;
 
 public class CipherTest {
     private static ChaCha20Cipher cipher = new ChaCha20Cipher();
@@ -37,6 +41,17 @@ public class CipherTest {
         byte[] ciphertext = cipher.encrypt(password1, plaintext1);
         String decrypted = cipher.decrypt(password1, ciphertext);
         assertTrue(plaintext1.equals(decrypted));
+    }
+
+    @Test
+    public void testDecryptLargeInput() throws InvalidCipherTextException {
+        RandomGenerator randomGenerator = new SecureRandomGenerator();
+        byte[] data = randomGenerator.getRandomBytes(1048576);
+        String plaintext = new String(data, StandardCharsets.UTF_8);
+
+        byte[] ciphertext = cipher.encrypt(password1, plaintext);
+        String decrypted = cipher.decrypt(password1, ciphertext);
+        assertTrue(plaintext.equals(decrypted));
     }
 
     @Test
