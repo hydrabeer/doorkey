@@ -15,6 +15,7 @@ public class DForm extends JPanel {
     private final Map<String, JTextField> fieldMap = new HashMap<>();
     private final Map<String, JLabel> errorFieldMap = new HashMap<>();
     private final JLabel errorLabel = new JLabel();
+    private DButton button;
 
     public DForm() {
         this.setBackground(ViewConstants.BACKGROUND_COLOR);
@@ -107,21 +108,30 @@ public class DForm extends JPanel {
         addBasicSeparator(8);
 
         this.add(button);
+        this.button = button;
     }
 
-    // private void addFormLabel(String labelName) {
-    //     JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    //     labelPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-    //
-    //     JLabel formLabel = new JLabel(labelName);
-    //     formLabel.setForeground(ViewConstants.TEXT_MUTED_COLOR);
-    //     formLabel.setFont(new DFont());
-    //
-    //     labelPanel.add(formLabel);
-    //     labelPanel.setMaximumSize(new Dimension(300, formLabel.getPreferredSize().height));
-    //
-    //     this.add(labelPanel);
-    // }
+    /**
+     * Adds a DButton to submit the form, with empty action.
+     *
+     * @param submitButtonText The submit button text.
+     */
+    public void addSubmitButton(String submitButtonText) {
+        DButton button = new DButton(submitButtonText);
+        addBasicSeparator(8);
+
+        this.add(button);
+        this.button = button;
+    }
+
+    /**
+     * Add an action listener to the submit button.
+     * @param listener The listener to add.
+     */
+    public void addActionListener(ActionListener listener) {
+        if (button == null) throw new RuntimeException("Button not added");
+        button.addActionListener(listener);
+    }
 
     private void addFormLabel(String labelName, String fieldId) {
         JPanel labelPanel = new JPanel(new BorderLayout());
