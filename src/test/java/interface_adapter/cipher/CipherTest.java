@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import interface_adapter.crypto.cipher.ChaCha20Cipher;
 
 public class CipherTest {
-    private static ChaCha20Cipher cipher;
+    private static ChaCha20Cipher cipher = new ChaCha20Cipher();
     private static final String plaintext1 = "hello world";
     private static final String plaintext2 = "this is the way";
     private static final String password1 = "my_Pa55w0rD";
