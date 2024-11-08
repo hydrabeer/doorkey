@@ -2,6 +2,9 @@ package interface_adapter.crypto.cipher;
 
 import org.bouncycastle.crypto.InvalidCipherTextException;
 
+/**
+ * An abstract interface for a cipher that encrypts or decrypts data.
+ */
 public interface Cipher {
     /**
      * Encrypt the given input string with the given password.
@@ -10,7 +13,7 @@ public interface Cipher {
      * @param input the input string to encrypt
      * @return a byte array containing the encrypted data
      */
-    public byte[] encrypt(String password, String input);
+    byte[] encrypt(String password, String input);
 
     /**
      * Decrypt the given ciphertext with the provided password.
@@ -20,5 +23,5 @@ public interface Cipher {
      * @return the original plaintext string as provided to encrypt()
      * @throws InvalidCipherTextException if the password is incorrect or input is invalid
      */
-    public String decrypt(String password, byte[] input) throws InvalidCipherTextException;
+    String decrypt(String password, byte[] input) throws InvalidCipherTextException;
 }
