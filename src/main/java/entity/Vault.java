@@ -8,4 +8,8 @@ public abstract class Vault {
     public Vault(List<VaultItem> items) {
         this.items = items;
     }
+
+    public void load(String[] items){
+        //implementation not added yet
+    }
 }

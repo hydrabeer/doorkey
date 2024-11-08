@@ -10,6 +10,10 @@ public abstract class VaultItem {
         return title;
     }
 
+    public String pickle(){
+        //implementation not finished
+    }
+
 
 
 
