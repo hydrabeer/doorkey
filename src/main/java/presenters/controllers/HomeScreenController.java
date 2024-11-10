@@ -1,10 +1,10 @@
 package presenters.controllers;
 
-import presenters.views.HomeScreenView;
-import presenters.views.components.DForm;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import presenters.views.HomeScreenView;
+import presenters.views.components.DoorkeyForm;
 
 /**
  * The controller for Main Page.
@@ -18,15 +18,19 @@ public class HomeScreenController {
         getForm().addActionListener(new LogInButtonListener());
     }
 
-    private DForm getForm() {
+    private DoorkeyForm getForm() {
         return view.getForm();
     }
 
-    private class LogInButtonListener implements ActionListener {
+    /**
+     * LogInButtonListener class.
+     * Implements ActionListener.
+     */
+    private final class LogInButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String email = view.getEmail();
-            String password = view.getPassword();
+            final String email = view.getEmail();
+            final String password = view.getPassword();
 
             getForm().setError("Attempting login with email: " + email + " " + "password: " + password);
         }

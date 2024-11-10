@@ -1,19 +1,33 @@
 package presenters.views;
 
-import org.jetbrains.annotations.NotNull;
-import presenters.views.components.DButton;
-import presenters.views.components.DFont;
-import presenters.views.components.DForm;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import org.jetbrains.annotations.NotNull;
+
+import presenters.views.components.DoorkeyButton;
+import presenters.views.components.DoorkeyFont;
+import presenters.views.components.DoorkeyForm;
 
 /**
  * The main Home screen view that pops up when the application is launched.
  */
 public class HomeScreenView extends JFrame {
     private final JPanel panel = getMainPanel();
-    private final DForm form = new DForm();
+    private final DoorkeyForm form = new DoorkeyForm();
 
     public HomeScreenView() {
         super("DoorKey");
@@ -42,8 +56,8 @@ public class HomeScreenView extends JFrame {
     }
 
     private void addExplainerTitle() {
-        JLabel subtitleLabel = new JLabel("Enter your email below to log into your account");
-        subtitleLabel.setFont(new DFont());
+        final JLabel subtitleLabel = new JLabel("Enter your email below to log into your account");
+        subtitleLabel.setFont(new DoorkeyFont());
         subtitleLabel.setForeground(ViewConstants.TEXT_MUTED_COLOR);
         subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -52,17 +66,17 @@ public class HomeScreenView extends JFrame {
     }
 
     private void addWelcomeTitle() {
-        JLabel titleLabel = new JLabel("Welcome to DoorKey!");
+        final JLabel titleLabel = new JLabel("Welcome to DoorKey!");
         titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new DFont(24));
+        titleLabel.setFont(new DoorkeyFont(24));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(titleLabel);
     }
 
     private void addAlternativeLabel() {
-        JLabel separatorLabel = new JLabel("Or");
+        final JLabel separatorLabel = new JLabel("Or");
         separatorLabel.setForeground(ViewConstants.TEXT_MUTED_COLOR);
-        separatorLabel.setFont(new DFont());
+        separatorLabel.setFont(new DoorkeyFont());
         separatorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(separatorLabel);
@@ -70,19 +84,19 @@ public class HomeScreenView extends JFrame {
     }
 
     private void addLocalAndSignup() {
-        JPanel localPanel = new JPanel();
+        final JPanel localPanel = new JPanel();
         localPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         localPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
 
-        DButton signUpButton = new DButton.DButtonBuilder("Sign Up")
-                .addListener((event) -> {
+        final DoorkeyButton signUpButton = new DoorkeyButton.DoorkeyButtonBuilder("Sign Up")
+                .addListener(event -> {
                     // TODO: Implement navigation controller.
                     showPlaceholderPage();
                 })
                 .build();
 
-        DButton useLocallyButton = new DButton.DButtonBuilder("Use Locally")
-                .addListener((event) -> {
+        final DoorkeyButton useLocallyButton = new DoorkeyButton.DoorkeyButtonBuilder("Use Locally")
+                .addListener(event -> {
                     showPlaceholderPage();
                 })
                 .build();
@@ -95,10 +109,12 @@ public class HomeScreenView extends JFrame {
     }
 
     private void showPlaceholderPage() {
-        JPanel newPanel = new JPanel(new BorderLayout());
+        final JPanel newPanel = new JPanel(new BorderLayout());
 
-        JButton switchButton = new JButton("TODO (will be replaced with a NavigationController): Click to go back");
-        switchButton.addActionListener((event) -> {
+        final JButton switchButton = new JButton(
+                "TODO (will be replaced with a NavigationController): Click to go back"
+        );
+        switchButton.addActionListener(event -> {
             setContentPane(panel);
             revalidate();
             repaint();
@@ -113,7 +129,7 @@ public class HomeScreenView extends JFrame {
 
     @NotNull
     private static JPanel getMainPanel() {
-        JPanel panel = new JPanel();
+        final JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(ViewConstants.BACKGROUND_COLOR);
         panel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
@@ -155,7 +171,7 @@ public class HomeScreenView extends JFrame {
      *
      * @return Current login DForm.
      */
-    public DForm getForm() {
+    public DoorkeyForm getForm() {
         return form;
     }
 }

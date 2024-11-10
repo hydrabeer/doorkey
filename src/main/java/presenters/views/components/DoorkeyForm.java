@@ -1,28 +1,37 @@
 package presenters.views.components;
 
-import presenters.views.ViewConstants;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import presenters.views.ViewConstants;
+
 /**
  * The default form generator component.
  */
-public class DForm extends JPanel {
+public class DoorkeyForm extends JPanel {
     private final Map<String, JTextField> fieldMap = new HashMap<>();
     private final Map<String, JLabel> errorFieldMap = new HashMap<>();
     private final JLabel errorLabel = new JLabel();
-    private DButton button;
+    private DoorkeyButton button;
 
-    public DForm() {
+    public DoorkeyForm() {
         this.setBackground(ViewConstants.BACKGROUND_COLOR);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         errorLabel.setForeground(ViewConstants.TEXT_ERROR_COLOR);
-        errorLabel.setFont(new DFont());
+        errorLabel.setFont(new DoorkeyFont());
         errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         this.add(errorLabel);
@@ -34,10 +43,13 @@ public class DForm extends JPanel {
      *
      * @param fieldId The field id.
      * @return The field value.
+     * @throws RuntimeException when fieldId is unknown.
      */
     public String getFieldValue(String fieldId) {
-        JTextField field = fieldMap.get(fieldId);
-        if (field == null) throw new RuntimeException("Unknown fieldId");
+        final JTextField field = fieldMap.get(fieldId);
+        if (field == null) {
+            throw new RuntimeException("Unknown fieldId");
+        }
         return field.getText();
     }
 
@@ -46,12 +58,15 @@ public class DForm extends JPanel {
      *
      * @param message The error message to set.
      * @param fieldId The field id, used to set the error label.
+     * @throws RuntimeException when fieldId is unknown.
      */
     public void setFieldError(String message, String fieldId) {
-        JLabel errorLabel = errorFieldMap.get(fieldId);
-        if (errorLabel == null) throw new RuntimeException("Unknown fieldId");
+        final JLabel targetErrorLabel = errorFieldMap.get(fieldId);
+        if (targetErrorLabel == null) {
+            throw new RuntimeException("Unknown fieldId");
+        }
 
-        errorLabel.setText(message);
+        targetErrorLabel.setText(message);
     }
 
     /**
@@ -79,7 +94,6 @@ public class DForm extends JPanel {
         setError("");
     }
 
-
     /**
      * Adds a new field with a label.
      *
@@ -101,14 +115,14 @@ public class DForm extends JPanel {
      * @param listener         The action to be performed.
      */
     public void addSubmitButton(String submitButtonText, ActionListener listener) {
-        DButton button = new DButton.DButtonBuilder(submitButtonText)
+        final DoorkeyButton targetButton = new DoorkeyButton.DoorkeyButtonBuilder(submitButtonText)
                 .addListener(listener)
                 .build();
 
         addBasicSeparator(8);
 
-        this.add(button);
-        this.button = button;
+        this.add(targetButton);
+        this.button = targetButton;
     }
 
     /**
@@ -117,37 +131,40 @@ public class DForm extends JPanel {
      * @param submitButtonText The submit button text.
      */
     public void addSubmitButton(String submitButtonText) {
-        DButton button = new DButton(submitButtonText);
+        final DoorkeyButton targetButton = new DoorkeyButton(submitButtonText);
         addBasicSeparator(8);
 
-        this.add(button);
-        this.button = button;
+        this.add(targetButton);
+        this.button = targetButton;
     }
 
     /**
      * Add an action listener to the submit button.
      * @param listener The listener to add.
+     * @throws RuntimeException when the button field is null.
      */
     public void addActionListener(ActionListener listener) {
-        if (button == null) throw new RuntimeException("Button not added");
+        if (button == null) {
+            throw new RuntimeException("Button not added");
+        }
         button.addActionListener(listener);
     }
 
     private void addFormLabel(String labelName, String fieldId) {
-        JPanel labelPanel = new JPanel(new BorderLayout());
+        final JPanel labelPanel = new JPanel(new BorderLayout());
         labelPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
 
-        JLabel formLabel = new JLabel(labelName);
+        final JLabel formLabel = new JLabel(labelName);
         formLabel.setForeground(ViewConstants.TEXT_MUTED_COLOR);
-        formLabel.setFont(new DFont());
+        formLabel.setFont(new DoorkeyFont());
 
-        JLabel errorLabel = new JLabel();
-        errorLabel.setForeground(ViewConstants.TEXT_ERROR_COLOR);
-        errorLabel.setFont(new DFont());
-        errorFieldMap.put(fieldId, errorLabel);
+        final JLabel targetErrorLabel = new JLabel();
+        targetErrorLabel.setForeground(ViewConstants.TEXT_ERROR_COLOR);
+        targetErrorLabel.setFont(new DoorkeyFont());
+        errorFieldMap.put(fieldId, targetErrorLabel);
 
         labelPanel.add(formLabel, BorderLayout.WEST);
-        labelPanel.add(errorLabel, BorderLayout.EAST);
+        labelPanel.add(targetErrorLabel, BorderLayout.EAST);
 
         labelPanel.setMaximumSize(new Dimension(300, formLabel.getPreferredSize().height));
 
@@ -157,7 +174,7 @@ public class DForm extends JPanel {
     private void addInputField(JTextField field, String fieldId) {
         fieldMap.put(fieldId, field);
 
-        field.setFont(new DFont());
+        field.setFont(new DoorkeyFont());
         field.setBackground(ViewConstants.BACKGROUND_COLOR);
         field.setForeground(Color.WHITE);
         field.setCaretColor(Color.WHITE);

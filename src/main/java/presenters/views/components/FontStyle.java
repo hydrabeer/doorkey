@@ -9,7 +9,7 @@ public enum FontStyle {
     BOLD(1),
     ITALIC(2);
 
-    public final int awtFontConstant;
+    final int awtFontConstant;
 
     FontStyle(int awtFontConstant) {
         this.awtFontConstant = awtFontConstant;
