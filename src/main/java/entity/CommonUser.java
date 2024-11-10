@@ -1,8 +1,11 @@
 package entity;
 
-public class CommonUser extends User{
+/**
+ * CommonUser entity extends user entity.
+ */
+public class CommonUser extends AbstractUser {
 
-    public CommonUser(String name, Vault vault) {
+    public CommonUser(String name, AbstractVault vault) {
         super(name, vault);
     }
 }

@@ -1,19 +1,17 @@
 package entity;
 
-public abstract class VaultItem {
+/**
+ * Abstract VaultItem entity.
+ */
+public abstract class AbstractVaultItem {
     private String title;
 
-    public VaultItem(String title) {
+    public AbstractVaultItem(String title) {
         this.title = title;
     }
+
     public String getTitle() {
         return title;
     }
-
-    /*public String pickle(){
-    }*/
-
-
-
 
 }
