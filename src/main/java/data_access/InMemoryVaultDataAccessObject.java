@@ -12,7 +12,7 @@ import use_case.DataChangeListener;
  */
 public class InMemoryVaultDataAccessObject {
     private final List<VaultItem> items = new ArrayList<>();
-    private List<DataChangeListener> listeners = new ArrayList<>();
+    private final List<DataChangeListener> listeners = new ArrayList<>();
 
     /**
      * Adds the given item to the vault and notifies listeners.
