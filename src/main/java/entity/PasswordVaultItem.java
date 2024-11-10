@@ -2,6 +2,7 @@ package entity;
 
 /**
  * PasswordVaultItem entity extends AbstractVaultItem entity.
+ * PasswordVaultItem is the standard VaultItem type that can be stored in a Vault with username, password and URL.
  */
 public class PasswordVaultItem extends AbstractVaultItem {
     private String username;

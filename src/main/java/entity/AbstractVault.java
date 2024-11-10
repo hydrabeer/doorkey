@@ -21,6 +21,14 @@ public abstract class AbstractVault {
     }
 
     /**
+     * Add VaultItem to Vault.
+     * @param item VaultItem to be added to Vault.
+     */
+    public void addItem(AbstractVaultItem item) {
+        items.add(item);
+    }
+
+    /**
      * Load and parse each value as JSON.
      * @param values array of values
      */
