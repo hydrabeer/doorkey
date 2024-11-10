@@ -1,9 +1,9 @@
-package use_cases.search;
+package use_case.search;
 
 import java.util.List;
 
 import entity.VaultItem;
-import use_cases.DataChangeListener;
+import use_case.DataChangeListener;
 
 /**
  * Interface for building and maintaining the search index and providing search

@@ -1,4 +1,4 @@
-package use_cases.search;
+package use_case.search;
 
 /**
  * The Input Data for the Search use case.

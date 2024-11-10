@@ -1,4 +1,4 @@
-package use_cases;
+package use_case;
 
 import entity.VaultItem;
 
