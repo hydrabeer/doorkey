@@ -1,28 +1,32 @@
 package presenters.views.components;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+
 /**
- * The factory for the default custom button used in DoorKey.
+ * The factory for the default custom button used in Doorkey.
  * It comes bundled with a custom implementation of a rounded border, white or black background,
  * and the given text.
  * Implements the builder pattern.
  */
-public class DButton extends JButton {
+public class DoorkeyButton extends JButton {
     /**
      * Initialize a new DButton.
      *
      * @param text The string contained in the text.
      */
-    public DButton(String text) {
+    public DoorkeyButton(String text) {
         super(text);
         this.setBackground(Color.WHITE);
         this.setForeground(Color.BLACK);
         this.setOpaque(true);
         this.setFocusPainted(false);
-        this.setFont(new DFont(FontStyle.BOLD));
+        this.setFont(new DoorkeyFont(FontStyle.BOLD));
         this.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.WHITE, 1, true),
                 BorderFactory.createEmptyBorder(10, 20, 10, 20)
@@ -31,7 +35,7 @@ public class DButton extends JButton {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
-    private DButton(DButtonBuilder builder) {
+    private DoorkeyButton(DoorkeyButtonBuilder builder) {
         this(builder.text);
         this.addActionListener(builder.listener);
     }
@@ -39,23 +43,23 @@ public class DButton extends JButton {
     /**
      * Builder for DButton.
      */
-    public static class DButtonBuilder {
+    public static class DoorkeyButtonBuilder {
         private final String text;
 
-        private ActionListener listener = (event) -> {
+        private ActionListener listener = event -> {
         };
 
-        public DButtonBuilder(String text) {
+        public DoorkeyButtonBuilder(String text) {
             this.text = text;
         }
 
         /**
-         * Add an action listener.
-         * @param listener The listener to add.
+         * Add an action actionListener.
+         * @param actionListener The actionListener to add.
          * @return DButtonBuilder.
          */
-        public DButtonBuilder addListener(ActionListener listener) {
-            this.listener = listener;
+        public DoorkeyButtonBuilder addListener(ActionListener actionListener) {
+            this.listener = actionListener;
             return this;
         }
 
@@ -63,8 +67,8 @@ public class DButton extends JButton {
          * Build the DButton.
          * @return DButton.
          */
-        public DButton build() {
-            return new DButton(this);
+        public DoorkeyButton build() {
+            return new DoorkeyButton(this);
         }
     }
 }

@@ -1,39 +1,41 @@
 package presenters.views.components;
 
+import java.awt.Font;
+
 import presenters.views.ViewConstants;
 
-import java.awt.*;
-
 /**
- * Extends the Font class, initializing the standard font used in DoorKey.
+ * Extends the Font class, initializing the standard font used in Doorkey.
  */
-public class DFont extends Font {
+public class DoorkeyFont extends Font {
+    private static final int FONT_SIZE = 14;
+
     /**
      * Initialize a default font given the style and the font size.
      *
      * @param style    the font style, either regular, bold, or italic.
      * @param fontSize the font size in points.
      */
-    public DFont(FontStyle style, int fontSize) {
+    public DoorkeyFont(FontStyle style, int fontSize) {
         super(ViewConstants.DEFAULT_FONT_NAME, style.awtFontConstant, fontSize);
     }
 
     /**
-     * Initialize a default plain font with the following parameters:
-     * - 14 pt
+     * Initialize a font with regular style 14 pt fontSize.
      * - Regular
+     * - 14 pt
      */
-    public DFont() {
-        this(FontStyle.REGULAR, 14);
+    public DoorkeyFont() {
+        this(FontStyle.REGULAR, FONT_SIZE);
     }
 
     /**
-     * Initialize a default plain font given:
+     * Initialize a default plain font given the fontSize.
      * - Input points size
      *
      * @param fontSize the input font size.
      */
-    public DFont(int fontSize) {
+    public DoorkeyFont(int fontSize) {
         this(FontStyle.REGULAR, fontSize);
     }
 
@@ -42,7 +44,7 @@ public class DFont extends Font {
      *
      * @param style the font style.
      */
-    public DFont(FontStyle style) {
-        this(style, 14);
+    public DoorkeyFont(FontStyle style) {
+        this(style, FONT_SIZE);
     }
 }
