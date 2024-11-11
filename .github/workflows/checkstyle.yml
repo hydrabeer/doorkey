@@ -10,9 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Remove test files (we don't run Checkstyle on tests)
+        run: rm -rf src/test
       - uses: dbelyaev/action-checkstyle@master
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           level: error
           checkstyle_config: mystyle.xml
+          fail_on_error: true
