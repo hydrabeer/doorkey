@@ -14,12 +14,11 @@ public class PasswordVaultItemTest {
     @Test
     void testPasswordVaultItemToJSON() {
         PasswordVaultItem item = new PasswordVaultItem(title, username, password, url);
-        String json = item.toJSON();
+        JSONObject json = item.toJSONObject();
 
-        JSONObject parsed = new JSONObject(json);
-        assertTrue(parsed.getString("title").equals(title));
-        assertTrue(parsed.getString("username").equals(username));
-        assertTrue(parsed.getString("password").equals(password));
-        assertTrue(parsed.getString("url").equals(url));
+        assertTrue(json.getString("title").equals(title));
+        assertTrue(json.getString("username").equals(username));
+        assertTrue(json.getString("password").equals(password));
+        assertTrue(json.getString("url").equals(url));
     }
 }
