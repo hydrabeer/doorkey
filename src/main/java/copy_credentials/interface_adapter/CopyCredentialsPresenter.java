@@ -1,4 +1,6 @@
-package copy_credentials;
+package copy_credentials.interface_adapter;
+
+import copy_credentials.CopyCredenentialsOutputBoundary;
 
 /**
  * Copy Credentials presenter.

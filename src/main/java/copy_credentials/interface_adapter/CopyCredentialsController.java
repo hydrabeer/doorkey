@@ -1,4 +1,8 @@
-package copy_credentials;
+package copy_credentials.interface_adapter;
+
+import copy_credentials.CopyCredentialsInputBoundary;
+import copy_credentials.PasswordInputData;
+import copy_credentials.UsernameInputData;
 
 /**
  * The Copy Credentials Interactor.
