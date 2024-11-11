@@ -3,7 +3,7 @@ package entity;
 import java.util.List;
 
 /**
- * Abstract Vault entity.
+ * Abstract vault entity.
  */
 public abstract class AbstractVault {
     private List<AbstractVaultItem> items;
@@ -21,20 +21,19 @@ public abstract class AbstractVault {
     }
 
     /**
-     * Add VaultItem to Vault.
-     * @param item VaultItem to be added to Vault.
+     * Add a VaultItem to the Vault.
+     * @param item the VaultItem to be added to the Vault
      */
     public void addItem(AbstractVaultItem item) {
         items.add(item);
     }
 
     /**
-     * Load and parse each value as JSON.
-     * @param values array of values
+     * Populate a vault from an existing vault stored in JSON
+     * @param json the JSON string containing vault data to load
      */
-    public void load(String[] values) {
+    public void loadFromJSON(String json) {
         // implementation not added yet
-
     }
 
 }

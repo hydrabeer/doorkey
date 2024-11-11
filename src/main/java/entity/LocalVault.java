@@ -9,6 +9,5 @@ import java.util.List;
 public class LocalVault extends AbstractVault {
     public LocalVault(List<AbstractVaultItem> items) {
         super(items);
-
     }
 }

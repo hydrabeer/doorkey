@@ -1,7 +1,7 @@
 package entity;
 
 /**
- * Abstract VaultItem entity.
+ * Abstract vault item entity.
  */
 public abstract class AbstractVaultItem {
     private String title;
@@ -14,4 +14,5 @@ public abstract class AbstractVaultItem {
         return title;
     }
 
+    public abstract String toJSON();
 }

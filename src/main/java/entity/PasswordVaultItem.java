@@ -1,5 +1,7 @@
 package entity;
 
+import org.json.JSONObject;
+
 /**
  * PasswordVaultItem entity extends AbstractVaultItem entity.
  * PasswordVaultItem is the standard VaultItem type that can be stored in a Vault with username, password and URL.
@@ -38,5 +40,14 @@ public class PasswordVaultItem extends AbstractVaultItem {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String toJSON() {
+        JSONObject json = new JSONObject();
+        json.put("title", this.getTitle());
+        json.put("username", this.getUsername());
+        json.put("password", this.getPassword());
+        json.put("url", this.getUrl());
+        return json.toString();
     }
 }
