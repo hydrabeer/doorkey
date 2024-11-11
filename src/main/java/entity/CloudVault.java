@@ -3,7 +3,7 @@ package entity;
 import java.util.List;
 
 /**
- * CloudVault entity extends Vault entity.
+ * CloudVault is a Vault that stores items in an online database.
  */
 public class CloudVault extends AbstractVault {
 

@@ -3,7 +3,7 @@ package entity;
 import java.util.List;
 
 /**
- * Local Vault entity extends Vault entity.
+ * LocalVault is a vault that stores items in JSON format.
  */
 
 public class LocalVault extends AbstractVault {

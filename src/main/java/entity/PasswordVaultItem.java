@@ -3,8 +3,7 @@ package entity;
 import org.json.JSONObject;
 
 /**
- * PasswordVaultItem entity extends AbstractVaultItem entity.
- * PasswordVaultItem is the standard VaultItem type that can be stored in a Vault with username, password and URL.
+ * PasswordVaultItem is a vault item that stores a title, username, password, and url.
  */
 public class PasswordVaultItem extends AbstractVaultItem {
     private String username;
@@ -16,6 +15,13 @@ public class PasswordVaultItem extends AbstractVaultItem {
         this.username = username;
         this.password = password;
         this.url = url;
+    }
+
+    public PasswordVaultItem(JSONObject json) {
+        super(json.getString("title"));
+        this.username = json.getString("username");
+        this.password = json.getString("password");
+        this.url = json.getString("url");
     }
 
     public String getUsername() {
@@ -42,12 +48,12 @@ public class PasswordVaultItem extends AbstractVaultItem {
         this.url = url;
     }
 
-    public String toJSON() {
+    public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
         json.put("title", this.getTitle());
         json.put("username", this.getUsername());
         json.put("password", this.getPassword());
         json.put("url", this.getUrl());
-        return json.toString();
+        return json;
     }
 }
