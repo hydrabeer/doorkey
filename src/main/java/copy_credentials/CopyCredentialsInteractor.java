@@ -4,7 +4,7 @@ package copy_credentials;
  * The Login Interactor.
  */
 
-public class CopyCredentialsInteractor {
+public class CopyCredentialsInteractor implements CopyCredentialsInputBoundary {
 
     private final CopyCredenentialsOutputBoundary outputBoundary;
 
@@ -16,7 +16,7 @@ public class CopyCredentialsInteractor {
      * Copy username to clipboard.
      * @param usernameInputData data object with username.
      */
-    public static void copyUsername(UsernameInputData usernameInputData) {
+    public void copyUsername(UsernameInputData usernameInputData) {
 
     }
     /**
@@ -24,7 +24,7 @@ public class CopyCredentialsInteractor {
      * @param passwordInputData data object with password.
      */
 
-    public static void copyPassword(PasswordInputData passwordInputData) {
+    public void copyPassword(PasswordInputData passwordInputData) {
 
     }
 }

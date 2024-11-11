@@ -4,10 +4,10 @@ package copy_credentials;
  * The Copy Credentials Interactor.
  */
 public class CopyCredentialsController {
-    private static CopyCredentialsInteractor copyCredentialsInteractor;
+    private static CopyCredentialsInputBoundary credentialsInputBoundary;
 
-    public CopyCredentialsController(CopyCredentialsInteractor copyCredentialsInteractor) {
-        this.copyCredentialsInteractor = copyCredentialsInteractor;
+    public CopyCredentialsController(CopyCredentialsInputBoundary credentialsInputBoundary) {
+        this.credentialsInputBoundary = credentialsInputBoundary;
     }
 
     /**
@@ -16,7 +16,7 @@ public class CopyCredentialsController {
      */
     public static void copyUsernameClicked(String username) {
         final UsernameInputData usernameInputData = new UsernameInputData(username);
-        copyCredentialsInteractor.copyUsername(usernameInputData);
+        credentialsInputBoundary.copyUsername(usernameInputData);
     }
 
     /**
@@ -25,6 +25,6 @@ public class CopyCredentialsController {
      */
     public static void copyPasswordClicked(String password) {
         final PasswordInputData passwordInputData = new PasswordInputData(password);
-        copyCredentialsInteractor.copyPassword(passwordInputData);
+        credentialsInputBoundary.copyPassword(passwordInputData);
     }
 }
