@@ -38,7 +38,7 @@ public abstract class AbstractVault {
      * @return the JSON string containing the vault's items
      */
     public String toJSON() {
-        JSONArray json = new JSONArray();
+        final JSONArray json = new JSONArray();
         for (AbstractVaultItem item : this.items) {
             json.put(item.toJSONObject());
         }
@@ -48,14 +48,16 @@ public abstract class AbstractVault {
     /**
      * Populate the vault from an existing vault stored as JSON.
      * @param json the JSON string containing vault data to load
+     * @throws InvalidVaultItemException if the JSON is malformed or an item is of unknown type
      */
     public void loadFromJSON(String json) throws InvalidVaultItemException {
-        JSONArray items = new JSONArray(json);
-        for (int i = 0; i < items.length(); i++) {
-            JSONObject item = items.getJSONObject(i);
+        final JSONArray things = new JSONArray(json);
+        for (int i = 0; i < things.length(); i++) {
+            final JSONObject item = things.getJSONObject(i);
             if (item.has("password")) {
                 this.addItem(new PasswordVaultItem(item));
-            } else {
+            }
+            else {
                 throw new InvalidVaultItemException("Unknown vault item type");
             }
         }

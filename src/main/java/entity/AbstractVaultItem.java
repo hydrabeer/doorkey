@@ -20,5 +20,9 @@ public abstract class AbstractVaultItem {
         return title;
     }
 
+    /**
+     * Export the AbstractVaultItem as a JSONObject.
+     * @return a JSON object representing the vault item
+     */
     public abstract JSONObject toJSONObject();
 }

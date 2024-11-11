@@ -48,8 +48,12 @@ public class PasswordVaultItem extends AbstractVaultItem {
         this.url = url;
     }
 
+    /**
+     * Export the AbstractVaultItem as a JSONObject.
+     * @return a JSON object representing the vault item
+     */
     public JSONObject toJSONObject() {
-        JSONObject json = new JSONObject();
+        final JSONObject json = new JSONObject();
         json.put("title", this.getTitle());
         json.put("username", this.getUsername());
         json.put("password", this.getPassword());
