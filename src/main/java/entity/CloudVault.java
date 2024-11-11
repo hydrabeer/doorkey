@@ -2,9 +2,12 @@ package entity;
 
 import java.util.List;
 
-public class CloudVault extends Vault {
+/**
+ * CloudVault entity extends Vault entity.
+ */
+public class CloudVault extends AbstractVault {
 
-    public CloudVault(List<VaultItem> items) {
+    public CloudVault(List<AbstractVaultItem> items) {
         super(items);
     }
 }
