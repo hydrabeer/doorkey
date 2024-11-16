@@ -3,9 +3,11 @@ package entity;
 import org.json.JSONObject;
 
 /**
- * PasswordVaultItem is a vault item that stores a title, username, password, and url.
+ * PasswordVaultItem is a vault item that stores a title, username, password,
+ * and url.
  */
 public class PasswordVaultItem extends AbstractVaultItem {
+
     private String username;
     private String password;
     private String url;
@@ -50,8 +52,10 @@ public class PasswordVaultItem extends AbstractVaultItem {
 
     /**
      * Export the AbstractVaultItem as a JSONObject.
+     *
      * @return a JSON object representing the vault item
      */
+    @Override
     public JSONObject toJSONObject() {
         final JSONObject json = new JSONObject();
         json.put("title", this.getTitle());
