@@ -1,4 +1,4 @@
-package use_case.search;
+package service.search;
 
 /**
  * Input Boundary for actions that are related to searching.

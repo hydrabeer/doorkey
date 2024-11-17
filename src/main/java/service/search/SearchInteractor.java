@@ -1,8 +1,8 @@
-package use_case.search;
+package service.search;
 
 import java.util.List;
 
-import entity.VaultItem;
+import entity.AbstractVaultItem;
 
 /**
  * The Search Interactor holds the main logic of the Search use case.
@@ -20,7 +20,7 @@ public class SearchInteractor implements SearchInputBoundary {
     @Override
     public void execute(SearchInputData inputData) {
         final String query = inputData.getQuery();
-        final List<VaultItem> results = searchIndex.search(query);
+        final List<AbstractVaultItem> results = searchIndex.search(query);
 
         if (results.isEmpty()) {
             searchPresenter.prepareNoResultsView("No results found for \"" + query + "\".");

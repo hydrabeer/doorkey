@@ -1,6 +1,6 @@
-package use_case;
+package service;
 
-import entity.VaultItem;
+import entity.AbstractVaultItem;
 
 /**
  * Interface for listening to changes to Vault Items.
@@ -11,19 +11,19 @@ public interface DataChangeListener {
      *
      * @param item the vault item that was added
      */
-    void onItemAdded(VaultItem item);
+    void onItemAdded(AbstractVaultItem item);
 
     /**
      * Execute when an item in the vault is updated.
      *
      * @param item the vault item that was added
      */
-    void onItemUpdated(VaultItem item);
+    void onItemUpdated(AbstractVaultItem item);
 
     /**
      * Execute when an item is removed from the vault.
      *
      * @param item the vault item that was added
      */
-    void onItemRemoved(VaultItem item);
+    void onItemRemoved(AbstractVaultItem item);
 }

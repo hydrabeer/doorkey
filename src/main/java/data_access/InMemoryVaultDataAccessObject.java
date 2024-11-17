@@ -3,15 +3,15 @@ package data_access;
 import java.util.ArrayList;
 import java.util.List;
 
-import entity.VaultItem;
-import use_case.DataChangeListener;
+import entity.AbstractVaultItem;
+import service.DataChangeListener;
 
 /**
  * In-memory implementation of the DAO for storing vault items. This implementation does
  * NOT persist data between runs of the program.
  */
 public class InMemoryVaultDataAccessObject {
-    private final List<VaultItem> items = new ArrayList<>();
+    private final List<AbstractVaultItem> items = new ArrayList<>();
     private final List<DataChangeListener> listeners = new ArrayList<>();
 
     /**
@@ -19,7 +19,7 @@ public class InMemoryVaultDataAccessObject {
      *
      * @param item the item to add to the vault
      */
-    public void addItem(VaultItem item) {
+    public void addItem(AbstractVaultItem item) {
         items.add(item);
         notifyItemAdded(item);
     }
@@ -29,7 +29,7 @@ public class InMemoryVaultDataAccessObject {
      *
      * @param item the item to remove from the vault
      */
-    public void removeItem(VaultItem item) {
+    public void removeItem(AbstractVaultItem item) {
         items.remove(item);
         notifyItemRemoved(item);
     }
@@ -54,19 +54,19 @@ public class InMemoryVaultDataAccessObject {
         listeners.remove(listener);
     }
 
-    private void notifyItemAdded(VaultItem item) {
+    private void notifyItemAdded(AbstractVaultItem item) {
         for (DataChangeListener listener : listeners) {
             listener.onItemAdded(item);
         }
     }
 
-    private void notifyItemUpdated(VaultItem item) {
+    private void notifyItemUpdated(AbstractVaultItem item) {
         for (DataChangeListener listener : listeners) {
             listener.onItemUpdated(item);
         }
     }
 
-    private void notifyItemRemoved(VaultItem item) {
+    private void notifyItemRemoved(AbstractVaultItem item) {
         for (DataChangeListener listener : listeners) {
             listener.onItemRemoved(item);
         }
