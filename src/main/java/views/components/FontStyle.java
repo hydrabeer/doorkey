@@ -9,6 +9,7 @@ public enum FontStyle {
     BOLD(1),
     ITALIC(2);
 
+    @SuppressWarnings("checkstyle:VisibilityModifier")
     final int awtFontConstant;
 
     FontStyle(int awtFontConstant) {

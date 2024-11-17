@@ -8,7 +8,15 @@ import views.ViewManager;
 
 import javax.swing.*;
 
+/**
+ * The main class for our program.
+ */
 public class Main {
+    /**
+     * The main method that starts the GUI.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ViewManager viewManager = new ViewManager();
