@@ -1,13 +1,26 @@
-import presenters.controllers.HomeScreenController;
-import presenters.views.HomeScreenView;
+import service.login.LoginInteractor;
+import service.login.interface_adapter.LoginController;
+import service.login.interface_adapter.LoginPresenter;
+import service.login.interface_adapter.LoginViewModel;
+import views.LoginView;
+import views.ViewConstants;
+import views.ViewManager;
 
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            HomeScreenView view = new HomeScreenView();
-            new HomeScreenController(view);
+            ViewManager viewManager = new ViewManager();
+
+            LoginViewModel loginViewModel = new LoginViewModel();
+            LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, viewManager);
+            LoginInteractor interactor = new LoginInteractor(loginPresenter);
+            LoginController loginController = new LoginController(interactor);
+            LoginView loginView = new LoginView(loginController, loginViewModel);
+
+            viewManager.addView(loginView);
+            viewManager.showView(ViewConstants.LOGIN_VIEW);
         });
     }
 }
