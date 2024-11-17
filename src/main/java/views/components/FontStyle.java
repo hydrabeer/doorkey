@@ -1,4 +1,4 @@
-package presenters.views.components;
+package views.components;
 
 /**
  * Wrapper around Java AWT Font enums, used internally to simplify
