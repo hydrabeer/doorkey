@@ -2,9 +2,11 @@ package entity;
 
 import java.util.List;
 
-public class LocalVault extends Vault {
-    public LocalVault(List<VaultItem> items) {
+/**
+ * LocalVault is a vault that stores items in JSON format.
+ */
+public class LocalVault extends AbstractVault {
+    public LocalVault(List<AbstractVaultItem> items) {
         super(items);
-
     }
 }
