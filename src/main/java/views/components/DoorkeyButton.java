@@ -1,4 +1,4 @@
-package presenters.views.components;
+package views.components;
 
 import java.awt.Color;
 import java.awt.Component;
