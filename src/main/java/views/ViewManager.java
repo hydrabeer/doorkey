@@ -14,7 +14,7 @@ import interface_adapter.NavigableUiPanel;
  * The main ViewManager for the program.
  */
 public class ViewManager {
-    private final JFrame mainFrame = new JFrame("DoorKey");
+    private final JFrame mainFrame = new JFrame("Doorkey");
     private final CardLayout cardLayout;
     private final JPanel mainPanel;
     // From view name to active JPanel
