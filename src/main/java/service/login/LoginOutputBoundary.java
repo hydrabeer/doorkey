@@ -24,4 +24,6 @@ public interface LoginOutputBoundary {
      * @param password The user's master password
      */
     void switchToHomeView(String email, String password);
+
+    void switchToLocalVaultView();
 }

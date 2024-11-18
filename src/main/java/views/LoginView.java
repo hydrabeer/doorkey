@@ -98,7 +98,7 @@ public class LoginView extends NavigableUiPanel {
 
         final DoorkeyButton useLocallyButton = new DoorkeyButton.DoorkeyButtonBuilder("Use Locally")
                 .addListener(event -> {
-                    // TODO
+                    loginController.switchToLocalVaultView();
                 })
                 .build();
 

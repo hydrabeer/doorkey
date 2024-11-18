@@ -19,16 +19,18 @@ import views.components.DoorkeyForm;
  * A view that allows the user to create a new local Doorkey vault.
  */
 public class CreateLocalVaultView extends NavigableUiPanel {
-    private final DoorkeyButton back = new DoorkeyButton("< Back");
+    private DoorkeyButton back;
     private final DoorkeyForm form = new DoorkeyForm();
     private final JFileChooser saver = new JFileChooser();
     private final CreateLocalVaultController controller = new CreateLocalVaultController(saver, form);
+    private final ViewManager viewManager;
 
-    public CreateLocalVaultView() {
+    public CreateLocalVaultView(ViewManager viewManager) {
         setBackground();
         setBackButton();
         addPageTitle();
         addForm();
+        this.viewManager = viewManager;
     }
 
     private void setBackground() {
@@ -36,11 +38,11 @@ public class CreateLocalVaultView extends NavigableUiPanel {
     }
 
     private void setBackButton() {
+        this.back = new DoorkeyButton.DoorkeyButtonBuilder("< Back")
+            .addListener(event -> {
+                viewManager.showView(ViewConstants.LOCAL_VAULT_VIEW);
+            }).build();
         this.add(back);
-    }
-
-    public DoorkeyButton getBackButton() {
-        return back;
     }
 
     private void addPageTitle() {

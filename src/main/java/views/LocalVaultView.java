@@ -14,13 +14,16 @@ import views.components.DoorkeyFont;
  * A view that allows users to pick between loading or creating a local .doorkey vault.
  */
 public class LocalVaultView extends NavigableUiPanel {
-    private final DoorkeyButton back = new DoorkeyButton("< Back");
-    private final DoorkeyButton load = new DoorkeyButton("Load");
-    private final DoorkeyButton create = new DoorkeyButton("Create");
-    private final LoadLocalVaultView loadView = new LoadLocalVaultView();
-    private final CreateLocalVaultView createView = new CreateLocalVaultView();
+    private DoorkeyButton back;
+    private DoorkeyButton load;
+    private DoorkeyButton create;
+    private LoadLocalVaultView loadView;
+    private CreateLocalVaultView createView;
+    private final ViewManager viewManager;
 
-    public LocalVaultView() {
+    public LocalVaultView(ViewManager viewManager) {
+        this.viewManager = viewManager;
+        this.setSubViews();
         this.setBackground();
         this.setBackButton();
         this.addPageTitle();
@@ -28,16 +31,23 @@ public class LocalVaultView extends NavigableUiPanel {
         this.addCreateButton();
     }
 
+    private void setSubViews() {
+        loadView = new LoadLocalVaultView(viewManager);
+        createView = new CreateLocalVaultView(viewManager);
+        viewManager.addView(loadView);
+        viewManager.addView(createView);
+    }
+
     private void setBackground() {
         this.setBackground(ViewConstants.BACKGROUND_COLOR);
     }
 
     private void setBackButton() {
+        this.back = new DoorkeyButton.DoorkeyButtonBuilder("< Back")
+            .addListener(event -> {
+                viewManager.showView(ViewConstants.LOGIN_VIEW);
+            }).build();
         this.add(back);
-    }
-
-    public DoorkeyButton getBackButton() {
-        return back;
     }
 
     private void addPageTitle() {
@@ -51,27 +61,19 @@ public class LocalVaultView extends NavigableUiPanel {
     }
 
     private void addLoadButton() {
+        load = new DoorkeyButton.DoorkeyButtonBuilder("Load")
+            .addListener(event -> {
+                viewManager.showView(ViewConstants.LOAD_LOCAL_VAULT_VIEW);
+            }).build();
         this.add(load);
     }
 
-    public DoorkeyButton getLoadButton() {
-        return this.load;
-    }
-
-    public LoadLocalVaultView getLoadView() {
-        return this.loadView;
-    }
-
     private void addCreateButton() {
+        create = new DoorkeyButton.DoorkeyButtonBuilder("Create")
+            .addListener(event -> {
+                viewManager.showView(ViewConstants.CREATE_LOCAL_VAULT_VIEW);
+            }).build();
         this.add(create);
-    }
-
-    public DoorkeyButton getCreateButton() {
-        return this.create;
-    }
-
-    public CreateLocalVaultView getCreateView() {
-        return this.createView;
     }
 
     @Override

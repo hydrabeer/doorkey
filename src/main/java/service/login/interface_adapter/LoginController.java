@@ -32,4 +32,8 @@ public class LoginController {
     public void switchToHomeView(String email, String password) {
         interactor.switchToHomeView(email, password);
     }
+
+    public void switchToLocalVaultView() {
+        interactor.switchToLocalVaultView();
+    }
 }
