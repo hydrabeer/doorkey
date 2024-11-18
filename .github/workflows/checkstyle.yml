@@ -3,6 +3,8 @@ name: Run Checkstyle
 on:
   pull_request:
     branches: [ "main" ]
+  push:
+    branches: [ "main" ]
 
 jobs:
   checkstyle:
@@ -10,10 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dbelyaev/action-checkstyle@master
+      - name: Remove test files (we don't run Checkstyle on tests)
+        run: rm -rf src/test
+      - uses: dbelyaev/action-checkstyle@v1.16.5
         with:
           github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
+          reporter: github-check
           level: error
           checkstyle_config: mystyle.xml
           fail_on_error: true
