@@ -6,10 +6,10 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import interface_adapter.NavigableUiPanel;
 import presenters.controllers.LoadLocalVaultController;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
@@ -18,7 +18,7 @@ import views.components.DoorkeyForm;
 /**
  * A view to load an existing local .doorkey vault.
  */
-public class LoadLocalVaultView extends JPanel {
+public class LoadLocalVaultView extends NavigableUiPanel {
     private final DoorkeyButton back = new DoorkeyButton("< Back");
     private final DoorkeyForm form = new DoorkeyForm();
     private final JFileChooser saver = new JFileChooser();
@@ -64,5 +64,10 @@ public class LoadLocalVaultView extends JPanel {
         form.addSubmitButton("Load");
         this.form.addActionListener(event -> controller.formSubmitted());
         this.add(form);
+    }
+
+    @Override
+    public String getViewName() {
+        return ViewConstants.LOAD_LOCAL_VAULT_VIEW;
     }
 }

@@ -5,15 +5,15 @@ import java.awt.Dimension;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
+import interface_adapter.NavigableUiPanel;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
 
 /**
  * A view that allows users to pick between loading or creating a local .doorkey vault.
  */
-public class LocalVaultView extends JPanel {
+public class LocalVaultView extends NavigableUiPanel {
     private final DoorkeyButton back = new DoorkeyButton("< Back");
     private final DoorkeyButton load = new DoorkeyButton("Load");
     private final DoorkeyButton create = new DoorkeyButton("Create");
@@ -72,5 +72,10 @@ public class LocalVaultView extends JPanel {
 
     public CreateLocalVaultView getCreateView() {
         return this.createView;
+    }
+
+    @Override
+    public String getViewName() {
+        return ViewConstants.LOCAL_VAULT_VIEW;
     }
 }

@@ -6,10 +6,10 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import interface_adapter.NavigableUiPanel;
 import presenters.controllers.CreateLocalVaultController;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
@@ -18,7 +18,7 @@ import views.components.DoorkeyForm;
 /**
  * A view that allows the user to create a new local Doorkey vault.
  */
-public class CreateLocalVaultView extends JPanel {
+public class CreateLocalVaultView extends NavigableUiPanel {
     private final DoorkeyButton back = new DoorkeyButton("< Back");
     private final DoorkeyForm form = new DoorkeyForm();
     private final JFileChooser saver = new JFileChooser();
@@ -66,6 +66,11 @@ public class CreateLocalVaultView extends JPanel {
         form.addSubmitButton("Create");
         this.form.addActionListener(event -> controller.formSubmitted());
         this.add(form);
+    }
+
+    @Override
+    public String getViewName() {
+        return ViewConstants.CREATE_LOCAL_VAULT_VIEW;
     }
 
 }
