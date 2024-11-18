@@ -4,6 +4,8 @@ package copy_credentials;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.util.TimerTask;
+import java.util.Timer;
 
 /**
  * The Login Interactor.
@@ -25,6 +27,14 @@ public class CopyCredentialsInteractor implements CopyCredentialsInputBoundary {
         final StringSelection username = new StringSelection(usernameInputData.getUsername());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(username, null);
         outputBoundary.displayUsernameCopyMessage("Copied to clipboard!");
+        final Timer timer = new Timer();
+        final TimerTask timerTask = new TimerTask() {
+            public void run() {
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(""), null);
+                outputBoundary.displayUsernameCopyMessage("Clipboard cleared after " + 10 + " seconds.");
+            }
+        };
+        timer.schedule(timerTask, 10000); // Convert seconds to milliseconds
     }
     /**
      * Copy password to clipboard.
@@ -35,5 +45,13 @@ public class CopyCredentialsInteractor implements CopyCredentialsInputBoundary {
         final StringSelection password = new StringSelection(passwordInputData.getPassword());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(password, null);
         outputBoundary.displayUsernameCopyMessage("Copied to clipboard!");
+        final Timer timer = new Timer();
+        final TimerTask timerTask = new TimerTask() {
+            public void run() {
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(""), null);
+                outputBoundary.displayUsernameCopyMessage("Clipboard cleared after " + 10 + " seconds.");
+            }
+        };
+        timer.schedule(timerTask, 10000); // Convert seconds to milliseconds
     }
 }
