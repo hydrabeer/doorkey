@@ -1,4 +1,4 @@
-package service.local.interface_adapter;
+package service.local.load.interface_adapter;
 
 import javax.swing.JFileChooser;
 
