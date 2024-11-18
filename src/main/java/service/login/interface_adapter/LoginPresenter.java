@@ -20,7 +20,7 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     @Override
     public void prepareSuccessView(LoginOutputData loginOutputData) {
-        LoginState loginState = new LoginState(
+        final LoginState loginState = new LoginState(
                 loginOutputData.getEmail(),
                 loginOutputData.getPassword(),
                 true
@@ -35,7 +35,7 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     @Override
     public void switchToHomeView(String email, String password) {
-        TestView testView = new TestView(email, password, viewManager);
+        final TestView testView = new TestView(email, password, viewManager);
         viewManager.addView(testView);
         viewManager.showView(ViewConstants.TEST_VIEW);
     }

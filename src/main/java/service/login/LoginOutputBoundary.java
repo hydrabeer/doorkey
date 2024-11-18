@@ -1,13 +1,12 @@
 package service.login;
 
-import views.TestView;
-
 /**
  * The log in output boundary for the view.
  */
 public interface LoginOutputBoundary {
     /**
      * Prepares the success view.
+     * @param loginOutputData The login output data.
      */
     void prepareSuccessView(LoginOutputData loginOutputData);
 

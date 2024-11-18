@@ -1,6 +1,6 @@
 package views;
 
-import interface_adapter.NavigatableUIPanel;
+import interface_adapter.NavigableUiPanel;
 import views.components.DoorkeyButton;
 
 import javax.swing.*;
@@ -11,7 +11,7 @@ import java.awt.*;
  * <p>
  * This is NOT Clean!!
  */
-public class TestView extends NavigatableUIPanel {
+public class TestView extends NavigableUiPanel {
     public TestView(String email, String password, ViewManager viewManager) {
         setLayout(new BorderLayout());
 
