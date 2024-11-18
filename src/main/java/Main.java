@@ -1,7 +1,12 @@
-import javax.swing.SwingUtilities;
+import service.login.LoginInteractor;
+import service.login.interface_adapter.LoginController;
+import service.login.interface_adapter.LoginPresenter;
+import service.login.interface_adapter.LoginViewModel;
+import views.LoginView;
+import views.ViewConstants;
+import views.ViewManager;
 
-import presenters.controllers.HomeScreenController;
-import presenters.views.HomeScreenView;
+import javax.swing.*;
 
 /**
  * The main class for our program.
@@ -9,12 +14,21 @@ import presenters.views.HomeScreenView;
 public class Main {
     /**
      * The main method that starts the GUI.
+     *
      * @param args command line arguments
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            final HomeScreenView view = new HomeScreenView();
-            new HomeScreenController(view);
+            ViewManager viewManager = new ViewManager();
+
+            LoginViewModel loginViewModel = new LoginViewModel();
+            LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, viewManager);
+            LoginInteractor interactor = new LoginInteractor(loginPresenter);
+            LoginController loginController = new LoginController(interactor);
+            LoginView loginView = new LoginView(loginController, loginViewModel);
+
+            viewManager.addView(loginView);
+            viewManager.showView(ViewConstants.LOGIN_VIEW);
         });
     }
 }

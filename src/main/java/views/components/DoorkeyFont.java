@@ -1,8 +1,8 @@
-package presenters.views.components;
+package views.components;
 
 import java.awt.Font;
 
-import presenters.views.ViewConstants;
+import views.ViewConstants;
 
 /**
  * Extends the Font class, initializing the standard font used in Doorkey.

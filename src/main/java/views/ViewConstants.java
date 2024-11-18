@@ -1,6 +1,6 @@
-package presenters.views;
+package views;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * Contains the constants for the views.
@@ -14,4 +14,8 @@ public final class ViewConstants {
 
     // Fonts
     public static final String DEFAULT_FONT_NAME = "Futura";
+
+    // View Names
+    public static final String LOGIN_VIEW = "login";
+    public static final String TEST_VIEW = "TEST_DELETE_LATER_@@";
 }
