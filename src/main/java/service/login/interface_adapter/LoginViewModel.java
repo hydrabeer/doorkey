@@ -22,7 +22,7 @@ public class LoginViewModel extends ViewModel<LoginState> {
         // TODO: Other Navigation
     }
 
-    public void setLoginInteractor(LoginController loginController) {
-        this.loginController = loginController;
+    public void setLoginInteractor(LoginController newLoginController) {
+        this.loginController = newLoginController;
     }
 }

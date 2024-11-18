@@ -1,3 +1,5 @@
+import javax.swing.SwingUtilities;
+
 import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
@@ -5,8 +7,6 @@ import service.login.interface_adapter.LoginViewModel;
 import views.LoginView;
 import views.ViewConstants;
 import views.ViewManager;
-
-import javax.swing.*;
 
 /**
  * The main class for our program.
@@ -19,16 +19,23 @@ public class Main {
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            ViewManager viewManager = new ViewManager();
-
-            LoginViewModel loginViewModel = new LoginViewModel();
-            LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, viewManager);
-            LoginInteractor interactor = new LoginInteractor(loginPresenter);
-            LoginController loginController = new LoginController(interactor);
-            LoginView loginView = new LoginView(loginController, loginViewModel);
-
-            viewManager.addView(loginView);
-            viewManager.showView(ViewConstants.LOGIN_VIEW);
+            initializeMainUi();
         });
+    }
+
+    /**
+     * Initializes the main UI.
+     */
+    private static void initializeMainUi() {
+        final ViewManager viewManager = new ViewManager();
+
+        final LoginViewModel loginViewModel = new LoginViewModel();
+        final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, viewManager);
+        final LoginInteractor interactor = new LoginInteractor(loginPresenter);
+        final LoginController loginController = new LoginController(interactor);
+        final LoginView loginView = new LoginView(loginController, loginViewModel);
+
+        viewManager.addView(loginView);
+        viewManager.showView(ViewConstants.LOGIN_VIEW);
     }
 }
