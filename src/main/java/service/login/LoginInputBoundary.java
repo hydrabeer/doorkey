@@ -18,5 +18,8 @@ public interface LoginInputBoundary {
      */
     void switchToHomeView(String email, String password);
 
+    /**
+     * Switch to the local vault view.
+     */
     void switchToLocalVaultView();
 }
