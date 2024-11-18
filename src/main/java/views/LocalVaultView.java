@@ -1,4 +1,4 @@
-package presenters.views;
+package views;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -7,8 +7,8 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import presenters.views.components.DoorkeyButton;
-import presenters.views.components.DoorkeyFont;
+import views.components.DoorkeyButton;
+import views.components.DoorkeyFont;
 
 /**
  * A view that allows users to pick between loading or creating a local .doorkey vault.

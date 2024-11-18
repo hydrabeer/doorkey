@@ -2,7 +2,7 @@ package presenters.controllers;
 
 import javax.swing.JFileChooser;
 
-import presenters.views.components.DoorkeyForm;
+import views.components.DoorkeyForm;
 
 /**
  * Handles the creation of encrypted .doorkey files.

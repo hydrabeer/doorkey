@@ -1,4 +1,4 @@
-package presenters.views;
+package views;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -11,9 +11,9 @@ import javax.swing.JPasswordField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import presenters.controllers.CreateLocalVaultController;
-import presenters.views.components.DoorkeyButton;
-import presenters.views.components.DoorkeyFont;
-import presenters.views.components.DoorkeyForm;
+import views.components.DoorkeyButton;
+import views.components.DoorkeyFont;
+import views.components.DoorkeyForm;
 
 /**
  * A view that allows the user to create a new local Doorkey vault.
