@@ -1,6 +1,6 @@
 package views;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Contains the constants for the views.

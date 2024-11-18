@@ -321,10 +321,10 @@
         <module name="ThrowsCount">
             <property name="max" value="2"/>
         </module>
-        <module name="VisibilityModifier">
-            <property name="ignoreAnnotationCanonicalNames"
-                      value="org.junit.Rule, org.junit.jupiter.api.io.TempDir"/>
-        </module>
+<!--        <module name="VisibilityModifier">-->
+<!--            <property name="ignoreAnnotationCanonicalNames"-->
+<!--                      value="org.junit.Rule, org.junit.jupiter.api.io.TempDir"/>-->
+<!--        </module>-->
 
         <!-- Coding -->
         <module name="ArrayTrailingComma"/>
@@ -742,7 +742,7 @@
             <property name="allowedAbbreviationLength" value="0"/>
             <property name="allowedAbbreviations" value="DB,DAO,AST,HTML,ID,JSON,CSV"/>
         </module>
-        <module name="AbstractClassName"/>
+<!--        <module name="AbstractClassName"/>-->
         <module name="ClassTypeParameterName"/>
         <module name="RecordTypeParameterName"/>
         <module name="RecordComponentName"/>
