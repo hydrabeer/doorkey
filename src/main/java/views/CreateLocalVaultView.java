@@ -10,7 +10,7 @@ import javax.swing.JPasswordField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import interface_adapter.NavigableUiPanel;
-import presenters.controllers.CreateLocalVaultController;
+import service.local.interface_adapter.CreateLocalVaultController;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
 import views.components.DoorkeyForm;
