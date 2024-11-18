@@ -1,7 +1,7 @@
 package interface_adapter;
 
 /**
- * The main ViewModel for DoorKey, which all ViewModels implement.
+ * The main ViewModel for Doorkey, which all ViewModels implement.
  *
  * @param <T> The ViewModel data.
  */
