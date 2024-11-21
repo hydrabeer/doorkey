@@ -36,6 +36,11 @@ public class Main {
      */
     private static void initializeMainUi() {
         final JFrame mainFrame = new JFrame("DoorKey");
+        // The following line is commented out, as it can be activated once
+        // the panels are made prettier, and the support to add/close is added.
+        //
+        // mainFrame.setUndecorated(true);
+        //
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(400, 500);
         mainFrame.setLayout(new BorderLayout());
