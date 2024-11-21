@@ -3,7 +3,7 @@ package interface_adapter;
 import javax.swing.JPanel;
 
 /**
- * Every JPanel that can separately be navigated in DoorKey must extend this.
+ * Every JPanel that can separately be navigated in Doorkey must extend this.
  * This is required as we are not extending any other Java framework - such as beans.
  */
 public abstract class NavigableUiPanel extends JPanel {

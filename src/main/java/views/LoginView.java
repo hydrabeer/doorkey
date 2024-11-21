@@ -68,7 +68,7 @@ public class LoginView extends NavigableUiPanel {
     }
 
     private void addWelcomeTitle() {
-        final JLabel titleLabel = new JLabel("Welcome to DoorKey!");
+        final JLabel titleLabel = new JLabel("Welcome to Doorkey!");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new DoorkeyFont(24));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -98,7 +98,7 @@ public class LoginView extends NavigableUiPanel {
 
         final DoorkeyButton useLocallyButton = new DoorkeyButton.DoorkeyButtonBuilder("Use Locally")
                 .addListener(event -> {
-                    // TODO
+                    loginController.switchToLocalVaultView();
                 })
                 .build();
 

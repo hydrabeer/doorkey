@@ -26,4 +26,9 @@ public class LoginInteractor implements LoginInputBoundary {
     public void switchToHomeView(String email, String password) {
         loginPresenter.switchToHomeView(email, password);
     }
+
+    @Override
+    public void switchToLocalVaultView() {
+        loginPresenter.switchToLocalVaultView();
+    }
 }

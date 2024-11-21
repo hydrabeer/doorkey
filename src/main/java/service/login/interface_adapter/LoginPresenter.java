@@ -39,4 +39,9 @@ public class LoginPresenter implements LoginOutputBoundary {
         viewManager.addView(testView);
         viewManager.showView(ViewConstants.TEST_VIEW);
     }
+
+    @Override
+    public void switchToLocalVaultView() {
+        viewManager.showView(ViewConstants.LOCAL_VAULT_VIEW);
+    }
 }

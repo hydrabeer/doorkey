@@ -4,6 +4,7 @@ import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
 import service.login.interface_adapter.LoginViewModel;
+import views.LocalVaultView;
 import views.LoginView;
 import views.ViewConstants;
 import views.ViewManager;
@@ -18,9 +19,7 @@ public class Main {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            initializeMainUi();
-        });
+        SwingUtilities.invokeLater(Main::initializeMainUi);
     }
 
     /**
@@ -34,8 +33,11 @@ public class Main {
         final LoginInteractor interactor = new LoginInteractor(loginPresenter);
         final LoginController loginController = new LoginController(interactor);
         final LoginView loginView = new LoginView(loginController, loginViewModel);
-
         viewManager.addView(loginView);
+
+        final LocalVaultView localVaultView = new LocalVaultView(viewManager);      
+        viewManager.addView(localVaultView);
+
         viewManager.showView(ViewConstants.LOGIN_VIEW);
     }
 }
