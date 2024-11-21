@@ -10,7 +10,14 @@ import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
 import service.login.interface_adapter.LoginViewModel;
-import views.*;
+import views.CreateLocalVaultView;
+import views.LoadLocalVaultView;
+import views.LocalVaultView;
+import views.LoginView;
+import views.TestView;
+import views.TestViewModel;
+import views.ViewConstants;
+import views.ViewManager;
 
 /**
  * The main class for our program.

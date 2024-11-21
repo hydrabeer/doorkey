@@ -3,7 +3,9 @@ package views;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import service.ViewManagerModel;
 import views.components.DoorkeyButton;

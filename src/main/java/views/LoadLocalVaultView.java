@@ -3,7 +3,11 @@ package views;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import service.ViewManagerModel;
