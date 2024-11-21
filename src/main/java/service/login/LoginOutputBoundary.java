@@ -16,12 +16,4 @@ public interface LoginOutputBoundary {
      * @param error The error message.
      */
     void prepareErrorView(String error);
-
-    /**
-     * Switch to home view.
-     *
-     * @param email The user's email
-     * @param password The user's master password
-     */
-    void switchToHomeView(String email, String password);
 }

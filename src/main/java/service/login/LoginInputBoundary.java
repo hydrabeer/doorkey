@@ -9,12 +9,4 @@ public interface LoginInputBoundary {
      * @param loginInputData The login input data.
      */
     void login(LoginInputData loginInputData);
-
-    /**
-     * Switch to home view.
-     *
-     * @param email The user's email
-     * @param password The user's master password
-     */
-    void switchToHomeView(String email, String password);
 }
