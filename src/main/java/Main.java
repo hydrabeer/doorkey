@@ -1,10 +1,18 @@
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import service.ViewManagerModel;
 import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
 import service.login.interface_adapter.LoginViewModel;
 import views.LoginView;
+import views.TestView;
+import views.TestViewModel;
 import views.ViewConstants;
 import views.ViewManager;
 
@@ -27,15 +35,35 @@ public class Main {
      * Initializes the main UI.
      */
     private static void initializeMainUi() {
-        final ViewManager viewManager = new ViewManager();
+        final JFrame mainFrame = new JFrame("DoorKey");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setSize(400, 500);
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.setBackground(ViewConstants.BACKGROUND_COLOR);
+
+        final CardLayout cardLayout = new CardLayout();
+        final JPanel views = new JPanel(cardLayout);
+
+        mainFrame.add(views, BorderLayout.CENTER);
+
+        final ViewManagerModel viewManagerModel = new ViewManagerModel();
+        new ViewManager(views, cardLayout, viewManagerModel);
+
+        final TestViewModel testViewModel = new TestViewModel();
+        final TestView testView = new TestView(testViewModel, viewManagerModel);
+        views.add(testView, ViewConstants.TEST_VIEW);
 
         final LoginViewModel loginViewModel = new LoginViewModel();
-        final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, viewManager);
-        final LoginInteractor interactor = new LoginInteractor(loginPresenter);
-        final LoginController loginController = new LoginController(interactor);
-        final LoginView loginView = new LoginView(loginController, loginViewModel);
+        final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, testViewModel, viewManagerModel);
+        final LoginInteractor loginInteractor = new LoginInteractor(loginPresenter);
+        final LoginController loginController = new LoginController(loginInteractor);
+        final LoginView loginView = new LoginView(loginViewModel, loginController);
+        views.add(loginView, ViewConstants.LOGIN_VIEW);
 
-        viewManager.addView(loginView);
-        viewManager.showView(ViewConstants.LOGIN_VIEW);
+        viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
+        viewManagerModel.onStateChanged();
+
+        mainFrame.pack();
+        mainFrame.setVisible(true);
     }
 }
