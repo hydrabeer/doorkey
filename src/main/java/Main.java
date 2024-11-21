@@ -10,11 +10,7 @@ import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
 import service.login.interface_adapter.LoginViewModel;
-import views.LoginView;
-import views.TestView;
-import views.TestViewModel;
-import views.ViewConstants;
-import views.ViewManager;
+import views.*;
 
 /**
  * The main class for our program.
@@ -26,9 +22,7 @@ public class Main {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            initializeMainUi();
-        });
+        SwingUtilities.invokeLater(Main::initializeMainUi);
     }
 
     /**
@@ -51,8 +45,23 @@ public class Main {
 
         mainFrame.add(views, BorderLayout.CENTER);
 
+        // viewManagerModel.addView(loadView);
+        // viewManagerModel.addView(createView);
+
         final ViewManagerModel viewManagerModel = new ViewManagerModel();
         new ViewManager(views, cardLayout, viewManagerModel);
+
+        // ===========
+        // TODO For evan: After you create view models, initialize them like I did with login
+        final LoadLocalVaultView loadView = new LoadLocalVaultView(viewManagerModel);
+        views.add(loadView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
+
+        final CreateLocalVaultView createView = new CreateLocalVaultView(viewManagerModel);
+        views.add(createView, ViewConstants.CREATE_LOCAL_VAULT_VIEW);
+
+        final LocalVaultView localVaultView = new LocalVaultView(viewManagerModel);
+        views.add(localVaultView, ViewConstants.LOCAL_VAULT_VIEW);
+        // ===================
 
         final TestViewModel testViewModel = new TestViewModel();
         final TestView testView = new TestView(testViewModel, viewManagerModel);
@@ -62,13 +71,12 @@ public class Main {
         final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, testViewModel, viewManagerModel);
         final LoginInteractor loginInteractor = new LoginInteractor(loginPresenter);
         final LoginController loginController = new LoginController(loginInteractor);
-        final LoginView loginView = new LoginView(loginViewModel, loginController);
+        final LoginView loginView = new LoginView(loginViewModel, loginController, viewManagerModel);
         views.add(loginView, ViewConstants.LOGIN_VIEW);
 
         viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
         viewManagerModel.onStateChanged();
 
-        mainFrame.pack();
         mainFrame.setVisible(true);
     }
 }

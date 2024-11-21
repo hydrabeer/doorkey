@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import service.ViewManagerModel;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginState;
 import service.login.interface_adapter.LoginViewModel;
@@ -30,11 +31,17 @@ import views.components.DoorkeyForm;
 public class LoginView extends JPanel implements ActionListener, PropertyChangeListener {
     private final LoginController loginController;
     private final LoginViewModel loginViewModel;
+    private final ViewManagerModel viewManagerModel;
     private final DoorkeyForm form = new DoorkeyForm();
 
-    public LoginView(LoginViewModel loginViewModel, LoginController loginController) {
+    public LoginView(
+            LoginViewModel loginViewModel,
+            LoginController loginController,
+            ViewManagerModel viewManagerModel
+    ) {
         this.loginController = loginController;
         this.loginViewModel = loginViewModel;
+        this.viewManagerModel = viewManagerModel;
         this.loginViewModel.addPropertyChangeListener(this);
 
         setUpMainPanel();
@@ -72,7 +79,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     }
 
     private void addWelcomeTitle() {
-        final JLabel titleLabel = new JLabel("Welcome to DoorKey!");
+        final JLabel titleLabel = new JLabel("Welcome to Doorkey!");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new DoorkeyFont(24));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -102,7 +109,8 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
         final DoorkeyButton useLocallyButton = new DoorkeyButton.DoorkeyButtonBuilder("Use Locally")
                 .addListener(event -> {
-                    // TODO
+                    viewManagerModel.setState(ViewConstants.LOCAL_VAULT_VIEW);
+                    viewManagerModel.onStateChanged();
                 })
                 .build();
 
