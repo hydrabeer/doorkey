@@ -1,7 +1,7 @@
 package service.url_redirect;
 
 /**
- * Interface that interactor implements
+ * Interface that interactor implements.
  * Used as layer inbetween the controller and interactor.
  */
 public interface UrlRedirectInputBoundary {

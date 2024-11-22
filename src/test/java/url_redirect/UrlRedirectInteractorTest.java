@@ -19,5 +19,6 @@ public class UrlRedirectInteractorTest {
         };
         UrlRedirectInputBoundary urlRedirectInputBoundary = new UrlRedirectInteractor(urlRedirectOutputBoundary);
         urlRedirectInputBoundary.openUrl(urlInputData);
+        // will throw an exception if it fails causing the test to fail
     }
 }

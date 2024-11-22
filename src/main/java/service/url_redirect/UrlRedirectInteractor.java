@@ -1,7 +1,9 @@
 package service.url_redirect;
 
-import java.awt.*;
+import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * The Open URL Interactor.
@@ -28,9 +30,14 @@ public class UrlRedirectInteractor implements UrlRedirectInputBoundary {
                 boundary.displayError("Opening URLs is not supported on this system.");
             }
         }
-        catch (Exception exception) {
-            exception.printStackTrace();
-            boundary.displayError("Failed to open the link: " + urlInputData.getUrl());
+        catch (URISyntaxException exception) {
+            boundary.displayError("Invalid URL: " + exception.getMessage());
+        }
+        catch (IOException exception) {
+            boundary.displayError("I/O Error while trying to open the URL: " + exception.getMessage());
+        }
+        catch (SecurityException exception) {
+            boundary.displayError("Insufficient permissions to open the URL: " + exception.getMessage());
         }
     }
 }
