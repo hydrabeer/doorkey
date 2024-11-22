@@ -22,17 +22,17 @@ public class PasswordVaultItemView extends JFrame {
         addUsernamePanel();
         addPasswordPanel();
         addUrlPanel();
-        panel.add(form);
+//        panel.add(form);
         this.add(panel, BorderLayout.CENTER);
 
         this.setVisible(true);
     }
 
     private void addActionsPanel() {
-        final JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         actionsPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        actionsPanel.setPreferredSize(new Dimension(60, 40));
-        actionsPanel.setMaximumSize(new Dimension(60, 40));
+        actionsPanel.setPreferredSize(new Dimension(300, 40));
+        actionsPanel.setMaximumSize(new Dimension(300, 40));
         final JButton editButton = addEditButton();
         final JButton deleteButton = addDeleteButton();
         actionsPanel.add(editButton);
@@ -46,68 +46,65 @@ public class PasswordVaultItemView extends JFrame {
         titleLabel.setFont(new DoorkeyFont(18));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(titleLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
     }
 
     private void addUsernamePanel() {
         final JPanel usernamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         usernamePanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        final JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setForeground(ViewConstants.TEXT_MUTED_COLOR);
-        usernameLabel.setFont(new DoorkeyFont());
-        final JLabel usernameDisplay = new JLabel("example_user");
-        usernameDisplay.setForeground(ViewConstants.TEXT_MUTED_COLOR);
-        usernameDisplay.setFont(new DoorkeyFont());
-        usernameDisplay.setPreferredSize(new Dimension(197, usernameLabel.getPreferredSize().height));
-        usernameDisplay.setMaximumSize(new Dimension(197, usernameLabel.getPreferredSize().height));
-        final Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
-        usernameDisplay.setBorder(border);
-        final JButton copyButton = addCopyButton();
+        final JLabel usernameLabel = addLabel("Username:");
         usernamePanel.add(usernameLabel);
-        usernamePanel.add(usernameDisplay);
-        usernamePanel.add(copyButton);
-        usernamePanel.setMaximumSize(new Dimension(350, usernamePanel.getPreferredSize().height));
-        form.add(usernamePanel);
-        form.add(Box.createRigidArea(new Dimension(0, 10)));
+        usernamePanel.add(addDisplay("temp", usernameLabel.getHeight()));
+        usernamePanel.add(addCopyButton(usernameLabel.getPreferredSize().height));
+        usernamePanel.setMaximumSize(new Dimension(300, usernamePanel.getPreferredSize().height));
+        panel.add(usernamePanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
     }
 
     private void addPasswordPanel() {
         final JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         passwordPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        final JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setForeground(Color.WHITE);
-        passwordLabel.setFont(new DoorkeyFont());
-        final JLabel passwordDisplay = new JLabel("********");
-        passwordDisplay.setForeground(Color.WHITE);
-        passwordDisplay.setFont(new DoorkeyFont());
-        passwordDisplay.setPreferredSize(new Dimension(197, passwordLabel.getPreferredSize().height));
-        passwordDisplay.setMaximumSize(new Dimension(197, passwordLabel.getPreferredSize().height));
-        final Border border = BorderFactory.createLineBorder(ViewConstants.TEXT_MUTED_COLOR, 1);
-        passwordDisplay.setBorder(border);
-        final JButton copyButton = addCopyButton();
-        final JButton hideButton = addHideButton();
+        final JLabel passwordLabel = addLabel("Password:");
         passwordPanel.add(passwordLabel);
-        passwordPanel.add(passwordDisplay);
-        passwordPanel.add(copyButton);
-        passwordPanel.add(hideButton);
-        passwordPanel.setMaximumSize(new Dimension(350, passwordLabel.getPreferredSize().height));
-        form.add(passwordPanel);
-        form.add(Box.createRigidArea(new Dimension(0, 10)));
+        passwordPanel.add(addDisplay("temp", passwordLabel.getHeight()));
+        passwordPanel.add(addCopyButton(passwordLabel.getPreferredSize().height));
+        passwordPanel.add(addHideButton(passwordLabel.getPreferredSize().height));
+        passwordPanel.setMaximumSize(new Dimension(300, passwordPanel.getPreferredSize().height));
+        panel.add(passwordPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
     }
 
     private void addUrlPanel() {
         final JPanel urlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         urlPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        final JLabel urlLabel = new JLabel("URL:         ");
-        urlLabel.setForeground(Color.WHITE);
-        urlLabel.setFont(new DoorkeyFont());
-        final JButton url = addUrl();
+        final JLabel urlLabel = addLabel("URL:     ");
         urlPanel.add(urlLabel);
-        urlPanel.add(url);
-        urlPanel.setMaximumSize(new Dimension(350, url.getPreferredSize().height + 30));
-        form.add(urlPanel);
+        urlPanel.add(addDisplay("temp", urlLabel.getHeight()));
+        urlPanel.add(addUrl(urlLabel.getPreferredSize().height));
+        urlPanel.setMaximumSize(new Dimension(300, urlPanel.getPreferredSize().height));
+        panel.add(urlPanel);
     }
 
-    private JButton addCopyButton() {
+    private JLabel addLabel(String text) {
+        final JLabel label = new JLabel(text);
+        label.setForeground(Color.WHITE);
+        label.setFont(new DoorkeyFont());
+        return label;
+    }
+
+    private JLabel addDisplay(String text, int height) {
+        final JLabel display = new JLabel(text);
+        display.setForeground(Color.WHITE);
+        display.setFont(new DoorkeyFont());
+        display.setPreferredSize(new Dimension(150, display.getPreferredSize().height));
+        display.setMaximumSize(new Dimension(150, height));
+        final Border border = BorderFactory.createLineBorder(ViewConstants.TEXT_MUTED_COLOR, 1);
+        display.setBorder(border);
+        display.setVisible(true);
+        return display;
+    }
+
+    private JButton addCopyButton(int height) {
         final JButton copyButton = new DoorkeyButton.DoorkeyButtonBuilder("📋")
                 .addListener(event -> {
                     // TODO: Implement navigation controller.
@@ -118,11 +115,11 @@ public class PasswordVaultItemView extends JFrame {
         copyButton.setForeground(Color.WHITE);
         copyButton.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(ViewConstants.BACKGROUND_COLOR, 1, true),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+                BorderFactory.createEmptyBorder(height, 5, height, 5)));
         return copyButton;
     }
 
-    private JButton addHideButton() {
+    private JButton addHideButton(int height) {
         final JButton hideButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDC41\uFE0F")
                 .addListener(event -> {
                     // TODO: Implement navigation controller.
@@ -133,23 +130,23 @@ public class PasswordVaultItemView extends JFrame {
         hideButton.setForeground(Color.WHITE);
         hideButton.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(ViewConstants.BACKGROUND_COLOR, 1, true),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+                BorderFactory.createEmptyBorder(height, 5, height, 5)));
         return hideButton;
     }
 
-    private JButton addUrl() {
-        final JButton hideButton = new DoorkeyButton.DoorkeyButtonBuilder("https://example.com")
+    private JButton addUrl(int height) {
+        final JButton urlButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDD17")
                 .addListener(event -> {
                     // TODO: Implement navigation controller.
                     showPlaceholderPage();
                 })
                 .build();
-        hideButton.setBackground(ViewConstants.BACKGROUND_COLOR);
-        hideButton.setForeground(Color.WHITE);
-        hideButton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(ViewConstants.TEXT_MUTED_COLOR, 1, true),
-                BorderFactory.createEmptyBorder(80, 60, 80, 60)));
-        return hideButton;
+        urlButton.setBackground(ViewConstants.BACKGROUND_COLOR);
+        urlButton.setForeground(Color.WHITE);
+        urlButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(ViewConstants.BACKGROUND_COLOR, 1, true),
+                BorderFactory.createEmptyBorder(height, 5, height, 5)));
+        return urlButton;
     }
 
     private JButton addEditButton() {
@@ -162,8 +159,8 @@ public class PasswordVaultItemView extends JFrame {
         editButton.setBackground(ViewConstants.BACKGROUND_COLOR);
         editButton.setForeground(Color.WHITE);
         editButton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(ViewConstants.BACKGROUND_COLOR, 1, true),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+                BorderFactory.createLineBorder(Color.WHITE, 1, true),
+                BorderFactory.createEmptyBorder(5, 9, 5, 9)));
         return editButton;
     }
 
@@ -177,8 +174,8 @@ public class PasswordVaultItemView extends JFrame {
         deleteButton.setBackground(ViewConstants.BACKGROUND_COLOR);
         deleteButton.setForeground(Color.WHITE);
         deleteButton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(ViewConstants.BACKGROUND_COLOR, 1, true),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+                BorderFactory.createLineBorder(Color.WHITE, 1, true),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
         return deleteButton;
     }
 
