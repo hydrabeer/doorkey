@@ -21,7 +21,6 @@ jobs:
     - name: Install xvfb
       run: |
         sudo apt update
-        sudo apt upgrade -y
-        sudo apt install xvfb
+        sudo apt install -y xvfb
     - name: Run Tests with Maven
       run: xvfb-run --auto-servernum mvn clean test
