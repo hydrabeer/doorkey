@@ -1,19 +1,29 @@
 package views;
 
-import interface_adapter.NavigatableUIPanel;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import interface_adapter.NavigableUiPanel;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginViewModel;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
 import views.components.DoorkeyForm;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
  * The main Home screen view that pops up when the application is launched.
  */
-public class LoginView extends NavigatableUIPanel {
+public class LoginView extends NavigableUiPanel {
     private final LoginController loginController;
     private final LoginViewModel viewModel;
 
@@ -39,16 +49,10 @@ public class LoginView extends NavigatableUIPanel {
         final DoorkeyForm form = new DoorkeyForm();
         form.addField(new JTextField(), "Email", "email");
         form.addField(new JPasswordField(), "Password", "password");
-        form.addSubmitButton("Log In", (event) -> {
-            // LoginState newState = viewModel.getState();
-            String email = form.getFieldValue("email");
-            String password = form.getFieldValue("password");
-            // newState.setEmail();
-            // newState.setPassword();
-            // viewModel.setState(newState);
-            // TODO: pass in current state, dynamic updates
+        form.addSubmitButton("Log In", event -> {
+            final String email = form.getFieldValue("email");
+            final String password = form.getFieldValue("password");
             loginController.login(email, password);
-            // loginController.login(form.getFieldValue("email"), form.getFieldValue("password"));
         });
         this.add(form);
     }
@@ -64,7 +68,7 @@ public class LoginView extends NavigatableUIPanel {
     }
 
     private void addWelcomeTitle() {
-        final JLabel titleLabel = new JLabel("Welcome to DoorKey!");
+        final JLabel titleLabel = new JLabel("Welcome to Doorkey!");
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new DoorkeyFont(24));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -94,7 +98,7 @@ public class LoginView extends NavigatableUIPanel {
 
         final DoorkeyButton useLocallyButton = new DoorkeyButton.DoorkeyButtonBuilder("Use Locally")
                 .addListener(event -> {
-                    // TODO
+                    loginController.switchToLocalVaultView();
                 })
                 .build();
 

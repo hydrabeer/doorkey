@@ -13,17 +13,22 @@ public class LoginInteractor implements LoginInputBoundary {
     @Override
     public void login(LoginInputData loginInputData) {
         // TODO: Auth logic
-        if (1 + 1 == 2 /* how surprising */) {
-            LoginOutputData outputData = new LoginOutputData(
-                    loginInputData.getEmail(),
-                    loginInputData.getPassword()
-            );
-            loginPresenter.prepareSuccessView(outputData);
-        }
+        // if (true) {
+        final LoginOutputData outputData = new LoginOutputData(
+                loginInputData.getEmail(),
+                loginInputData.getPassword()
+        );
+        loginPresenter.prepareSuccessView(outputData);
+        // }
     }
 
     @Override
     public void switchToHomeView(String email, String password) {
         loginPresenter.switchToHomeView(email, password);
+    }
+
+    @Override
+    public void switchToLocalVaultView() {
+        loginPresenter.switchToLocalVaultView();
     }
 }

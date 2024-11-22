@@ -6,6 +6,7 @@ package service.login;
 public interface LoginInputBoundary {
     /**
      * Log in the user to remote sync.
+     * @param loginInputData The login input data.
      */
     void login(LoginInputData loginInputData);
 
@@ -16,4 +17,9 @@ public interface LoginInputBoundary {
      * @param password The user's master password
      */
     void switchToHomeView(String email, String password);
+
+    /**
+     * Switch to the local vault view.
+     */
+    void switchToLocalVaultView();
 }
