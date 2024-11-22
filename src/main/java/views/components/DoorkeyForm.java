@@ -1,4 +1,4 @@
-package presenters.views.components;
+package views.components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import presenters.views.ViewConstants;
+import views.ViewConstants;
 
 /**
  * The default form generator component.
