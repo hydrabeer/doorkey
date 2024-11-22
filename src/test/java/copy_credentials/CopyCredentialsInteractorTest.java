@@ -29,7 +29,7 @@ public class CopyCredentialsInteractorTest {
         };
         CopyCredentialsInputBoundary copyCredentialsInputBoundary = new CopyCredentialsInteractor(copyCredenentialsOutputBoundary);
         copyCredentialsInputBoundary.copyUsername(usernameInputData);
-        assertEquals((String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor), "Amaan");
+        assertEquals(Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor), "Amaan");
     }
     @Test
     public void testCopyPassword() throws IOException, UnsupportedFlavorException {
@@ -47,6 +47,6 @@ public class CopyCredentialsInteractorTest {
         };
         CopyCredentialsInputBoundary copyCredentialsInputBoundary = new CopyCredentialsInteractor(copyCredenentialsOutputBoundary);
         copyCredentialsInputBoundary.copyPassword(passwordInputData);
-        assertEquals((String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor), "password");
+        assertEquals((Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor)), "password");
     }
 }
