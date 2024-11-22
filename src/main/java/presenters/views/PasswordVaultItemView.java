@@ -1,17 +1,20 @@
 package presenters.views;
 
-import org.jetbrains.annotations.NotNull;
-import presenters.views.components.DoorkeyButton;
-import presenters.views.components.DoorkeyFont;
-import presenters.views.components.DoorkeyForm;
+import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import java.awt.*;
 
+import org.jetbrains.annotations.NotNull;
+
+import presenters.views.components.DoorkeyButton;
+import presenters.views.components.DoorkeyFont;
+
+/**
+ * Vault Item.
+ */
 public class PasswordVaultItemView extends JFrame {
     private final JPanel panel = getMainPanel();
-    private final DoorkeyForm form = new DoorkeyForm();
 
     public PasswordVaultItemView() {
         super("DoorKey");
@@ -22,7 +25,6 @@ public class PasswordVaultItemView extends JFrame {
         addUsernamePanel();
         addPasswordPanel();
         addUrlPanel();
-//        panel.add(form);
         this.add(panel, BorderLayout.CENTER);
 
         this.setVisible(true);
@@ -54,7 +56,7 @@ public class PasswordVaultItemView extends JFrame {
         usernamePanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         final JLabel usernameLabel = addLabel("Username:");
         usernamePanel.add(usernameLabel);
-        usernamePanel.add(addDisplay("temp", usernameLabel.getHeight()));
+        usernamePanel.add(addDisplay("temp username", usernameLabel.getHeight()));
         usernamePanel.add(addCopyButton(usernameLabel.getPreferredSize().height));
         usernamePanel.setMaximumSize(new Dimension(300, usernamePanel.getPreferredSize().height));
         panel.add(usernamePanel);
@@ -66,7 +68,7 @@ public class PasswordVaultItemView extends JFrame {
         passwordPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         final JLabel passwordLabel = addLabel("Password:");
         passwordPanel.add(passwordLabel);
-        passwordPanel.add(addDisplay("temp", passwordLabel.getHeight()));
+        passwordPanel.add(addDisplay("temp password", passwordLabel.getHeight()));
         passwordPanel.add(addCopyButton(passwordLabel.getPreferredSize().height));
         passwordPanel.add(addHideButton(passwordLabel.getPreferredSize().height));
         passwordPanel.setMaximumSize(new Dimension(300, passwordPanel.getPreferredSize().height));
@@ -79,7 +81,7 @@ public class PasswordVaultItemView extends JFrame {
         urlPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         final JLabel urlLabel = addLabel("URL:     ");
         urlPanel.add(urlLabel);
-        urlPanel.add(addDisplay("temp", urlLabel.getHeight()));
+        urlPanel.add(addDisplay("temp url", urlLabel.getHeight()));
         urlPanel.add(addUrl(urlLabel.getPreferredSize().height));
         urlPanel.setMaximumSize(new Dimension(300, urlPanel.getPreferredSize().height));
         panel.add(urlPanel);
@@ -217,34 +219,6 @@ public class PasswordVaultItemView extends JFrame {
         this.setSize(400, 500);
         this.setLayout(new BorderLayout());
         this.setBackground(ViewConstants.BACKGROUND_COLOR);
-    }
-
-
-    /**
-     * Get the email input value.
-     *
-     * @return Current email input value.
-     */
-    public String getEmail() {
-        return form.getFieldValue("email");
-    }
-
-    /**
-     * Get the email password value.
-     *
-     * @return Current password input value.
-     */
-    public String getPassword() {
-        return form.getFieldValue("password");
-    }
-
-    /**
-     * Return the DForm.
-     *
-     * @return Current login DForm.
-     */
-    public DoorkeyForm getForm() {
-        return form;
     }
 }
 
