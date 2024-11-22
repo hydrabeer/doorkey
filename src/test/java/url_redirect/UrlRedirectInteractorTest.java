@@ -1,6 +1,10 @@
 package url_redirect;
 
 import org.junit.jupiter.api.Test;
+import service.login.url_redirect.UrlInputData;
+import service.login.url_redirect.UrlRedirectInputBoundary;
+import service.login.url_redirect.UrlRedirectInteractor;
+import service.login.url_redirect.UrlRedirectOutputBoundary;
 
 public class UrlRedirectInteractorTest {
 

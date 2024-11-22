@@ -1,4 +1,4 @@
-package url_redirect;
+package service.login.url_redirect;
 
 /**
  * Gives information from the interactor to the User.

@@ -1,4 +1,4 @@
-package url_redirect;
+package service.login.url_redirect;
 
 /**
  * Interface that interactor implements

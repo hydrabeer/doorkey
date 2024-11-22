@@ -1,4 +1,4 @@
-package url_redirect;
+package service.login.url_redirect;
 
 import java.awt.*;
 import java.net.URI;
@@ -20,14 +20,16 @@ public class UrlRedirectInteractor implements UrlRedirectInputBoundary {
      */
     public void openUrl(UrlInputData urlInputData) {
         try {
-            Desktop desktop = Desktop.getDesktop();
+            final Desktop desktop = Desktop.getDesktop();
             if (desktop.isSupported(Desktop.Action.BROWSE)) {
                 desktop.browse(new URI(urlInputData.getUrl()));
-            } else {
+            }
+            else {
                 boundary.displayError("Opening URLs is not supported on this system.");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (Exception exception) {
+            exception.printStackTrace();
             boundary.displayError("Failed to open the link: " + urlInputData.getUrl());
         }
     }
