@@ -1,10 +1,9 @@
 package service.copy_credentials;
 
-
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.util.TimerTask;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The Login Interactor.
@@ -33,7 +32,8 @@ public class CopyCredentialsInteractor implements CopyCredentialsInputBoundary {
                 outputBoundary.displayUsernameCopyMessage("Clipboard cleared after " + 10 + " seconds.");
             }
         };
-        timer.schedule(timerTask, 10000); // Convert seconds to milliseconds
+        timer.schedule(timerTask, 10000);
+        // Convert seconds to milliseconds
     }
     /**
      * Copy password to clipboard.
@@ -43,14 +43,15 @@ public class CopyCredentialsInteractor implements CopyCredentialsInputBoundary {
     public void copyPassword(PasswordInputData passwordInputData) {
         final StringSelection password = new StringSelection(passwordInputData.getPassword());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(password, null);
-        outputBoundary.displayUsernameCopyMessage("Copied to clipboard!");
+        outputBoundary.displayPasswordCopyMessage("Copied to clipboard!");
         final Timer timer = new Timer();
         final TimerTask timerTask = new TimerTask() {
             public void run() {
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(""), null);
-                outputBoundary.displayUsernameCopyMessage("Clipboard cleared after " + 10 + " seconds.");
+                outputBoundary.displayPasswordCopyMessage("Clipboard cleared after " + 10 + " seconds.");
             }
         };
-        timer.schedule(timerTask, 10000); // Convert seconds to milliseconds
+        timer.schedule(timerTask, 10000);
+        // Convert seconds to milliseconds
     }
 }
