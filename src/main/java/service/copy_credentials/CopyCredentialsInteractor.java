@@ -1,6 +1,6 @@
 package service.copy_credentials;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.util.Timer;
 import java.util.TimerTask;
