@@ -1,4 +1,4 @@
-package service.login.url_redirect;
+package service.url_redirect;
 
 /**
  * Object that passes info from UrlRedirectController to interactor.

@@ -1,7 +1,7 @@
-package service.login.url_redirect.interface_adapter;
+package service.url_redirect.interface_adapter;
 
-import service.login.url_redirect.UrlInputData;
-import service.login.url_redirect.UrlRedirectInputBoundary;
+import service.url_redirect.UrlInputData;
+import service.url_redirect.UrlRedirectInputBoundary;
 
 /**
  * URL redirect controller
