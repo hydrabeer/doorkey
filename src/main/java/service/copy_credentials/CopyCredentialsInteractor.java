@@ -22,27 +22,24 @@ public class CopyCredentialsInteractor implements CopyCredentialsInputBoundary {
      * @param usernameInputData data object with username.
      */
     public void copyUsername(UsernameInputData usernameInputData) {
-        final StringSelection username = new StringSelection(usernameInputData.getUsername());
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(username, null);
-        outputBoundary.displayUsernameCopyMessage("Copied to clipboard!");
-        final Timer timer = new Timer();
-        final TimerTask timerTask = new TimerTask() {
-            public void run() {
-                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(""), null);
-                outputBoundary.displayUsernameCopyMessage("Clipboard cleared after " + 10 + " seconds.");
-            }
-        };
-        timer.schedule(timerTask, 10000);
-        // Convert seconds to milliseconds
+        copyString(usernameInputData.getUsername());
     }
+
     /**
      * Copy password to clipboard.
      * @param passwordInputData data object with password.
      */
-
     public void copyPassword(PasswordInputData passwordInputData) {
-        final StringSelection password = new StringSelection(passwordInputData.getPassword());
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(password, null);
+        copyString(passwordInputData.getPassword());
+    }
+
+    /**
+     * Helper function that copies input text to clip board and clears after 10 seconds.
+     * @param copyText text to be copied to clipboard.
+     */
+    private void copyString(String copyText) {
+        final StringSelection text = new StringSelection(copyText);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(text, null);
         outputBoundary.displayPasswordCopyMessage("Copied to clipboard!");
         final Timer timer = new Timer();
         final TimerTask timerTask = new TimerTask() {
@@ -52,6 +49,6 @@ public class CopyCredentialsInteractor implements CopyCredentialsInputBoundary {
             }
         };
         timer.schedule(timerTask, 10000);
-        // Convert seconds to milliseconds
+
     }
 }
