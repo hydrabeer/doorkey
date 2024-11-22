@@ -1,4 +1,4 @@
-package copy_credentials;
+package service.copy_credentials;
 
 /**
  * Input Boundary for actions which are related to Copying Credentials.

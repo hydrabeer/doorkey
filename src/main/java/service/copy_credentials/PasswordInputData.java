@@ -1,4 +1,4 @@
-package copy_credentials;
+package service.copy_credentials;
 
 /**
  * PasswordInputData used to pass information from controller to interactor.

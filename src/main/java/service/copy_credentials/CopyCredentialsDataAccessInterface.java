@@ -1,4 +1,4 @@
-package copy_credentials;
+package service.copy_credentials;
 
 /**
  * DAO for the Copy Credentials Use Case.

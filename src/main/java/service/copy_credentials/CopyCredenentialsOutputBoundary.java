@@ -1,4 +1,4 @@
-package copy_credentials;
+package service.copy_credentials;
 
 /**
  * Displays Copy Confirmation message.
