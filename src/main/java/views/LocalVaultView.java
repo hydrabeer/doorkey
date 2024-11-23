@@ -5,37 +5,30 @@ import java.awt.Dimension;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-import interface_adapter.NavigableUiPanel;
+import service.ViewManagerModel;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
 
 /**
  * A view that allows users to pick between loading or creating a local .doorkey vault.
  */
-public class LocalVaultView extends NavigableUiPanel {
+public class LocalVaultView extends JPanel {
     private DoorkeyButton back;
     private DoorkeyButton load;
     private DoorkeyButton create;
     private LoadLocalVaultView loadView;
     private CreateLocalVaultView createView;
-    private final ViewManager viewManager;
+    private final ViewManagerModel viewManagerModel;
 
-    public LocalVaultView(ViewManager viewManager) {
-        this.viewManager = viewManager;
-        this.setSubViews();
+    public LocalVaultView(ViewManagerModel viewManagerModel) {
+        this.viewManagerModel = viewManagerModel;
         this.setBackground();
         this.setBackButton();
         this.addPageTitle();
         this.addLoadButton();
         this.addCreateButton();
-    }
-
-    private void setSubViews() {
-        loadView = new LoadLocalVaultView(viewManager);
-        createView = new CreateLocalVaultView(viewManager);
-        viewManager.addView(loadView);
-        viewManager.addView(createView);
     }
 
     private void setBackground() {
@@ -45,7 +38,8 @@ public class LocalVaultView extends NavigableUiPanel {
     private void setBackButton() {
         this.back = new DoorkeyButton.DoorkeyButtonBuilder("< Back")
             .addListener(event -> {
-                viewManager.showView(ViewConstants.LOGIN_VIEW);
+                viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
+                viewManagerModel.onStateChanged();
             }).build();
         this.add(back);
     }
@@ -63,7 +57,8 @@ public class LocalVaultView extends NavigableUiPanel {
     private void addLoadButton() {
         load = new DoorkeyButton.DoorkeyButtonBuilder("Load")
             .addListener(event -> {
-                viewManager.showView(ViewConstants.LOAD_LOCAL_VAULT_VIEW);
+                viewManagerModel.setState(ViewConstants.LOAD_LOCAL_VAULT_VIEW);
+                viewManagerModel.onStateChanged();
             }).build();
         this.add(load);
     }
@@ -71,13 +66,9 @@ public class LocalVaultView extends NavigableUiPanel {
     private void addCreateButton() {
         create = new DoorkeyButton.DoorkeyButtonBuilder("Create")
             .addListener(event -> {
-                viewManager.showView(ViewConstants.CREATE_LOCAL_VAULT_VIEW);
+                viewManagerModel.setState(ViewConstants.CREATE_LOCAL_VAULT_VIEW);
+                viewManagerModel.onStateChanged();
             }).build();
         this.add(create);
-    }
-
-    @Override
-    public String getViewName() {
-        return ViewConstants.LOCAL_VAULT_VIEW;
     }
 }
