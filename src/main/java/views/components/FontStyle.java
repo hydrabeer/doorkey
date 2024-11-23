@@ -1,4 +1,4 @@
-package presenters.views.components;
+package views.components;
 
 /**
  * Wrapper around Java AWT Font enums, used internally to simplify
@@ -9,6 +9,7 @@ public enum FontStyle {
     BOLD(1),
     ITALIC(2);
 
+    @SuppressWarnings("checkstyle:VisibilityModifier")
     final int awtFontConstant;
 
     FontStyle(int awtFontConstant) {

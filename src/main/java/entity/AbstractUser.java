@@ -1,7 +1,7 @@
 package entity;
 
 /**
- * User entity.
+ * Abstract user entity.
  */
 
 public abstract class AbstractUser {
@@ -13,12 +13,12 @@ public abstract class AbstractUser {
         this.vault = vault;
     }
 
-    public String getName() {
+    public String getUsername() {
         return username;
     }
 
-    public void setName(String name) {
-        this.username = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public AbstractVault getVault() {

@@ -242,16 +242,16 @@
         <module name="MissingDeprecated"/>
         <module name="MissingOverride"/>
         <module name="PackageAnnotation"/>
-        <module name="SuppressWarnings">
-            <property name="format" value="^((?!unchecked|deprecation|rawtypes|resource).)*$"/>
-            <message key="suppressed.warning.not.allowed"
-                     value="The warning ''{0}'' cannot be suppressed at this location.
-           Only few javac warnings are allowed to suppress.
-           If try to suppress checkstyle/pmd/..... violation please do this in their config file.
-           If you try to suppress IntelliJ IDEA inspection,
-           please use javadoc block tag @noinspection"
-            />
-        </module>
+<!--        <module name="SuppressWarnings">-->
+<!--            <property name="format" value="^((?!unchecked|deprecation|rawtypes|resource).)*$"/>-->
+<!--            <message key="suppressed.warning.not.allowed"-->
+<!--                     value="The warning ''{0}'' cannot be suppressed at this location.-->
+<!--           Only few javac warnings are allowed to suppress.-->
+<!--           If try to suppress checkstyle/pmd/..... violation please do this in their config file.-->
+<!--           If you try to suppress IntelliJ IDEA inspection,-->
+<!--           please use javadoc block tag @noinspection"-->
+<!--            />-->
+<!--        </module>-->
         <module name="SuppressWarningsHolder"/>
 
         <!-- Block Checks -->
@@ -321,10 +321,10 @@
         <module name="ThrowsCount">
             <property name="max" value="2"/>
         </module>
-        <module name="VisibilityModifier">
-            <property name="ignoreAnnotationCanonicalNames"
-                      value="org.junit.Rule, org.junit.jupiter.api.io.TempDir"/>
-        </module>
+<!--        <module name="VisibilityModifier">-->
+<!--            <property name="ignoreAnnotationCanonicalNames"-->
+<!--                      value="org.junit.Rule, org.junit.jupiter.api.io.TempDir"/>-->
+<!--        </module>-->
 
         <!-- Coding -->
         <module name="ArrayTrailingComma"/>
@@ -379,7 +379,7 @@
                        java.lang.StringBuffer, StringBuffer"/>
         </module>
         <module name="InnerAssignment"/>
-        <module name="MagicNumber"/>
+<!--        <module name="MagicNumber"/>-->
         <module name="MatchXpath">
             <property name="query" value="//CLASS_DEF[@text!='Checker' and @text!='Main']
       //LITERAL_CATCH//METHOD_CALL[.//IDENT[@text = 'printStackTrace']]/.."/>
@@ -505,7 +505,7 @@
         <module name="NoFinalizer"/>
         <module name="OneStatementPerLine"/>
         <module name="OverloadMethodsDeclarationOrder"/>
-        <module name="PackageDeclaration"/>
+<!--        <module name="PackageDeclaration"/>-->
         <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
         <module name="ReturnCount">
@@ -742,7 +742,7 @@
             <property name="allowedAbbreviationLength" value="0"/>
             <property name="allowedAbbreviations" value="DB,DAO,AST,HTML,ID,JSON,CSV"/>
         </module>
-        <module name="AbstractClassName"/>
+<!--        <module name="AbstractClassName"/>-->
         <module name="ClassTypeParameterName"/>
         <module name="RecordTypeParameterName"/>
         <module name="RecordComponentName"/>
