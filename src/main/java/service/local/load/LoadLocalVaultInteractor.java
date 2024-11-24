@@ -32,7 +32,8 @@ public class LoadLocalVaultInteractor implements LoadLocalVaultInputBoundary {
                     // TODO @Evan: replace vaultAsString with decrypted vault JSON
                     final LoadLocalVaultOutputData outputData = new LoadLocalVaultOutputData(
                         "",
-                        path
+                        path,
+                        password
                     );
                     loadLocalVaultPresenter.prepareSuccessView(outputData);
                 }

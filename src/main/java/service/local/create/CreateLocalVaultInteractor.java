@@ -30,7 +30,8 @@ public class CreateLocalVaultInteractor implements CreateLocalVaultInputBoundary
                 }
                 else {
                     final CreateLocalVaultOutputData outputData = new CreateLocalVaultOutputData(
-                        path
+                        path,
+                        password
                     );
                     createLocalVaultPresenter.prepareSuccessView(outputData);
                 }

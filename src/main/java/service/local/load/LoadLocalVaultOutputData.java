@@ -6,10 +6,12 @@ package service.local.load;
 public class LoadLocalVaultOutputData {
     private final String vaultAsString;
     private final String path;
+    private final String password;
 
-    public LoadLocalVaultOutputData(String vaultAsString, String path) {
+    public LoadLocalVaultOutputData(String vaultAsString, String path, String password) {
         this.vaultAsString = vaultAsString;
         this.path = path;
+        this.password = password;
     }
 
     public String getVaultAsString() {
@@ -18,5 +20,9 @@ public class LoadLocalVaultOutputData {
 
     public String getPath() {
         return path;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
