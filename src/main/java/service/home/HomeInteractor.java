@@ -12,6 +12,6 @@ public class HomeInteractor implements HomeInputBoundary {
 
     @Override
     public void displayVaultItem(HomeInputData homeInputData) {
-
+        homePresenter.prepareShowVaultView(new HomeOutputData(homeInputData.getChosenVaultItem()));
     }
 }

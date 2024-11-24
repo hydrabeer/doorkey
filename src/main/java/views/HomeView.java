@@ -6,9 +6,13 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import data_access.authentication.FireStoreUserDataAccessObject;
+import entity.AbstractVaultItem;
 import service.ViewManagerModel;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomeState;
@@ -25,6 +29,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     private final ViewManagerModel viewManagerModel;
     private final JLabel userInfo = new JLabel();
     private final JLabel userRepositoryInfo = new JLabel();
+    private final JLabel itemsLabel = new JLabel();
 
     public HomeView(
             HomeViewModel homeViewModel,
@@ -41,6 +46,8 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         addUserInfoPlaceholder();
 
         addBackButton();
+
+        addVaultItems();
     }
 
     @Override
@@ -55,18 +62,30 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     }
 
     private void dispatchStates(HomeState homeState) {
-        if (homeState.getUser() != null) {
-            userInfo.setText(homeState.getUser().getEmail());
+        if (homeState.getUser().isPresent()) {
+            userInfo.setText(homeState.getUser().get().getEmail());
         }
 
-        if (homeState.getUserRepository() != null) {
-            if (homeState.getUserRepository() instanceof FireStoreUserDataAccessObject) {
+        if (homeState.getUserRepository().isPresent()) {
+            if (homeState.getUserRepository().get() instanceof FireStoreUserDataAccessObject) {
                 userRepositoryInfo.setText("Firebase");
             }
             else {
                 userRepositoryInfo.setText("Local");
             }
         }
+
+        final StringBuilder vaultItems = new StringBuilder();
+        if (homeViewModel.getState().getUser().isEmpty()) {
+            return;
+        }
+
+        for (AbstractVaultItem vaultItem : homeViewModel.getState().getUser().get().getVault().getItems()) {
+            // TODO: Decryption Strategy
+            vaultItems.append(vaultItem.getTitle()).append("\n");
+        }
+
+        itemsLabel.setText(vaultItems.toString());
     }
 
     private void setUpMainPanel() {
@@ -79,11 +98,13 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         final BoxLayout boxLayout = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(boxLayout);
 
-        this.userInfo.setForeground(Color.WHITE);
-        this.userRepositoryInfo.setForeground(Color.WHITE);
+        userInfo.setForeground(Color.WHITE);
+        userInfo.setFont(new DoorkeyFont());
+        userInfo.setAlignmentX(CENTER_ALIGNMENT);
 
-        this.userInfo.setFont(new DoorkeyFont());
-        this.userRepositoryInfo.setFont(new DoorkeyFont());
+        userRepositoryInfo.setForeground(Color.WHITE);
+        userRepositoryInfo.setFont(new DoorkeyFont());
+        userRepositoryInfo.setAlignmentX(CENTER_ALIGNMENT);
 
         add(userInfo);
         add(userRepositoryInfo);
@@ -91,10 +112,18 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
 
     private void addBackButton() {
         final DoorkeyButton back = new DoorkeyButton.DoorkeyButtonBuilder("< Back")
-            .addListener(event -> {
-                viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
-                viewManagerModel.onStateChanged();
-            }).build();
+                .addListener(event -> {
+                    viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
+                    viewManagerModel.onStateChanged();
+                }).build();
         this.add(back);
+    }
+
+    private void addVaultItems() {
+        itemsLabel.setForeground(Color.WHITE);
+        itemsLabel.setFont(new DoorkeyFont());
+        itemsLabel.setAlignmentX(CENTER_ALIGNMENT);
+
+        add(itemsLabel);
     }
 }

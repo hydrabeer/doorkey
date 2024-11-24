@@ -9,6 +9,6 @@ import views.ViewConstants;
 public class HomeViewModel extends ViewModel<HomeState> {
     public HomeViewModel() {
         super(ViewConstants.HOME_VIEW);
-        setState(new HomeState(null, null));
+        setState(new HomeState());
     }
 }

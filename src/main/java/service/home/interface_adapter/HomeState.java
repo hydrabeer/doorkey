@@ -1,5 +1,7 @@
 package service.home.interface_adapter;
 
+import java.util.Optional;
+
 import entity.AbstractUser;
 import repository.UserRepository;
 
@@ -7,27 +9,32 @@ import repository.UserRepository;
  * The Home state.
  */
 public class HomeState {
-    private AbstractUser user;
-    private UserRepository userRepository;
+    private Optional<AbstractUser> user;
+    private Optional<UserRepository> userRepository;
 
     public HomeState(AbstractUser user, UserRepository userRepository) {
-        this.user = user;
-        this.userRepository = userRepository;
+        this.user = Optional.of(user);
+        this.userRepository = Optional.of(userRepository);
     }
 
-    public AbstractUser getUser() {
+    public HomeState() {
+        this.user = Optional.empty();
+        this.userRepository = Optional.empty();
+    }
+
+    public Optional<AbstractUser> getUser() {
         return user;
     }
 
-    public UserRepository getUserRepository() {
+    public Optional<UserRepository> getUserRepository() {
         return userRepository;
     }
 
     public void setUser(AbstractUser user) {
-        this.user = user;
+        this.user = Optional.of(user);
     }
 
     public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
+        this.userRepository = Optional.of(userRepository);
     }
 }
