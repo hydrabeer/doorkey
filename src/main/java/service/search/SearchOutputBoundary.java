@@ -8,9 +8,9 @@ public interface SearchOutputBoundary {
     /**
      * Prepares the results view for the Search use case.
      *
-     * @param searchResponseModel the output data
+     * @param searchOutputData the output data
      */
-    void prepareResultsView(SearchResponseModel searchResponseModel);
+    void prepareResultsView(SearchOutputData searchOutputData);
 
     /**
      * Prepares the no results view for the Search use case.
