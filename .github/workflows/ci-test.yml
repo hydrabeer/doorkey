@@ -18,5 +18,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: Install xvfb
+      run: |
+        sudo apt update
+        sudo apt install -y xvfb
     - name: Run Tests with Maven
-      run: mvn clean test
+      run: xvfb-run --auto-servernum mvn clean test
