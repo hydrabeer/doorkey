@@ -6,10 +6,11 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import interface_adapter.NavigableUiPanel;
+import service.ViewManagerModel;
 import service.local.create.interface_adapter.CreateLocalVaultController;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
@@ -18,19 +19,19 @@ import views.components.DoorkeyForm;
 /**
  * A view that allows the user to create a new local Doorkey vault.
  */
-public class CreateLocalVaultView extends NavigableUiPanel {
+public class CreateLocalVaultView extends JPanel {
     private DoorkeyButton back;
     private final DoorkeyForm form = new DoorkeyForm();
     private final JFileChooser saver = new JFileChooser();
     private final CreateLocalVaultController controller = new CreateLocalVaultController(saver, form);
-    private final ViewManager viewManager;
+    private final ViewManagerModel viewManagerModel;
 
-    public CreateLocalVaultView(ViewManager viewManager) {
+    public CreateLocalVaultView(ViewManagerModel viewManagerModel) {
         setBackground();
         setBackButton();
         addPageTitle();
         addForm();
-        this.viewManager = viewManager;
+        this.viewManagerModel = viewManagerModel;
     }
 
     private void setBackground() {
@@ -40,7 +41,8 @@ public class CreateLocalVaultView extends NavigableUiPanel {
     private void setBackButton() {
         this.back = new DoorkeyButton.DoorkeyButtonBuilder("< Back")
             .addListener(event -> {
-                viewManager.showView(ViewConstants.LOCAL_VAULT_VIEW);
+                viewManagerModel.setState(ViewConstants.LOCAL_VAULT_VIEW);
+                viewManagerModel.onStateChanged();
             }).build();
         this.add(back);
     }
@@ -69,10 +71,4 @@ public class CreateLocalVaultView extends NavigableUiPanel {
         this.form.addActionListener(event -> controller.formSubmitted());
         this.add(form);
     }
-
-    @Override
-    public String getViewName() {
-        return ViewConstants.CREATE_LOCAL_VAULT_VIEW;
-    }
-
 }
