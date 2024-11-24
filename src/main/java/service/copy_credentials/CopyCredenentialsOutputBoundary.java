@@ -6,14 +6,9 @@ package service.copy_credentials;
 public interface CopyCredenentialsOutputBoundary {
 
     /**
-     * Displays message when user clicks copy username button.
+     * Displays message when user clicks copy button.
      * @param message message to be displayed when user clicks copy username button
      */
-    void displayUsernameCopyMessage(String message);
-
-    /**
-     * Displays message when user clicks copy password button.
-     * @param message message to be displayed when user clicks copy password button
-     */
-    void displayPasswordCopyMessage(String message);
+    void displayCopyMessage(String message);
 }
+

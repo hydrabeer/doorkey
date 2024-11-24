@@ -31,4 +31,11 @@ public class CopyCredentialsController {
         final PasswordInputData passwordInputData = new PasswordInputData(password);
         credentialsInputBoundary.copyPassword(passwordInputData);
     }
+
+    /**
+     * Calls clear clipBoard interactor method.
+     */
+    public static void clearClipboard() {
+        credentialsInputBoundary.clearClipboard();
+    }
 }
