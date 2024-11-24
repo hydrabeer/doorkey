@@ -2,6 +2,10 @@ package views;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.Box;
 import javax.swing.JFileChooser;
@@ -12,6 +16,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import service.ViewManagerModel;
 import service.local.create.interface_adapter.CreateLocalVaultController;
+import service.local.create.interface_adapter.CreateLocalVaultState;
+import service.local.create.interface_adapter.CreateLocalVaultViewModel;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
 import views.components.DoorkeyForm;
@@ -19,19 +25,28 @@ import views.components.DoorkeyForm;
 /**
  * A view that allows the user to create a new local Doorkey vault.
  */
-public class CreateLocalVaultView extends JPanel {
+public class CreateLocalVaultView extends JPanel implements ActionListener, PropertyChangeListener {
     private DoorkeyButton back;
     private final DoorkeyForm form = new DoorkeyForm();
     private final JFileChooser saver = new JFileChooser();
-    private final CreateLocalVaultController controller = new CreateLocalVaultController(saver, form);
+    private final CreateLocalVaultController createLocalVaultController;
+    private final CreateLocalVaultViewModel createLocalVaultViewModel;
     private final ViewManagerModel viewManagerModel;
 
-    public CreateLocalVaultView(ViewManagerModel viewManagerModel) {
+    public CreateLocalVaultView(
+        CreateLocalVaultController createLocalVaultController,
+        CreateLocalVaultViewModel createLocalVaultViewModel,
+        ViewManagerModel viewManagerModel
+    ) {
+        this.createLocalVaultController = createLocalVaultController;
+        this.createLocalVaultViewModel = createLocalVaultViewModel;
+        this.viewManagerModel = viewManagerModel;
+        this.createLocalVaultViewModel.addPropertyChangeListener(this);
+
         setBackground();
         setBackButton();
         addPageTitle();
         addForm();
-        this.viewManagerModel = viewManagerModel;
     }
 
     private void setBackground() {
@@ -68,7 +83,33 @@ public class CreateLocalVaultView extends JPanel {
         this.add(saver);
 
         form.addSubmitButton("Create");
-        this.form.addActionListener(event -> controller.formSubmitted());
+        this.form.addActionListener(event -> {
+            String password = form.getFieldValue("password");
+            String confirm = form.getFieldValue("confirm");
+            if (!password.equals(confirm)) {
+                form.setError("Passwords don't match!");
+            }
+            else {
+                createLocalVaultController.createLocalVault(saver, password);
+            }
+        });
         this.add(form);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        final CreateLocalVaultState createLocalVaultState = (CreateLocalVaultState) evt.getNewValue();
+        // Only the overall error is ever changed for now. TODO: Optional - more error messages.
+        if (createLocalVaultState.isSuccess()) {
+            form.setError("");
+        }
+        else {
+            form.setError("Invalid vault selection or empty password.");
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("Action performed: " + e.getActionCommand());
     }
 }

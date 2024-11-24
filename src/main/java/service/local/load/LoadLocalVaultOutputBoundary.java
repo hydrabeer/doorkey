@@ -6,7 +6,7 @@ package service.local.load;
 public interface LoadLocalVaultOutputBoundary {
     /**
      * Prepares the success view.
-     * @param loginOutputData The login output data.
+     * @param loadLocalVaultOutputData The login output data.
      */
     void prepareSuccessView(LoadLocalVaultOutputData loadLocalVaultOutputData);
 

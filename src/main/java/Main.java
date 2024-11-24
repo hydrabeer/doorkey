@@ -6,6 +6,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import service.ViewManagerModel;
+import service.local.create.CreateLocalVaultInteractor;
+import service.local.create.interface_adapter.CreateLocalVaultController;
+import service.local.create.interface_adapter.CreateLocalVaultPresenter;
+import service.local.create.interface_adapter.CreateLocalVaultViewModel;
 import service.local.load.LoadLocalVaultInteractor;
 import service.local.load.interface_adapter.LoadLocalVaultController;
 import service.local.load.interface_adapter.LoadLocalVaultPresenter;
@@ -71,8 +75,14 @@ public class Main {
         views.add(loadLocalVaultView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
         // =====================
 
-        final CreateLocalVaultView createView = new CreateLocalVaultView(viewManagerModel);
-        views.add(createView, ViewConstants.CREATE_LOCAL_VAULT_VIEW);
+        // Load local vault view
+        final CreateLocalVaultViewModel createLocalVaultViewModel = new CreateLocalVaultViewModel();
+        final CreateLocalVaultPresenter createLocalVaultPresenter = new CreateLocalVaultPresenter(createLocalVaultViewModel, viewManagerModel);
+        final CreateLocalVaultInteractor createLocalVaultInteractor = new CreateLocalVaultInteractor(createLocalVaultPresenter);
+        final CreateLocalVaultController createLocalVaultController = new CreateLocalVaultController(createLocalVaultInteractor);
+        final CreateLocalVaultView createLocalVaultView = new CreateLocalVaultView(createLocalVaultController, createLocalVaultViewModel, viewManagerModel);
+        views.add(createLocalVaultView, ViewConstants.CREATE_LOCAL_VAULT_VIEW);
+        // =====================
 
         final LocalVaultView localVaultView = new LocalVaultView(viewManagerModel);
         views.add(localVaultView, ViewConstants.LOCAL_VAULT_VIEW);

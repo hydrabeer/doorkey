@@ -29,7 +29,8 @@ public class LoadLocalVaultInteractor implements LoadLocalVaultInputBoundary {
                 }
                 else {
                     final LoadLocalVaultOutputData outputData = new LoadLocalVaultOutputData(
-                        "" // TODO @Evan
+                        "", // TODO @Evan
+                        path
                     );
                     loadLocalVaultPresenter.prepareSuccessView(outputData);
                 }
