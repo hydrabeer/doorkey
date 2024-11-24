@@ -5,19 +5,23 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import data_access.authentication.FireStoreUserDataAccessObject;
+import data_access.authentication.FirebaseAuthRepository;
+import interface_adapter.net.http.CommonHttpClient;
 import service.ViewManagerModel;
+import service.home.HomeInteractor;
+import service.home.interface_adapter.HomeController;
+import service.home.interface_adapter.HomePresenter;
+import service.home.interface_adapter.HomeViewModel;
 import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
 import service.login.interface_adapter.LoginViewModel;
-import views.CreateLocalVaultView;
-import views.LoadLocalVaultView;
-import views.LocalVaultView;
-import views.LoginView;
-import views.TestView;
-import views.TestViewModel;
-import views.ViewConstants;
-import views.ViewManager;
+import service.signup.SignupInteractor;
+import service.signup.interface_adapter.SignupController;
+import service.signup.interface_adapter.SignupPresenter;
+import service.signup.interface_adapter.SignupViewModel;
+import views.*;
 
 /**
  * The main class for our program.
@@ -52,9 +56,6 @@ public class Main {
 
         mainFrame.add(views, BorderLayout.CENTER);
 
-        // viewManagerModel.addView(loadView);
-        // viewManagerModel.addView(createView);
-
         final ViewManagerModel viewManagerModel = new ViewManagerModel();
         new ViewManager(views, cardLayout, viewManagerModel);
 
@@ -70,13 +71,27 @@ public class Main {
         views.add(localVaultView, ViewConstants.LOCAL_VAULT_VIEW);
         // ===================
 
-        final TestViewModel testViewModel = new TestViewModel();
-        final TestView testView = new TestView(testViewModel, viewManagerModel);
-        views.add(testView, ViewConstants.TEST_VIEW);
+        final CommonHttpClient httpClient = new CommonHttpClient();
+        final FirebaseAuthRepository firebaseAuthRepository = new FirebaseAuthRepository(httpClient);
+        final FireStoreUserDataAccessObject fireStoreUserDataAccessObject = new FireStoreUserDataAccessObject(firebaseAuthRepository, httpClient);
+
+        final HomeViewModel homeViewModel = new HomeViewModel();
+        final HomePresenter homePresenter = new HomePresenter(homeViewModel, viewManagerModel);
+        final HomeInteractor homeInteractor = new HomeInteractor(homePresenter);
+        final HomeController homeController = new HomeController(homeInteractor);
+        final HomeView homeView = new HomeView(homeViewModel, homeController, viewManagerModel);
+        views.add(homeView, ViewConstants.HOME_VIEW);
+
+        final SignupViewModel signupViewModel = new SignupViewModel();
+        final SignupPresenter signupPresenter = new SignupPresenter(signupViewModel, homeViewModel, viewManagerModel);
+        final SignupInteractor signupInteractor = new SignupInteractor(fireStoreUserDataAccessObject, signupPresenter);
+        final SignupController signupController = new SignupController(signupInteractor);
+        final SignupView signupView = new SignupView(signupViewModel, signupController, viewManagerModel);
+        views.add(signupView, ViewConstants.SIGNUP_VIEW);
 
         final LoginViewModel loginViewModel = new LoginViewModel();
-        final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, testViewModel, viewManagerModel);
-        final LoginInteractor loginInteractor = new LoginInteractor(loginPresenter);
+        final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, homeViewModel, viewManagerModel);
+        final LoginInteractor loginInteractor = new LoginInteractor(fireStoreUserDataAccessObject, loginPresenter);
         final LoginController loginController = new LoginController(loginInteractor);
         final LoginView loginView = new LoginView(loginViewModel, loginController, viewManagerModel);
         views.add(loginView, ViewConstants.LOGIN_VIEW);
