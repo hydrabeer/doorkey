@@ -6,6 +6,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import service.ViewManagerModel;
+import service.local.load.LoadLocalVaultInteractor;
+import service.local.load.interface_adapter.LoadLocalVaultController;
+import service.local.load.interface_adapter.LoadLocalVaultPresenter;
+import service.local.load.interface_adapter.LoadLocalVaultViewModel;
 import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
@@ -58,10 +62,14 @@ public class Main {
         final ViewManagerModel viewManagerModel = new ViewManagerModel();
         new ViewManager(views, cardLayout, viewManagerModel);
 
-        // ===========
-        // TODO For evan: After you create view models, initialize them like I did with login
-        final LoadLocalVaultView loadView = new LoadLocalVaultView(viewManagerModel);
-        views.add(loadView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
+        // Load local vault view
+        final LoadLocalVaultViewModel loadLocalVaultViewModel = new LoadLocalVaultViewModel();
+        final LoadLocalVaultPresenter loadLocalVaultPresenter = new LoadLocalVaultPresenter(loadLocalVaultViewModel, viewManagerModel);
+        final LoadLocalVaultInteractor loadLocalVaultInteractor = new LoadLocalVaultInteractor(loadLocalVaultPresenter);
+        final LoadLocalVaultController loadLocalVaultController = new LoadLocalVaultController(loadLocalVaultInteractor);
+        final LoadLocalVaultView loadLocalVaultView = new LoadLocalVaultView(loadLocalVaultController, loadLocalVaultViewModel, viewManagerModel);
+        views.add(loadLocalVaultView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
+        // =====================
 
         final CreateLocalVaultView createView = new CreateLocalVaultView(viewManagerModel);
         views.add(createView, ViewConstants.CREATE_LOCAL_VAULT_VIEW);
