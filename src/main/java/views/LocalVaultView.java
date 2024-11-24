@@ -18,8 +18,6 @@ public class LocalVaultView extends JPanel {
     private DoorkeyButton back;
     private DoorkeyButton load;
     private DoorkeyButton create;
-    private LoadLocalVaultView loadView;
-    private CreateLocalVaultView createView;
     private final ViewManagerModel viewManagerModel;
 
     public LocalVaultView(ViewManagerModel viewManagerModel) {
