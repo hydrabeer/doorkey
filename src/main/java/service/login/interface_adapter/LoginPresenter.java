@@ -1,42 +1,47 @@
 package service.login.interface_adapter;
 
+import service.ViewManagerModel;
 import service.login.LoginOutputBoundary;
 import service.login.LoginOutputData;
-import views.TestView;
+import views.TestViewModel;
+import views.TestViewState;
 import views.ViewConstants;
-import views.ViewManager;
 
 /**
  * Presents the login view model.
  */
 public class LoginPresenter implements LoginOutputBoundary {
     private final LoginViewModel loginViewModel;
-    private final ViewManager viewManager;
+    private final ViewManagerModel viewManagerModel;
+    private final TestViewModel testViewModel;
 
-    public LoginPresenter(LoginViewModel loginViewModel, ViewManager viewManager) {
+    public LoginPresenter(
+            LoginViewModel loginViewModel,
+            TestViewModel testViewModel,
+            ViewManagerModel viewManagerModel
+    ) {
         this.loginViewModel = loginViewModel;
-        this.viewManager = viewManager;
+        this.testViewModel = testViewModel;
+        this.viewManagerModel = viewManagerModel;
     }
 
     @Override
     public void prepareSuccessView(LoginOutputData loginOutputData) {
-        LoginState loginState = new LoginState(
-                loginOutputData.getEmail(),
-                loginOutputData.getPassword(),
-                true
-        );
-        loginViewModel.setState(loginState);
+        final TestViewState currentTestViewState = testViewModel.getState();
+        currentTestViewState.setEmail(loginOutputData.getEmail());
+        currentTestViewState.setPassword(loginOutputData.getPassword());
+        testViewModel.setState(currentTestViewState);
+        testViewModel.onStateChanged();
+
+        this.viewManagerModel.setState(ViewConstants.TEST_VIEW);
+        this.viewManagerModel.onStateChanged();
     }
 
     @Override
     public void prepareErrorView(String error) {
-        // TODO
-    }
-
-    @Override
-    public void switchToHomeView(String email, String password) {
-        TestView testView = new TestView(email, password, viewManager);
-        viewManager.addView(testView);
-        viewManager.showView(ViewConstants.TEST_VIEW);
+        final LoginState loginState = loginViewModel.getState();
+        // TODO: More error messages? Optional
+        loginState.setIsSuccess(false);
+        loginViewModel.onStateChanged();
     }
 }

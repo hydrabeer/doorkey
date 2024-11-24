@@ -6,7 +6,7 @@ package service.login.interface_adapter;
 public class LoginState {
     private String email = "";
     private String password = "";
-    private boolean isSuccess = false;
+    private boolean isSuccess;
 
     public LoginState() {
     }

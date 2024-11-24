@@ -12,18 +12,17 @@ public class LoginInteractor implements LoginInputBoundary {
 
     @Override
     public void login(LoginInputData loginInputData) {
+        final LoginOutputData outputData = new LoginOutputData(
+                loginInputData.getEmail(),
+                loginInputData.getPassword()
+        );
+
         // TODO: Auth logic
-        if (1 + 1 == 2 /* how surprising */) {
-            LoginOutputData outputData = new LoginOutputData(
-                    loginInputData.getEmail(),
-                    loginInputData.getPassword()
-            );
+        if (loginInputData.getPassword().equals("password")) {
             loginPresenter.prepareSuccessView(outputData);
         }
-    }
-
-    @Override
-    public void switchToHomeView(String email, String password) {
-        loginPresenter.switchToHomeView(email, password);
+        else {
+            loginPresenter.prepareErrorView("Invalid password.");
+        }
     }
 }
