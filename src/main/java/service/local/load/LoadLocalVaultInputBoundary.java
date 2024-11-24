@@ -6,7 +6,7 @@ package service.local.load;
 public interface LoadLocalVaultInputBoundary {
     /**
      * Load and decrypt the local .doorkey vault.
-     * @param loadLocalVaultInputData
+     * @param loadLocalVaultInputData the load vault input data
      */
     void loadLocalVault(LoadLocalVaultInputData loadLocalVaultInputData);
 }

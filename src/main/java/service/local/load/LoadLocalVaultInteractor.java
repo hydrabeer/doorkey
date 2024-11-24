@@ -14,10 +14,11 @@ public class LoadLocalVaultInteractor implements LoadLocalVaultInputBoundary {
 
     @Override
     public void loadLocalVault(LoadLocalVaultInputData loadLocalVaultInputData) {
-        JFileChooser saver = loadLocalVaultInputData.getPath();
+        final JFileChooser saver = loadLocalVaultInputData.getPath();
         if (saver.getSelectedFile() == null) {
             loadLocalVaultPresenter.prepareErrorView("Please select a valid .doorkey file!");
-        } else {
+        }
+        else {
             final String path = saver.getSelectedFile().getAbsolutePath();
             if (path.isEmpty()) {
                 loadLocalVaultPresenter.prepareErrorView("Please select a valid .doorkey file!");
@@ -28,8 +29,9 @@ public class LoadLocalVaultInteractor implements LoadLocalVaultInputBoundary {
                     loadLocalVaultPresenter.prepareErrorView("Please enter a password");
                 }
                 else {
+                    // TODO @Evan: replace vaultAsString with decrypted vault JSON
                     final LoadLocalVaultOutputData outputData = new LoadLocalVaultOutputData(
-                        "", // TODO @Evan
+                        "",
                         path
                     );
                     loadLocalVaultPresenter.prepareSuccessView(outputData);

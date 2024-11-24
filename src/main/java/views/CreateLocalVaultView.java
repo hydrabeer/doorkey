@@ -84,8 +84,8 @@ public class CreateLocalVaultView extends JPanel implements ActionListener, Prop
 
         form.addSubmitButton("Create");
         this.form.addActionListener(event -> {
-            String password = form.getFieldValue("password");
-            String confirm = form.getFieldValue("confirm");
+            final String password = form.getFieldValue("password");
+            final String confirm = form.getFieldValue("confirm");
             if (!password.equals(confirm)) {
                 form.setError("Passwords don't match!");
             }

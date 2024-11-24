@@ -6,7 +6,7 @@ package service.local.create;
 public interface CreateLocalVaultInputBoundary {
     /**
      * Create a local .doorkey vault.
-     * @param createLocalVaultInputData
+     * @param createLocalVaultInputData the vault creation input data
      */
     void createLocalVault(CreateLocalVaultInputData createLocalVaultInputData);
 }

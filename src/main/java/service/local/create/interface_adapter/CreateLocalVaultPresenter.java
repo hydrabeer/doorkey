@@ -18,7 +18,6 @@ public class CreateLocalVaultPresenter implements CreateLocalVaultOutputBoundary
         this.createLocalVaultViewModel = createLocalVaultViewModel;
         this.viewManagerModel = viewManagerModel;
     }
-
     
     @Override
     public void prepareSuccessView(CreateLocalVaultOutputData createLocalVaultOutputData) {

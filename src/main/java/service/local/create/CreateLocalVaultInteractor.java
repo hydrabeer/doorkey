@@ -14,10 +14,11 @@ public class CreateLocalVaultInteractor implements CreateLocalVaultInputBoundary
 
     @Override
     public void createLocalVault(CreateLocalVaultInputData createLocalVaultInputData) {
-        JFileChooser saver = createLocalVaultInputData.getPath();
+        final JFileChooser saver = createLocalVaultInputData.getPath();
         if (saver.getSelectedFile() == null) {
             createLocalVaultPresenter.prepareErrorView("Please select a valid .doorkey file!");
-        } else {
+        }
+        else {
             final String path = saver.getSelectedFile().getAbsolutePath();
             if (path.isEmpty()) {
                 createLocalVaultPresenter.prepareErrorView("Please select a valid .doorkey file!");

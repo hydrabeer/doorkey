@@ -81,7 +81,9 @@ public class LoadLocalVaultView extends JPanel implements ActionListener, Proper
         this.add(saver);
 
         form.addSubmitButton("Load");
-        this.form.addActionListener(event -> loadLocalVaultController.loadLocalVault(saver, form.getFieldValue("password")));
+        this.form.addActionListener(event -> {
+            loadLocalVaultController.loadLocalVault(saver, form.getFieldValue("password"));
+        });
         this.add(form);
     }
 

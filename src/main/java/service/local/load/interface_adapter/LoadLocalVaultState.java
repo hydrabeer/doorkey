@@ -39,7 +39,7 @@ public class LoadLocalVaultState {
         return isSuccess;
     }
 
-    public void setSuccess(boolean isSuccess) {
-        this.isSuccess = isSuccess;
+    public void setSuccess(boolean success) {
+        this.isSuccess = success;
     }
 }
