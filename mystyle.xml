@@ -321,14 +321,14 @@
         <module name="ThrowsCount">
             <property name="max" value="2"/>
         </module>
-<!--        <module name="VisibilityModifier">-->
-<!--            <property name="ignoreAnnotationCanonicalNames"-->
-<!--                      value="org.junit.Rule, org.junit.jupiter.api.io.TempDir"/>-->
-<!--        </module>-->
+        <!--        <module name="VisibilityModifier">-->
+        <!--            <property name="ignoreAnnotationCanonicalNames"-->
+        <!--                      value="org.junit.Rule, org.junit.jupiter.api.io.TempDir"/>-->
+        <!--        </module>-->
 
         <!-- Coding -->
         <module name="ArrayTrailingComma"/>
-        <module name="AvoidDoubleBraceInitialization"/>
+        <!--        <module name="AvoidDoubleBraceInitialization"/>-->
         <module name="AvoidInlineConditionals"/>
         <module name="AvoidNoArgumentSuperConstructorCall"/>
         <module name="CovariantEquals"/>
@@ -508,11 +508,11 @@
 <!--        <module name="PackageDeclaration"/>-->
         <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
-        <module name="ReturnCount">
-            <property name="max" value="1"/>
-            <property name="maxForVoid" value="0"/>
-            <property name="format" value="^create"/>
-        </module>
+    <!--        <module name="ReturnCount">-->
+    <!--            <property name="max" value="1"/>-->
+    <!--            <property name="maxForVoid" value="0"/>-->
+    <!--            <property name="format" value="^create"/>-->
+    <!--        </module>-->
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
