@@ -7,10 +7,10 @@ import entity.AbstractVaultItem;
 /**
  * Output data for the Search use case.
  */
-public class SearchResponseModel {
+public class SearchOutputData {
     private final List<AbstractVaultItem> results;
 
-    public SearchResponseModel(List<AbstractVaultItem> results) {
+    public SearchOutputData(List<AbstractVaultItem> results) {
         this.results = results;
     }
 
