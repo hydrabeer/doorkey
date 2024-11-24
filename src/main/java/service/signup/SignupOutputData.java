@@ -1,16 +1,16 @@
-package service.login;
+package service.signup;
 
 import entity.AbstractUser;
 import repository.UserRepository;
 
 /**
- * Output data from logging in operation.
+ * Output data from signing up operation.
  */
-public class LoginOutputData {
+public class SignupOutputData {
     private final AbstractUser user;
     private final UserRepository userRepository;
 
-    public LoginOutputData(AbstractUser user, UserRepository userRepository) {
+    public SignupOutputData(AbstractUser user, UserRepository userRepository) {
         this.user = user;
         this.userRepository = userRepository;
     }
@@ -23,3 +23,4 @@ public class LoginOutputData {
         return userRepository;
     }
 }
+

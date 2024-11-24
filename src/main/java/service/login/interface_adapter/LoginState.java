@@ -1,20 +1,18 @@
 package service.login.interface_adapter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The possible state for the Login view.
  */
 public class LoginState {
     private String email = "";
     private String password = "";
-    private boolean isSuccess;
+    private String error = "";
+    private Map<String, String> fieldsToErrors = new HashMap<>();
 
     public LoginState() {
-    }
-
-    public LoginState(String email, String password, boolean isSuccess) {
-        this.email = email;
-        this.password = password;
-        this.isSuccess = isSuccess;
     }
 
     public String getEmail() {
@@ -25,8 +23,12 @@ public class LoginState {
         return this.password;
     }
 
-    public boolean getIsSuccess() {
-        return isSuccess;
+    public String getError() {
+        return this.error;
+    }
+
+    public Map<String, String> getFieldsToErrors() {
+        return fieldsToErrors;
     }
 
     public void setEmail(String newEmail) {
@@ -37,7 +39,20 @@ public class LoginState {
         this.password = newPassword;
     }
 
-    public void setIsSuccess(boolean success) {
-        isSuccess = success;
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public void setFieldsToErrors(Map<String, String> fieldsToErrors) {
+        this.fieldsToErrors = fieldsToErrors;
+    }
+
+    /**
+     * Set given field to given error message.
+     * @param field The field to set the error message for.
+     * @param errorMessage The error message to set.
+     */
+    public void setFieldError(String field, String errorMessage) {
+        fieldsToErrors.put(field, errorMessage);
     }
 }

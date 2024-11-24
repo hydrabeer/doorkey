@@ -1,15 +1,15 @@
-package service.login;
+package service.signup;
 
 /**
- * The log in output boundary for the view.
+ * The sign up output boundary for the view.
  */
-public interface LoginOutputBoundary {
+public interface SignupOutputBoundary {
     /**
      * Prepares the success view.
      *
-     * @param loginOutputData The login output data.
+     * @param signupOutputData The sign up output data.
      */
-    void prepareSuccessView(LoginOutputData loginOutputData);
+    void prepareSuccessView(SignupOutputData signupOutputData);
 
     /**
      * Prepares the fail view.
@@ -27,9 +27,9 @@ public interface LoginOutputBoundary {
     void prepareErrorView(String field, String error);
 
     /**
-     * Clears an error at a given field.
+     * Clears the error view for a field.
      *
-     * @param field The field to clear the error from.
+     * @param field The field to clear.
      */
     void clearError(String field);
 }
