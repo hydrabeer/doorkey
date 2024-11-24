@@ -15,6 +15,14 @@ import service.home.HomeInteractor;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomePresenter;
 import service.home.interface_adapter.HomeViewModel;
+import service.local.create.CreateLocalVaultInteractor;
+import service.local.create.interface_adapter.CreateLocalVaultController;
+import service.local.create.interface_adapter.CreateLocalVaultPresenter;
+import service.local.create.interface_adapter.CreateLocalVaultViewModel;
+import service.local.load.LoadLocalVaultInteractor;
+import service.local.load.interface_adapter.LoadLocalVaultController;
+import service.local.load.interface_adapter.LoadLocalVaultPresenter;
+import service.local.load.interface_adapter.LoadLocalVaultViewModel;
 import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
@@ -26,7 +34,6 @@ import service.signup.interface_adapter.SignupViewModel;
 import views.CreateLocalVaultView;
 import views.HomeView;
 import views.LoadLocalVaultView;
-import views.LocalVaultView;
 import views.LoginView;
 import views.SignupView;
 import views.ViewConstants;
@@ -37,7 +44,7 @@ import views.ViewManager;
  */
 public class AppBuilder {
     private final JFrame mainFrame;
-    private final JPanel viewsPanel;
+    private final JPanel views;
     private final ViewManagerModel viewManagerModel;
     private final FireStoreUserDataAccessObject fireStoreUserDataAccessObject;
     private final HomeViewModel homeViewModel;
@@ -57,26 +64,15 @@ public class AppBuilder {
         homeViewModel = new HomeViewModel();
 
         final CardLayout cardLayout = new CardLayout();
-        viewsPanel = new JPanel(cardLayout);
-        mainFrame.add(viewsPanel, BorderLayout.CENTER);
+        views = new JPanel(cardLayout);
+        mainFrame.add(views, BorderLayout.CENTER);
 
         viewManagerModel = new ViewManagerModel();
-        new ViewManager(viewsPanel, cardLayout, viewManagerModel);
+        new ViewManager(views, cardLayout, viewManagerModel);
 
         final HttpClient httpClient = new CommonHttpClient();
         final FirebaseAuthRepository firebaseAuthRepository = new FirebaseAuthRepository(httpClient);
         fireStoreUserDataAccessObject = new FireStoreUserDataAccessObject(firebaseAuthRepository, httpClient);
-    }
-
-    /**
-     * Adds the LoadLocalVaultView to the viewsPanel.
-     *
-     * @return The AppBuilder instance.
-     */
-    public AppBuilder addLoadLocalVaultView() {
-        final LoadLocalVaultView loadView = new LoadLocalVaultView(viewManagerModel);
-        viewsPanel.add(loadView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
-        return this;
     }
 
     /**
@@ -85,9 +81,16 @@ public class AppBuilder {
      * @return The AppBuilder instance.
      */
     public AppBuilder addCreateLocalVaultView() {
-        // TODO For evan: After you create view models, initialize them like I did with login, etc.
-        final CreateLocalVaultView createView = new CreateLocalVaultView(viewManagerModel);
-        viewsPanel.add(createView, ViewConstants.CREATE_LOCAL_VAULT_VIEW);
+        final CreateLocalVaultViewModel createLocalVaultViewModel = new CreateLocalVaultViewModel();
+        final CreateLocalVaultPresenter createLocalVaultPresenter = new CreateLocalVaultPresenter(
+                createLocalVaultViewModel, viewManagerModel);
+        final CreateLocalVaultInteractor createLocalVaultInteractor = new CreateLocalVaultInteractor(
+                createLocalVaultPresenter);
+        final CreateLocalVaultController createLocalVaultController = new CreateLocalVaultController(
+                createLocalVaultInteractor);
+        final CreateLocalVaultView createLocalVaultView = new CreateLocalVaultView(
+                createLocalVaultController, createLocalVaultViewModel, viewManagerModel);
+        views.add(createLocalVaultView, ViewConstants.CREATE_LOCAL_VAULT_VIEW);
         return this;
     }
 
@@ -97,9 +100,16 @@ public class AppBuilder {
      * @return The AppBuilder instance.
      */
     public AppBuilder addLocalVaultView() {
-        // TODO For evan: After you create view models, initialize them like I did with login, etc.
-        final LocalVaultView localVaultView = new LocalVaultView(viewManagerModel);
-        viewsPanel.add(localVaultView, ViewConstants.LOCAL_VAULT_VIEW);
+        final LoadLocalVaultViewModel loadLocalVaultViewModel = new LoadLocalVaultViewModel();
+        final LoadLocalVaultPresenter loadLocalVaultPresenter = new LoadLocalVaultPresenter(
+                loadLocalVaultViewModel, viewManagerModel);
+        final LoadLocalVaultInteractor loadLocalVaultInteractor = new LoadLocalVaultInteractor(
+                loadLocalVaultPresenter);
+        final LoadLocalVaultController loadLocalVaultController = new LoadLocalVaultController(
+                loadLocalVaultInteractor);
+        final LoadLocalVaultView loadLocalVaultView = new LoadLocalVaultView(
+                loadLocalVaultController, loadLocalVaultViewModel, viewManagerModel);
+        views.add(loadLocalVaultView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
         return this;
     }
 
@@ -113,7 +123,7 @@ public class AppBuilder {
         final HomeInteractor homeInteractor = new HomeInteractor(homePresenter);
         final HomeController homeController = new HomeController(homeInteractor);
         final HomeView homeView = new HomeView(homeViewModel, homeController, viewManagerModel);
-        viewsPanel.add(homeView, ViewConstants.HOME_VIEW);
+        views.add(homeView, ViewConstants.HOME_VIEW);
         return this;
     }
 
@@ -128,7 +138,7 @@ public class AppBuilder {
         final SignupInteractor signupInteractor = new SignupInteractor(fireStoreUserDataAccessObject, signupPresenter);
         final SignupController signupController = new SignupController(signupInteractor);
         final SignupView signupView = new SignupView(signupViewModel, signupController, viewManagerModel);
-        viewsPanel.add(signupView, ViewConstants.SIGNUP_VIEW);
+        views.add(signupView, ViewConstants.SIGNUP_VIEW);
         return this;
     }
 
@@ -143,7 +153,7 @@ public class AppBuilder {
         final LoginInteractor loginInteractor = new LoginInteractor(fireStoreUserDataAccessObject, loginPresenter);
         final LoginController loginController = new LoginController(loginInteractor);
         final LoginView loginView = new LoginView(loginViewModel, loginController, viewManagerModel);
-        viewsPanel.add(loginView, ViewConstants.LOGIN_VIEW);
+        views.add(loginView, ViewConstants.LOGIN_VIEW);
         return this;
     }
 

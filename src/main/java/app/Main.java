@@ -26,7 +26,7 @@ public class Main {
                 .addHomeView()
                 .addLoginView()
                 .addSignupView()
-                .addLoadLocalVaultView()
+                .addLocalVaultView()
                 .addCreateLocalVaultView()
                 .addLocalVaultView()
                 .setInitialView(ViewConstants.LOGIN_VIEW)
