@@ -83,7 +83,7 @@ public class AppBuilder {
     public AppBuilder addCreateLocalVaultView() {
         final CreateLocalVaultViewModel createLocalVaultViewModel = new CreateLocalVaultViewModel();
         final CreateLocalVaultPresenter createLocalVaultPresenter = new CreateLocalVaultPresenter(
-                createLocalVaultViewModel, viewManagerModel);
+                createLocalVaultViewModel, homeViewModel, viewManagerModel);
         final CreateLocalVaultInteractor createLocalVaultInteractor = new CreateLocalVaultInteractor(
                 createLocalVaultPresenter);
         final CreateLocalVaultController createLocalVaultController = new CreateLocalVaultController(
@@ -102,7 +102,7 @@ public class AppBuilder {
     public AppBuilder addLocalVaultView() {
         final LoadLocalVaultViewModel loadLocalVaultViewModel = new LoadLocalVaultViewModel();
         final LoadLocalVaultPresenter loadLocalVaultPresenter = new LoadLocalVaultPresenter(
-                loadLocalVaultViewModel, viewManagerModel);
+                loadLocalVaultViewModel, homeViewModel, viewManagerModel);
         final LoadLocalVaultInteractor loadLocalVaultInteractor = new LoadLocalVaultInteractor(
                 loadLocalVaultPresenter);
         final LoadLocalVaultController loadLocalVaultController = new LoadLocalVaultController(
