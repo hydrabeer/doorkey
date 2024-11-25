@@ -13,14 +13,14 @@ public class PasswordVaultItem extends AbstractVaultItem {
     private String url;
 
     public PasswordVaultItem(String title, String username, String password, String url) {
-        super(title);
+        super(title, "passwordItem");
         this.username = username;
         this.password = password;
         this.url = url;
     }
 
     public PasswordVaultItem(JSONObject json) {
-        super(json.getString("title"));
+        super(json.getString("title"), "passwordItem");
         this.username = json.getString("username");
         this.password = json.getString("password");
         this.url = json.getString("url");
@@ -62,6 +62,7 @@ public class PasswordVaultItem extends AbstractVaultItem {
         json.put("username", this.getUsername());
         json.put("password", this.getPassword());
         json.put("url", this.getUrl());
+        json.put("type", this.getType());
         return json;
     }
 }
