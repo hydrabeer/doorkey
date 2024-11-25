@@ -18,4 +18,12 @@ public class LocalVault extends AbstractVault {
         this.path = path;
         this.password = password;
     }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }
