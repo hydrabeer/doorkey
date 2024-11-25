@@ -30,7 +30,7 @@ public class PasswordValidationInteractor implements PasswordValidationInputBoun
 
         final int entropy = calculateEntropy(password);
 
-        final boolean meetsRequirements = lengthReq && upperLowerReq && numericReq && specialCharReq && entropy > 2;
+        final boolean meetsRequirements = lengthReq && upperLowerReq && numericReq && specialCharReq && entropy >= 2;
 
         final boolean isValid;
         if (enforceEntropy) {
