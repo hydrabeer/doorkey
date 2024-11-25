@@ -1,6 +1,7 @@
 package service.search.interface_adapter;
 
 import interface_adapter.ViewModel;
+import views.ViewConstants;
 
 /**
  * The search view model.
@@ -8,7 +9,7 @@ import interface_adapter.ViewModel;
 public class SearchViewModel extends ViewModel<SearchState> {
 
     public SearchViewModel() {
-        super("search");
+        super(ViewConstants.SEARCH_VIEW);
         setState(new SearchState());
     }
 }
