@@ -1,8 +1,15 @@
 package service.local.create.interface_adapter;
 
+import data_access.LocalVaultUserDataAccessObject;
+import entity.AbstractUser;
+import exception.AuthException;
+import repository.UserRepository;
 import service.ViewManagerModel;
+import service.home.interface_adapter.HomeState;
+import service.home.interface_adapter.HomeViewModel;
 import service.local.create.CreateLocalVaultOutputBoundary;
 import service.local.create.CreateLocalVaultOutputData;
+import views.ViewConstants;
 
 /**
  * Presents the create local vault view model.
@@ -10,20 +17,38 @@ import service.local.create.CreateLocalVaultOutputData;
 public class CreateLocalVaultPresenter implements CreateLocalVaultOutputBoundary {
     private final CreateLocalVaultViewModel createLocalVaultViewModel;
     private final ViewManagerModel viewManagerModel;
+    private final HomeViewModel homeViewModel;
 
     public CreateLocalVaultPresenter(
         CreateLocalVaultViewModel createLocalVaultViewModel,
+        HomeViewModel homeViewModel,
         ViewManagerModel viewManagerModel
     ) {
         this.createLocalVaultViewModel = createLocalVaultViewModel;
+        this.homeViewModel = homeViewModel;
         this.viewManagerModel = viewManagerModel;
     }
     
     @Override
     public void prepareSuccessView(CreateLocalVaultOutputData createLocalVaultOutputData) {
-        System.out.println("Got data:" + createLocalVaultOutputData.getPath());
-        // TODO @Evan: go to main view
-        System.out.println("TODO: GO TO MAIN VIEW ONCE IMPL.");
+        final HomeState currentHomeViewState = homeViewModel.getState();
+
+        UserRepository repository = new LocalVaultUserDataAccessObject();
+        try {
+            AbstractUser user = repository.signupUser(createLocalVaultOutputData.getPath(), createLocalVaultOutputData.getPassword());
+        
+            currentHomeViewState.setUser(user);
+            currentHomeViewState.setUserRepository(new LocalVaultUserDataAccessObject());
+
+            homeViewModel.setState(currentHomeViewState);
+            homeViewModel.onStateChanged();
+
+            this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
+            this.viewManagerModel.onStateChanged();
+        } catch (AuthException e) {
+            prepareErrorView(e.getMessage());
+            return;
+        }
     }
 
     @Override
