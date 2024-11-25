@@ -5,20 +5,20 @@ package entity;
  */
 
 public abstract class AbstractUser {
-    private String username;
+    private String email;
     private AbstractVault vault;
 
-    public AbstractUser(String username, AbstractVault vault) {
-        this.username = username;
+    public AbstractUser(String email, AbstractVault vault) {
+        this.email = email;
         this.vault = vault;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String username) {
+        this.email = username;
     }
 
     public AbstractVault getVault() {

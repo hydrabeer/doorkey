@@ -2,49 +2,26 @@ package service.local.load.interface_adapter;
 
 import javax.swing.JFileChooser;
 
-import views.components.DoorkeyForm;
+import service.local.load.LoadLocalVaultInputBoundary;
+import service.local.load.LoadLocalVaultInputData;
 
 /**
- * Handles loading (decrypting) a local .doorkey vault.
+ * Controller for loading a local .doorkey vault.
  */
 public class LoadLocalVaultController {
-    private final JFileChooser saver;
-    private final DoorkeyForm form;
+    private final LoadLocalVaultInputBoundary interactor;
 
-    public LoadLocalVaultController(JFileChooser saver, DoorkeyForm form) {
-        this.saver = saver;
-        this.form = form;
+    public LoadLocalVaultController(LoadLocalVaultInputBoundary interactor) {
+        this.interactor = interactor;
     }
 
     /**
-     * When the user clicks the "Load" button.
+     * Loads a local .doorkey vault.
+     * @param path     The path to the .doorkey file
+     * @param password The user supplied password
      */
-    public void formSubmitted() {
-        if (saver.getSelectedFile() == null) {
-            form.setError("Please select a valid .doorkey file!");
-        }
-        else {
-            final String path = saver.getSelectedFile().getAbsolutePath();
-            if (path.isEmpty()) {
-                form.setError("Please select a valid .doorkey file!");
-            }
-            else {
-                final String password = form.getFieldValue("password");
-                if (password.isEmpty()) {
-                    form.setError("Please enter a password");
-                }
-                else {
-                    openVault(password, path);
-                }
-            }
-        }
-    }
-
-    private void openVault(String password, String path) {
-        // TODO: TO BE IMPLEMENTED
-        // Checks to be implemented:
-        // - If path is non-existent
-        // - If password is incorrect
-        // If no problems, load the main vault view
+    public void loadLocalVault(JFileChooser path, String password) {
+        final LoadLocalVaultInputData inputData = new LoadLocalVaultInputData(path, password);
+        interactor.loadLocalVault(inputData);
     }
 }

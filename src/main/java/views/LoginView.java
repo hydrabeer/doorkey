@@ -26,7 +26,7 @@ import views.components.DoorkeyFont;
 import views.components.DoorkeyForm;
 
 /**
- * The main Home screen view that pops up when the application is launched.
+ * The main login screen view that pops up when the application is launched.
  */
 public class LoginView extends JPanel implements ActionListener, PropertyChangeListener {
     private final LoginController loginController;
@@ -55,6 +55,17 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         addAlternativeLabel();
 
         addLocalAndSignup();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        final LoginState loginState = (LoginState) evt.getNewValue();
+        dispatchErrorStates(loginState);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("Action performed: " + e.getActionCommand());
     }
 
     private void addLoginForm() {
@@ -103,7 +114,8 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
         final DoorkeyButton signUpButton = new DoorkeyButton.DoorkeyButtonBuilder("Sign Up")
                 .addListener(event -> {
-                    // TODO
+                    viewManagerModel.setState(ViewConstants.SIGNUP_VIEW);
+                    viewManagerModel.onStateChanged();
                 })
                 .build();
 
@@ -127,20 +139,10 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         this.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        final LoginState loginState = (LoginState) evt.getNewValue();
-        // Only the overall error is ever changed for now. TODO: Optional - more error messages.
-        if (loginState.getIsSuccess()) {
-            form.setError("");
+    private void dispatchErrorStates(LoginState loginState) {
+        form.setError(loginState.getError());
+        for (String field : loginState.getFieldsToErrors().keySet()) {
+            form.setFieldError(loginState.getFieldsToErrors().get(field), field);
         }
-        else {
-            form.setError("Invalid email or password.");
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("Action performed: " + e.getActionCommand());
     }
 }

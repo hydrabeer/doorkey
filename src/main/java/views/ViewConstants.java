@@ -17,8 +17,9 @@ public final class ViewConstants {
 
     // View Names
     public static final String LOGIN_VIEW = "login";
+    public static final String SIGNUP_VIEW = "signup";
     public static final String LOCAL_VAULT_VIEW = "local_vault";
     public static final String LOAD_LOCAL_VAULT_VIEW = "load_local_vault";
     public static final String CREATE_LOCAL_VAULT_VIEW = "create_local_vault";
-    public static final String TEST_VIEW = "TEST_DELETE_LATER_@@";
+    public static final String HOME_VIEW = "home";
 }

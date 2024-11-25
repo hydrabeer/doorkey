@@ -1,10 +1,10 @@
 package service.login.interface_adapter;
 
 import service.ViewManagerModel;
+import service.home.interface_adapter.HomeState;
+import service.home.interface_adapter.HomeViewModel;
 import service.login.LoginOutputBoundary;
 import service.login.LoginOutputData;
-import views.TestViewModel;
-import views.TestViewState;
 import views.ViewConstants;
 
 /**
@@ -13,35 +13,51 @@ import views.ViewConstants;
 public class LoginPresenter implements LoginOutputBoundary {
     private final LoginViewModel loginViewModel;
     private final ViewManagerModel viewManagerModel;
-    private final TestViewModel testViewModel;
+    private final HomeViewModel homeViewModel;
 
     public LoginPresenter(
             LoginViewModel loginViewModel,
-            TestViewModel testViewModel,
+            HomeViewModel homeViewModel,
             ViewManagerModel viewManagerModel
     ) {
         this.loginViewModel = loginViewModel;
-        this.testViewModel = testViewModel;
+        this.homeViewModel = homeViewModel;
         this.viewManagerModel = viewManagerModel;
     }
 
     @Override
     public void prepareSuccessView(LoginOutputData loginOutputData) {
-        final TestViewState currentTestViewState = testViewModel.getState();
-        currentTestViewState.setEmail(loginOutputData.getEmail());
-        currentTestViewState.setPassword(loginOutputData.getPassword());
-        testViewModel.setState(currentTestViewState);
-        testViewModel.onStateChanged();
+        final HomeState currentHomeViewState = homeViewModel.getState();
+        currentHomeViewState.setUser(loginOutputData.getUser());
+        currentHomeViewState.setUserRepository(loginOutputData.getUserRepository());
 
-        this.viewManagerModel.setState(ViewConstants.TEST_VIEW);
+        homeViewModel.setState(currentHomeViewState);
+        homeViewModel.onStateChanged();
+
+        this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
         this.viewManagerModel.onStateChanged();
     }
 
     @Override
     public void prepareErrorView(String error) {
+        // We have to clear other errors, as current errors will be re-reported.
         final LoginState loginState = loginViewModel.getState();
-        // TODO: More error messages? Optional
-        loginState.setIsSuccess(false);
+        loginState.setError(error);
+        loginViewModel.onStateChanged();
+    }
+
+    @Override
+    public void prepareErrorView(String field, String error) {
+        // Again, we have to clear all current errors.
+        final LoginState loginState = loginViewModel.getState();
+        loginState.setFieldError(field, error);
+        loginViewModel.onStateChanged();
+    }
+
+    @Override
+    public void clearError(String field) {
+        final LoginState loginState = loginViewModel.getState();
+        loginState.setFieldError(field, "");
         loginViewModel.onStateChanged();
     }
 }
