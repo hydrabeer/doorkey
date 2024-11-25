@@ -50,7 +50,6 @@ public class CreateVaultItemView extends JDialog {
     private JButton saveButton;
     private JButton cancelButton;
 
-    // Requirement Labels
     private JLabel lengthRequirementLabel;
     private JLabel upperLowerRequirementLabel;
     private JLabel numericRequirementLabel;
