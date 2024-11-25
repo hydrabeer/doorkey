@@ -38,7 +38,7 @@ public class CreateLocalVaultPresenter implements CreateLocalVaultOutputBoundary
             AbstractUser user = repository.signupUser(createLocalVaultOutputData.getPath(), createLocalVaultOutputData.getPassword());
         
             currentHomeViewState.setUser(user);
-            currentHomeViewState.setUserRepository(new LocalVaultUserDataAccessObject());
+            currentHomeViewState.setUserRepository(repository);
 
             homeViewModel.setState(currentHomeViewState);
             homeViewModel.onStateChanged();

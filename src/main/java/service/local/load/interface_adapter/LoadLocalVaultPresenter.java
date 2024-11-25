@@ -38,7 +38,7 @@ public class LoadLocalVaultPresenter implements LoadLocalVaultOutputBoundary {
             AbstractUser user = repository.signInUser(loadLocalVaultOutputData.getPath(), loadLocalVaultOutputData.getPassword());
 
             currentHomeViewState.setUser(user);
-            currentHomeViewState.setUserRepository(new LocalVaultUserDataAccessObject());
+            currentHomeViewState.setUserRepository(repository);
 
             homeViewModel.setState(currentHomeViewState);
             homeViewModel.onStateChanged();
