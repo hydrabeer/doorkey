@@ -11,8 +11,4 @@ public class SearchViewModel extends ViewModel<SearchState> {
         super("search");
         setState(new SearchState());
     }
-
-    @Override
-    public void onStateChanged() {
-    }
 }
