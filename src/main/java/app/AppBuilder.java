@@ -34,6 +34,7 @@ import service.signup.interface_adapter.SignupViewModel;
 import views.CreateLocalVaultView;
 import views.HomeView;
 import views.LoadLocalVaultView;
+import views.LocalVaultView;
 import views.LoginView;
 import views.SignupView;
 import views.ViewConstants;
@@ -76,6 +77,17 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the LocalVaultView to the viewsPanel.
+     *
+     * @return The AppBuilder instance.
+     */
+    public AppBuilder addLocalVaultView() {
+        final LocalVaultView localVaultView = new LocalVaultView(viewManagerModel);
+        views.add(localVaultView, ViewConstants.LOCAL_VAULT_VIEW);
+        return this;
+    }
+
+    /**
      * Adds the CreateLocalVaultView to the viewsPanel.
      *
      * @return The AppBuilder instance.
@@ -95,11 +107,11 @@ public class AppBuilder {
     }
 
     /**
-     * Adds the LocalVaultView to the viewsPanel.
+     * Adds the LoadLocalVaultView to the viewsPanel.
      *
      * @return The AppBuilder instance.
      */
-    public AppBuilder addLocalVaultView() {
+    public AppBuilder addLoadLocalVaultView() {
         final LoadLocalVaultViewModel loadLocalVaultViewModel = new LoadLocalVaultViewModel();
         final LoadLocalVaultPresenter loadLocalVaultPresenter = new LoadLocalVaultPresenter(
                 loadLocalVaultViewModel, homeViewModel, viewManagerModel);
