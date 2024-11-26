@@ -25,7 +25,6 @@ import javax.swing.event.DocumentListener;
 
 import service.password_validation.interface_adapter.PasswordValidationController;
 import service.password_validation.interface_adapter.PasswordValidationViewModel;
-import static views.ViewConstants.DEFAULT_FONT_NAME;
 
 /**
  * The dialog view for creating a new vault item.
@@ -38,7 +37,7 @@ public class CreateVaultItemView extends JPanel {
     private JTextField urlField;
     private JTextField vaultTitleField;
     private JTextField usernameField;
-    private JPasswordField passwordField;
+    private JPasswordField passwordInputField;
     private JPasswordField confirmPasswordField;
     private JLabel titleLabel;
     private JLabel urlLabel;
@@ -56,7 +55,8 @@ public class CreateVaultItemView extends JPanel {
     private JLabel numericRequirementLabel;
     private JLabel specialCharRequirementLabel;
 
-    private final int componentWidth = 300; 
+    private final int componentWidth = 300;
+
     /**
      * Constructs the CreateVaultItemView dialog.
      *
@@ -88,9 +88,9 @@ public class CreateVaultItemView extends JPanel {
      * Initializes all UI components.
      */
     private void initializeComponents() {
-        final Font titleFont = new Font(DEFAULT_FONT_NAME, Font.BOLD, 18); 
-        final Font labelFont = new Font(DEFAULT_FONT_NAME, Font.PLAIN, 12);
-        final Font requirementFont = new Font(DEFAULT_FONT_NAME, Font.PLAIN, 10);
+        final Font titleFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 18); 
+        final Font labelFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12);
+        final Font requirementFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 10);
 
         titleLabel = new JLabel("New Vault Item");
         titleLabel.setFont(titleFont);
@@ -106,7 +106,7 @@ public class CreateVaultItemView extends JPanel {
         urlField = createTextField();
         vaultTitleField = createTextField();
         usernameField = createTextField();
-        passwordField = createPasswordField();
+        passwordInputField = createPasswordField();
         confirmPasswordField = createPasswordField();
 
         requirementsPanel = createRequirementsPanel(requirementFont);
@@ -227,42 +227,28 @@ public class CreateVaultItemView extends JPanel {
         contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-        contentPanel.add(titleLabel);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        addWithSpacing(contentPanel, titleLabel, 20);
+        addWithSpacing(contentPanel, createFieldPanel(urlLabel, urlField), 10);
+        addWithSpacing(contentPanel, createFieldPanel(vaultTitleLabel, vaultTitleField), 10);
+        addWithSpacing(contentPanel, createFieldPanel(usernameLabel, usernameField), 10);
+        addWithSpacing(contentPanel, createFieldPanel(passwordLabel, passwordInputField), 10);
 
-        contentPanel.add(createFieldPanel(urlLabel, urlField));
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        contentPanel.add(createFieldPanel(vaultTitleLabel, vaultTitleField));
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        contentPanel.add(createFieldPanel(usernameLabel, usernameField));
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        contentPanel.add(createFieldPanel(passwordLabel, passwordField));
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        final JLabel requirementsTitle = 
-            createLabel("Password Guidelines:", new Font(DEFAULT_FONT_NAME, Font.BOLD, 14));
+        final JLabel requirementsTitle =
+            createLabel("Password Guidelines:", new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 14));
         requirementsTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        contentPanel.add(requirementsTitle);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 5))); 
-
-        contentPanel.add(requirementsPanel);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        addWithSpacing(contentPanel, requirementsTitle, 5);
+        addWithSpacing(contentPanel, requirementsPanel, 15);
 
         final JLabel strengthLabel =
-            createLabel("Password Strength:", new Font(DEFAULT_FONT_NAME, Font.PLAIN, 12));
+            createLabel("Password Strength:", new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12));
         strengthLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(strengthLabel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         contentPanel.add(strengthBar);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        contentPanel.add(createFieldPanel(confirmPasswordLabel, confirmPasswordField));
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-        contentPanel.add(createButtonsPanel());
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        addWithSpacing(contentPanel, createFieldPanel(confirmPasswordLabel, confirmPasswordField), 10);
+        addWithSpacing(contentPanel, createButtonsPanel(), 10);
 
         final JPanel wrapperPanel = new JPanel();
         wrapperPanel.setBackground(Color.BLACK);
@@ -276,6 +262,18 @@ public class CreateVaultItemView extends JPanel {
     }
 
     /**
+     * Adds a component and a rigid area to the specified panel.
+     *
+     * @param panel The panel to add components to.
+     * @param component The component to add.
+     * @param spacingHeight The height of the rigid area.
+     */
+    private void addWithSpacing(JPanel panel, Component component, int spacingHeight) {
+        panel.add(component);
+        panel.add(Box.createRigidArea(new Dimension(0, spacingHeight)));
+    }
+
+    /**
      * Creates a panel containing the Save and Cancel buttons aligned
      * horizontally.
      *
@@ -284,7 +282,7 @@ public class CreateVaultItemView extends JPanel {
     private JPanel createButtonsPanel() {
         final JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBackground(Color.BLACK);
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0)); // Reduced horizontal gap
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
 
         buttonsPanel.add(saveButton);
         buttonsPanel.add(cancelButton);
@@ -323,7 +321,7 @@ public class CreateVaultItemView extends JPanel {
      */
     private JButton createStyledButton(String text, int width, int height) {
         final JButton button = new JButton(text);
-        button.setFont(new Font(DEFAULT_FONT_NAME, Font.BOLD, 12));
+        button.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 12));
         button.setForeground(Color.WHITE);
         button.setBackground(Color.BLACK);
         button.setFocusPainted(false);
@@ -339,18 +337,18 @@ public class CreateVaultItemView extends JPanel {
      */
     private void registerEventHandlers() {
 
-        saveButton.addActionListener(e -> {
+        saveButton.addActionListener(event -> {
             System.out.println("Save button clicked. Placeholder action executed.");
         });
-
-        cancelButton.addActionListener(e -> {
+        
+        cancelButton.addActionListener(event -> {
             System.out.println("Cancel button clicked. Placeholder action executed.");
-        });
+        });        
 
-        passwordField.getDocument().addDocumentListener(new SimpleDocumentListener() {
+        passwordInputField.getDocument().addDocumentListener(new SimpleDocumentListener() {
             @Override
             public void update(DocumentEvent e) {
-                final String password = new String(passwordField.getPassword());
+                final String password = new String(passwordInputField.getPassword());
                 controller.validatePassword(password, false);
             }
         });
@@ -359,7 +357,7 @@ public class CreateVaultItemView extends JPanel {
         confirmPasswordField.getDocument().addDocumentListener(new SimpleDocumentListener() {
             @Override
             public void update(DocumentEvent e) {
-                final String password = new String(passwordField.getPassword());
+                final String password = new String(passwordInputField.getPassword());
                 final String confirmPassword = new String(confirmPasswordField.getPassword());
                 // Implement matching logic if necessary
                 // enable/disable the save button
@@ -386,6 +384,7 @@ public class CreateVaultItemView extends JPanel {
             case "entropy" ->
                 updateStrengthBar((int) viewModel.getEntropy());
             default -> {
+                    // No action needed for other properties
             }
         }
     }
@@ -400,7 +399,8 @@ public class CreateVaultItemView extends JPanel {
     private void updateRequirementLabel(JLabel label, boolean requirementMet) {
         if (requirementMet) {
             label.setForeground(Color.GREEN);
-        } else {
+        }
+        else {
             label.setForeground(Color.RED);
         }
     }
@@ -433,21 +433,26 @@ public class CreateVaultItemView extends JPanel {
      */
     public abstract class SimpleDocumentListener implements DocumentListener {
 
-        public abstract void update(DocumentEvent e);
+        /**
+         * Updates the password validation when the password field changes.
+         *
+         * @param event The document event.
+         */
+        public abstract void update(DocumentEvent event);
 
         @Override
-        public void insertUpdate(DocumentEvent e) {
-            update(e);
+        public void insertUpdate(DocumentEvent event) {
+            update(event);
         }
 
         @Override
-        public void removeUpdate(DocumentEvent e) {
-            update(e);
+        public void removeUpdate(DocumentEvent event) {
+            update(event);
         }
 
         @Override
-        public void changedUpdate(DocumentEvent e) {
-            update(e);
+        public void changedUpdate(DocumentEvent event) {
+            update(event);
         }
     }
 }
