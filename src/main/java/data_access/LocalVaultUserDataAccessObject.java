@@ -1,6 +1,8 @@
 package data_access;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import entity.AbstractUser;
 import entity.AbstractVaultItem;
@@ -26,10 +28,10 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
      * @param filepath    The path to the local .doorkey vault.
      * @param vaultPassword The password of the user.
      * @return The user that was signed up.
-     * @throws AuthException Never.
+     * @throws IOException Never. (Other implementations of the DAO may throw, however).
      */
     @Override
-    public AbstractUser signupUser(String filepath, String vaultPassword) throws AuthException {
+    public AbstractUser signupUser(String filepath, String vaultPassword) throws IOException {
         this.path = filepath;
         this.password = vaultPassword;
         return new LocalUser(new LocalVault(new ArrayList<>(), this.path, this.password));
@@ -41,10 +43,10 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
      * @param filepath    The path to the local .doorkey vault.
      * @param vaultPassword The password of the user.
      * @return The user that was logged in.
-     * @throws AuthException If vault loading or decryption fails (such as bad password).
+     * @throws IOException If there was an error reading/loading a local vault from disk.
      */
     @Override
-    public AbstractUser signInUser(String filepath, String vaultPassword) throws AuthException {
+    public AbstractUser signInUser(String filepath, String vaultPassword) throws IOException {
         this.path = filepath;
         this.password = vaultPassword;
 
@@ -58,13 +60,10 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
             return new LocalUser(vault);
         }
         catch (java.nio.file.NoSuchFileException exception) {
-            throw new AuthException(AuthErrorReason.REQUEST_ERROR, "File not found: " + this.path);
-        }
-        catch (java.io.IOException exception) {
-            throw new AuthException(AuthErrorReason.UNKNOWN, "Failed to sign in user: " + exception.getMessage());
+            throw new IOException("File not found: " + this.path);
         }
         catch (exception.InvalidVaultItemException exception) {
-            throw new AuthException(AuthErrorReason.WRONG_CREDENTIALS, "Failed to load vault item; wrong password?");
+            throw new IOException("Failed to load invalid vault item; wrong password?");
         }
     }
 
@@ -73,23 +72,46 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
      *
      * @param user The user to add the item to.
      * @param item The item to add to the user's vault.
-     * @throws AuthException If the item could not be added to the user's vault.
+     * @throws IOException If there was an issue updating and saving the local vault to disk.
      */
     @Override
-    public void addVaultItem(AbstractUser user, AbstractVaultItem item) throws AuthException {
+    public void addVaultItem(AbstractUser user, AbstractVaultItem item) throws IOException {
         if (!(user instanceof LocalUser)) {
             throw new IllegalArgumentException("User must be a LocalUser.");
         }
 
         user.getVault().addItem(item);
 
-        // Need to write to the local path again
+        saveVaultToDisk(user);
+    }
+
+    /**
+     * Remove an item from the user's local .doorkey vault.
+     *
+     * @param user The user to remove the item from.
+     * @param item The item to remove from the user's vault.
+     * @throws IOException If there was an issue updating and saving the local vault to disk.
+     */
+    @Override
+    public void removeVaultItem(AbstractUser user, AbstractVaultItem item) throws IOException {
+        if (!(user instanceof LocalUser)) {
+            throw new IllegalArgumentException("User must be a LocalUser.");
+        }
+
+        final List<AbstractVaultItem> vaultItems = user.getVault().getItems();
+        vaultItems.remove(item);
+        user.getVault().setItems(vaultItems);
+
+        saveVaultToDisk(user);
+    }
+
+    /**
+     * Save the current vault state to a local .doorkey file.
+     * @param user The user to save the vault from.
+     * @throws IOException If there was an issue updating and saving the local vault to disk.
+     */
+    private void saveVaultToDisk(AbstractUser user) throws IOException {
         final String exported = user.getVault().toJSON();
-        try {
-            java.nio.file.Files.write(java.nio.file.Paths.get(this.path), exported.getBytes());
-        }
-        catch (java.io.IOException exception) {
-            throw new AuthException(AuthErrorReason.UNKNOWN, "Failed to add vault item: " + exception.getMessage());
-        }
+        java.nio.file.Files.write(java.nio.file.Paths.get(this.path), exported.getBytes());
     }
 }
