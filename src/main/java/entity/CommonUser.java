@@ -5,7 +5,7 @@ package entity;
  */
 public class CommonUser extends AbstractUser {
 
-    public CommonUser(String username, AbstractVault vault) {
-        super(username, vault);
+    public CommonUser(String username, String password, AbstractVault vault) {
+        super(username, password, vault);
     }
 }

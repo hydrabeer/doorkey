@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 public class CommonUserTest {
     private static final String title = "Google";
     private static final String email = "doorkey@gmail.com";
+    private static final String userPassword = "mySecureMasterPa@@5d";
     private static final String password = "pa55w0rD";
     private static final String url = "https://google.com";
     private final List<AbstractVaultItem> items = new ArrayList<>();
@@ -20,9 +21,10 @@ public class CommonUserTest {
         items.add(item);
 
         AbstractVault vault = new LocalVault(items);
-        AbstractUser user = new CommonUser(email, vault);
+        AbstractUser user = new CommonUser(email, userPassword, vault);
         assertTrue(user.getEmail().equals(email));
         assertTrue(user.getVault() == vault);
+        assertTrue(user.getPassword().equals(userPassword));
         assertTrue(user.getVault().getItems().get(0) == item);
     }
 }

@@ -80,7 +80,7 @@ public class FireStoreUserDataAccessObject implements UserRepository {
             final CloudVault vault = getVault(jsonResponse);
             final RemoteAuth auth = new RemoteAuth(loginResponse);
 
-            return new CloudUser(email, vault, auth);
+            return new CloudUser(email, password, vault, auth);
         }
         catch (HttpRequestException httpRequestException) {
             throw new AuthException(AuthErrorReason.REQUEST_ERROR, httpRequestException.getMessage());
@@ -94,7 +94,7 @@ public class FireStoreUserDataAccessObject implements UserRepository {
         final RemoteAuth auth = new RemoteAuth(loginResponse);
         createUserDocument(loginResponse);
 
-        return new CloudUser(email, new CloudVault(new ArrayList<>()), auth);
+        return new CloudUser(email, password, new CloudVault(new ArrayList<>()), auth);
     }
 
     @Override
