@@ -28,7 +28,7 @@ public interface UserRepository {
      * @param password The password of the user.
      * @return The user that was logged in.
      * @throws AuthException If the user could not be logged in.
-     * @throws IOException If there was an issue saving the local vault to disk.
+     * @throws IOException If there was an issue loading the local vault from disk.
      */
     AbstractUser signInUser(String email, String password) throws AuthException, IOException;
 
