@@ -1,5 +1,7 @@
 package service.local.load.interface_adapter;
 
+import java.io.IOException;
+
 import data_access.LocalVaultUserDataAccessObject;
 import entity.AbstractUser;
 import exception.AuthException;
@@ -49,7 +51,9 @@ public class LoadLocalVaultPresenter implements LoadLocalVaultOutputBoundary {
         }
         catch (AuthException exception) {
             prepareErrorView(exception.getMessage());
-            return;
+        }
+        catch(IOException exception) {
+            prepareErrorView(exception.getMessage());
         }
     }
 
