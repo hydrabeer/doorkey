@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 
 import javax.swing.BorderFactory;
@@ -70,13 +69,12 @@ public class CreateVaultItemView extends JPanel {
         initializeComponents();
         layoutComponents();
         registerEventHandlers();
-        setPreferredSize(new Dimension(400, 550)); 
+        setPreferredSize(new Dimension(400, 550));
 
         viewModel.addPropertyChangeListener(evt -> {
             if (SwingUtilities.isEventDispatchThread()) {
                 updateView(evt);
-            }
-            else {
+            } else {
                 SwingUtilities.invokeLater(() -> updateView(evt));
             }
         });
@@ -88,7 +86,7 @@ public class CreateVaultItemView extends JPanel {
      * Initializes all UI components.
      */
     private void initializeComponents() {
-        final Font titleFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 18); 
+        final Font titleFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 18);
         final Font labelFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12);
         final Font requirementFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 10);
 
@@ -185,18 +183,24 @@ public class CreateVaultItemView extends JPanel {
         panel.setBackground(Color.BLACK);
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        panel.setLayout(new GridLayout(0, 2, 10, 10));
-        panel.setMaximumSize(new Dimension(componentWidth, 0));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setMaximumSize(new Dimension(componentWidth, Integer.MAX_VALUE));
 
-        lengthRequirementLabel = createRequirementLabel("<html>At least 8 characters</html>", font);
-        upperLowerRequirementLabel = 
-            createRequirementLabel("<html>At least one uppercase<br/>and lowercase letter</html>", font);
-        numericRequirementLabel = createRequirementLabel("<html>At least one number</html>", font);
-        specialCharRequirementLabel = createRequirementLabel("<html>At least one special character</html>", font);
+        lengthRequirementLabel =
+            createRequirementLabel("At least 8 characters", font);
+        upperLowerRequirementLabel =
+            createRequirementLabel("At least one uppercase and lowercase letter", font);
+        numericRequirementLabel =
+            createRequirementLabel("At least one number", font);
+        specialCharRequirementLabel =
+            createRequirementLabel("At least one special character", font);
 
         panel.add(lengthRequirementLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(upperLowerRequirementLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(numericRequirementLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(specialCharRequirementLabel);
 
         return panel;
@@ -224,31 +228,62 @@ public class CreateVaultItemView extends JPanel {
 
         final JPanel contentPanel = new JPanel();
         contentPanel.setBackground(Color.BLACK);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-        addWithSpacing(contentPanel, titleLabel, 20);
-        addWithSpacing(contentPanel, createFieldPanel(urlLabel, urlField), 10);
-        addWithSpacing(contentPanel, createFieldPanel(vaultTitleLabel, vaultTitleField), 10);
-        addWithSpacing(contentPanel, createFieldPanel(usernameLabel, usernameField), 10);
-        addWithSpacing(contentPanel, createFieldPanel(passwordLabel, passwordInputField), 10);
+        final JPanel topFieldsPanel = new JPanel();
+        topFieldsPanel.setBackground(Color.BLACK);
+        topFieldsPanel.setLayout(new BoxLayout(topFieldsPanel, BoxLayout.Y_AXIS));
+        topFieldsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        final JPanel passwordGuidelinesPanel = new JPanel();
+        passwordGuidelinesPanel.setBackground(Color.BLACK);
+        passwordGuidelinesPanel.setLayout(new BoxLayout(passwordGuidelinesPanel, BoxLayout.Y_AXIS));
+        passwordGuidelinesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        final JPanel passwordStrengthPanel = new JPanel();
+        passwordStrengthPanel.setBackground(Color.BLACK);
+        passwordStrengthPanel.setLayout(new BoxLayout(passwordStrengthPanel, BoxLayout.Y_AXIS));
+        passwordStrengthPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        final JPanel confirmPasswordPanel = new JPanel();
+        confirmPasswordPanel.setBackground(Color.BLACK);
+        confirmPasswordPanel.setLayout(new BoxLayout(confirmPasswordPanel, BoxLayout.Y_AXIS));
+        confirmPasswordPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        final JPanel buttonsPanel = createButtonsPanel();
+
+        addWithSpacing(topFieldsPanel, titleLabel, 20);
+        addWithSpacing(topFieldsPanel, createFieldPanel(urlLabel, urlField), 10);
+        addWithSpacing(topFieldsPanel, createFieldPanel(vaultTitleLabel, vaultTitleField), 10);
+        addWithSpacing(topFieldsPanel, createFieldPanel(usernameLabel, usernameField), 10);
+        addWithSpacing(topFieldsPanel, createFieldPanel(passwordLabel, passwordInputField), 10);
 
         final JLabel requirementsTitle =
             createLabel("Password Guidelines:", new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 14));
         requirementsTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        addWithSpacing(contentPanel, requirementsTitle, 5);
-        addWithSpacing(contentPanel, requirementsPanel, 15);
+        addWithSpacing(passwordGuidelinesPanel, requirementsTitle, 5);
+        addWithSpacing(passwordGuidelinesPanel, requirementsPanel, 15);
 
         final JLabel strengthLabel =
             createLabel("Password Strength:", new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12));
-        strengthLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        contentPanel.add(strengthLabel);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        contentPanel.add(strengthBar);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        strengthLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        passwordStrengthPanel.add(strengthLabel);
+        passwordStrengthPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        passwordStrengthPanel.add(strengthBar);
+        passwordStrengthPanel.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        addWithSpacing(contentPanel, createFieldPanel(confirmPasswordLabel, confirmPasswordField), 10);
-        addWithSpacing(contentPanel, createButtonsPanel(), 10);
+        addWithSpacing(confirmPasswordPanel, createFieldPanel(confirmPasswordLabel, confirmPasswordField), 10);
+
+        contentPanel.add(topFieldsPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        contentPanel.add(passwordGuidelinesPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        contentPanel.add(passwordStrengthPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        contentPanel.add(confirmPasswordPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        contentPanel.add(buttonsPanel);
 
         final JPanel wrapperPanel = new JPanel();
         wrapperPanel.setBackground(Color.BLACK);
@@ -302,6 +337,7 @@ public class CreateVaultItemView extends JPanel {
         panel.setBackground(Color.BLACK);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(0, 4)));
@@ -340,10 +376,10 @@ public class CreateVaultItemView extends JPanel {
         saveButton.addActionListener(event -> {
             System.out.println("Save button clicked. Placeholder action executed.");
         });
-        
+
         cancelButton.addActionListener(event -> {
             System.out.println("Cancel button clicked. Placeholder action executed.");
-        });        
+        });
 
         passwordInputField.getDocument().addDocumentListener(new SimpleDocumentListener() {
             @Override
@@ -353,14 +389,11 @@ public class CreateVaultItemView extends JPanel {
             }
         });
 
-        // add DocumentListener to confirmPasswordField to validate matching passwords
         confirmPasswordField.getDocument().addDocumentListener(new SimpleDocumentListener() {
             @Override
             public void update(DocumentEvent e) {
                 final String password = new String(passwordInputField.getPassword());
                 final String confirmPassword = new String(confirmPasswordField.getPassword());
-                // Implement matching logic if necessary
-                // enable/disable the save button
             }
         });
     }
@@ -384,7 +417,6 @@ public class CreateVaultItemView extends JPanel {
             case "entropy" ->
                 updateStrengthBar((int) viewModel.getEntropy());
             default -> {
-                    // No action needed for other properties
             }
         }
     }
@@ -399,8 +431,7 @@ public class CreateVaultItemView extends JPanel {
     private void updateRequirementLabel(JLabel label, boolean requirementMet) {
         if (requirementMet) {
             label.setForeground(Color.GREEN);
-        }
-        else {
+        } else {
             label.setForeground(Color.RED);
         }
     }
