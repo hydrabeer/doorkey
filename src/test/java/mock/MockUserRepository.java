@@ -10,6 +10,7 @@ import repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ public class MockUserRepository implements UserRepository {
         if (users.containsKey(email)) {
             throw new AuthException(AuthErrorReason.EMAIL_EXISTS, "User already exists.");
         }
-        AbstractUser newUser = new CommonUser(email, new LocalVault(new ArrayList<>()));
+        AbstractUser newUser = new CommonUser(email, password, new LocalVault(new ArrayList<>()));
         users.put(email, newUser);
         passwords.put(email, password);
         return newUser;
@@ -41,5 +42,12 @@ public class MockUserRepository implements UserRepository {
     @Override
     public void addVaultItem(AbstractUser user, AbstractVaultItem item) {
         user.getVault().addItem(item);
+    }
+
+    @Override
+    public void removeVaultItem(AbstractUser user, AbstractVaultItem item) {
+        List<AbstractVaultItem> items = user.getVault().getItems();
+        items.remove(item);
+        user.getVault().setItems(items);
     }
 }
