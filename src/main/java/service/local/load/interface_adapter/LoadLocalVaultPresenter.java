@@ -49,10 +49,7 @@ public class LoadLocalVaultPresenter implements LoadLocalVaultOutputBoundary {
             this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
             this.viewManagerModel.onStateChanged();
         }
-        catch (AuthException exception) {
-            prepareErrorView(exception.getMessage());
-        }
-        catch(IOException exception) {
+        catch (AuthException | IOException exception) {
             prepareErrorView(exception.getMessage());
         }
     }
