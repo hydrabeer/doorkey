@@ -27,11 +27,16 @@ import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
 import service.login.interface_adapter.LoginViewModel;
+import service.password_validation.PasswordValidationInteractor;
+import service.password_validation.interface_adapter.PasswordValidationController;
+import service.password_validation.interface_adapter.PasswordValidationPresenter;
+import service.password_validation.interface_adapter.PasswordValidationViewModel;
 import service.signup.SignupInteractor;
 import service.signup.interface_adapter.SignupController;
 import service.signup.interface_adapter.SignupPresenter;
 import service.signup.interface_adapter.SignupViewModel;
 import views.CreateLocalVaultView;
+import views.CreateVaultItemView;
 import views.HomeView;
 import views.LoadLocalVaultView;
 import views.LoginView;
@@ -112,6 +117,7 @@ public class AppBuilder {
         views.add(loadLocalVaultView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
         return this;
     }
+    
     /**
      * Adds the CreateVaultItemView to the viewsPanel.
      *
@@ -119,9 +125,16 @@ public class AppBuilder {
      */
     public AppBuilder addCreateVaultItemView() {
         final PasswordValidationViewModel passwordValidationViewModel = new PasswordValidationViewModel();
-        final PasswordValidationController passwordValidationController = new PasswordValidationController();
+        final PasswordValidationPresenter passwordValidationPresenter = 
+            new PasswordValidationPresenter(passwordValidationViewModel);
+        final PasswordValidationInteractor passwordValidationInteractor = 
+            new PasswordValidationInteractor(passwordValidationPresenter);
+        final PasswordValidationController passwordValidationController = 
+            new PasswordValidationController(passwordValidationInteractor);
+
         final CreateVaultItemView createVaultItemView = new CreateVaultItemView(
-                mainFrame, passwordValidationViewModel, passwordValidationController);
+                passwordValidationViewModel, passwordValidationController);
+
         views.add(createVaultItemView, ViewConstants.CREATE_VAULT_ITEM_VIEW);
         return this;
     }
