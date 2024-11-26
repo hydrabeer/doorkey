@@ -22,4 +22,11 @@ public class HomeController {
         final HomeInputData homeInputData = new HomeInputData(vaultItem);
         interactor.displayVaultItem(homeInputData);
     }
+
+    /**
+     * Display login view.
+     */
+    public void displayLoginView() {
+        interactor.displayHomeView();
+    }
 }

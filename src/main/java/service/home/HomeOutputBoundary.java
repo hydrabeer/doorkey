@@ -10,4 +10,9 @@ public interface HomeOutputBoundary {
      * @param homeOutputData The home output data.
      */
     void prepareShowVaultView(HomeOutputData homeOutputData);
+
+    /**
+     * Displays the home view.
+     */
+    void displayHomeView();
 }

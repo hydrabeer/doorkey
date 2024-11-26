@@ -37,7 +37,15 @@ import service.signup.interface_adapter.SignupViewModel;
 import service.url_redirect.UrlRedirectInteractor;
 import service.url_redirect.UrlRedirectPresenter;
 import service.url_redirect.interface_adapter.UrlRedirectController;
-import views.*;
+import views.CreateLocalVaultView;
+import views.HomeView;
+import views.LoadLocalVaultView;
+import views.LoginView;
+import views.PasswordVaultItemView;
+import views.PasswordVaultItemViewModel;
+import views.SignupView;
+import views.ViewConstants;
+import views.ViewManager;
 
 /**
  * A builder class for the application.
@@ -48,9 +56,10 @@ public class AppBuilder {
     private final ViewManagerModel viewManagerModel;
     private final FireStoreUserDataAccessObject fireStoreUserDataAccessObject;
     private final HomeViewModel homeViewModel;
+    private final PasswordVaultItemViewModel passwordVaultItemViewModel;
 
     public AppBuilder(String title, int width, int height) {
-        mainFrame = new JFrame(title);
+        this.mainFrame = new JFrame(title);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(width, height);
         mainFrame.setLayout(new BorderLayout());
@@ -64,15 +73,16 @@ public class AppBuilder {
         homeViewModel = new HomeViewModel();
 
         final CardLayout cardLayout = new CardLayout();
-        views = new JPanel(cardLayout);
+        this.views = new JPanel(cardLayout);
         mainFrame.add(views, BorderLayout.CENTER);
 
-        viewManagerModel = new ViewManagerModel();
+        this.viewManagerModel = new ViewManagerModel();
         new ViewManager(views, cardLayout, viewManagerModel);
 
         final HttpClient httpClient = new CommonHttpClient();
         final FirebaseAuthRepository firebaseAuthRepository = new FirebaseAuthRepository(httpClient);
-        fireStoreUserDataAccessObject = new FireStoreUserDataAccessObject(firebaseAuthRepository, httpClient);
+        this.fireStoreUserDataAccessObject = new FireStoreUserDataAccessObject(firebaseAuthRepository, httpClient);
+        this.passwordVaultItemViewModel = new PasswordVaultItemViewModel();
     }
 
     /**
@@ -119,11 +129,14 @@ public class AppBuilder {
      * @return The AppBuilder instance.
      */
     public AppBuilder addHomeView() {
-        final PasswordVaultItemViewModel passwordVaultItemViewModel = new PasswordVaultItemViewModel();
-        final HomePresenter homePresenter = new HomePresenter(homeViewModel, passwordVaultItemViewModel, viewManagerModel);
+        final HomePresenter homePresenter = new HomePresenter(
+                homeViewModel,
+                passwordVaultItemViewModel,
+                viewManagerModel
+        );
         final HomeInteractor homeInteractor = new HomeInteractor(homePresenter);
         final HomeController homeController = new HomeController(homeInteractor);
-        final HomeView homeView = new HomeView(homeViewModel, homeController, viewManagerModel);
+        final HomeView homeView = new HomeView(homeViewModel, homeController);
         views.add(homeView, ViewConstants.HOME_VIEW);
         return this;
     }
@@ -164,21 +177,26 @@ public class AppBuilder {
      * @return The AppBuilder instance.
      */
     public AppBuilder addPasswordVaultItemView() {
-        final PasswordVaultItemViewModel passwordVaultItemViewModel = new PasswordVaultItemViewModel();
-        final CopyCredentialsPresenter copyCredentialsPresenter = new
-                CopyCredentialsPresenter(passwordVaultItemViewModel);
-        final CopyCredentialsInteractor copyCredentialsInteractor = new
-                CopyCredentialsInteractor(copyCredentialsPresenter);
-        final CopyCredentialsController copyCredentialsController = new
-                CopyCredentialsController(copyCredentialsInteractor);
-        final UrlRedirectPresenter urlRedirectPresenter = new
-                UrlRedirectPresenter(passwordVaultItemViewModel);
-        final UrlRedirectInteractor urlRedirectInteractor = new
-                UrlRedirectInteractor(urlRedirectPresenter);
-        final UrlRedirectController urlRedirectController = new
-                UrlRedirectController(urlRedirectInteractor);
-        final PasswordVaultItemView passwordVaultItemView = new PasswordVaultItemView(viewManagerModel,
-                copyCredentialsController, urlRedirectController, passwordVaultItemViewModel);
+        final CopyCredentialsPresenter copyCredentialsPresenter = new CopyCredentialsPresenter(
+                passwordVaultItemViewModel
+        );
+        final CopyCredentialsInteractor copyCredentialsInteractor = new CopyCredentialsInteractor(
+                copyCredentialsPresenter
+        );
+        final CopyCredentialsController copyCredentialsController = new CopyCredentialsController(
+                copyCredentialsInteractor
+        );
+        final UrlRedirectPresenter urlRedirectPresenter = new UrlRedirectPresenter(
+                passwordVaultItemViewModel
+        );
+        final UrlRedirectInteractor urlRedirectInteractor = new UrlRedirectInteractor(urlRedirectPresenter);
+        final UrlRedirectController urlRedirectController = new UrlRedirectController(urlRedirectInteractor);
+        final PasswordVaultItemView passwordVaultItemView = new PasswordVaultItemView(
+                copyCredentialsController,
+                urlRedirectController,
+                passwordVaultItemViewModel,
+                viewManagerModel
+        );
         views.add(passwordVaultItemView, ViewConstants.PASSWORD_VAULT_ITEM_VIEW);
         return this;
     }

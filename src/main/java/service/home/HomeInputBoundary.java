@@ -9,4 +9,9 @@ public interface HomeInputBoundary {
      * @param homeInputData The home input data.
      */
     void displayVaultItem(HomeInputData homeInputData);
+
+    /**
+     * Display the home view.
+     */
+    void displayHomeView();
 }
