@@ -1,5 +1,7 @@
 package service.signup;
 
+import java.io.IOException;
+
 import entity.AbstractUser;
 import exception.AuthException;
 import repository.UserRepository;
@@ -41,6 +43,9 @@ public class SignupInteractor implements SignupInputBoundary {
         }
         catch (AuthException authException) {
             signupPresenter.prepareErrorView(authException.getViewMessage());
+        }
+        catch (IOException ioException) {
+            signupPresenter.prepareErrorView(ioException.getMessage());
         }
     }
 

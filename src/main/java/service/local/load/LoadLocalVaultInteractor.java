@@ -29,9 +29,7 @@ public class LoadLocalVaultInteractor implements LoadLocalVaultInputBoundary {
                     loadLocalVaultPresenter.prepareErrorView("Please enter a password");
                 }
                 else {
-                    // TODO @Evan: replace vaultAsString with decrypted vault JSON
                     final LoadLocalVaultOutputData outputData = new LoadLocalVaultOutputData(
-                        "",
                         path,
                         password
                     );
