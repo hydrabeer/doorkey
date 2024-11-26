@@ -1,20 +1,27 @@
 package views;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
-
-import entity.PasswordVaultItem;
-import org.jetbrains.annotations.NotNull;
 
 import service.ViewManagerModel;
 import service.copy_credentials.interface_adapter.CopyCredentialsController;
-import service.login.interface_adapter.LoginState;
 import service.url_redirect.interface_adapter.UrlRedirectController;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
@@ -23,35 +30,107 @@ import views.components.DoorkeyForm;
 /**
  * Vault Item.
  */
-public class PasswordVaultItemView extends JPanel implements PropertyChangeListener {
-    private final JPanel panel = getMainPanel();
+public class PasswordVaultItemView extends JPanel implements ActionListener, PropertyChangeListener {
+    // Constants
+    private static final String USERNAME = "Username:";
+    private static final String PASSWORD = "Password:";
+    private static final String URL = "URL:     ";
+
     private final String hidePassword = "**********";
     private final CopyCredentialsController copyCredentialsController;
     private final UrlRedirectController urlRedirectController;
     private final DoorkeyForm form = new DoorkeyForm();
     private final PasswordVaultItemViewModel passwordVaultItemViewModel;
+    // TODO: Replace with controller - see other TODOs in the file.
     private final ViewManagerModel viewManagerModel;
 
-    public PasswordVaultItemView(ViewManagerModel viewManagerModel,
-            CopyCredentialsController copyCredentialsController, UrlRedirectController urlRedirectController,
-            PasswordVaultItemViewModel passwordVaultItemViewModel) {
-        this.viewManagerModel = viewManagerModel;
+    // Labels that are meant to update with PropertyChange.
+    private final JLabel titleLabel = new JLabel();
+    private final JLabel usernameLabel = createJlabel(USERNAME, 10);
+    private final JButton usernameCopy = createCopyButton(
+            usernameLabel.getPreferredSize().height,
+            "username",
+            () -> getState().getUsername()
+    );
+
+    private final JLabel passwordLabel = createJlabel(PASSWORD, 10);
+    private final JButton passwordCopy = createCopyButton(
+            passwordLabel.getPreferredSize().height,
+            "password",
+            () -> getState().getPassword()
+    );
+
+    private final JLabel urlLabel = createJlabel(URL, 10);
+    private final JButton urlCopy = createCopyButton(
+            urlLabel.getPreferredSize().height,
+            "url",
+            () -> getState().getUrl()
+    );
+
+    public PasswordVaultItemView(
+            CopyCredentialsController copyCredentialsController,
+            UrlRedirectController urlRedirectController,
+            PasswordVaultItemViewModel passwordVaultItemViewModel,
+            ViewManagerModel viewManagerModel
+    ) {
         this.copyCredentialsController = copyCredentialsController;
         this.urlRedirectController = urlRedirectController;
         this.passwordVaultItemViewModel = passwordVaultItemViewModel;
         this.passwordVaultItemViewModel.addPropertyChangeListener(this);
+        this.viewManagerModel = viewManagerModel;
 
-        setUpMainFrame();
-        this.add(panel, BorderLayout.NORTH);
-        this.add(form, BorderLayout.CENTER);
-        this.setVisible(true);
+        addBackButton();
 
+        addVaultItemTitle();
+
+        addActionsPanel();
+
+        addUsernamePanel();
+
+        addPasswordPanel();
+
+        addUrlPanel();
+
+        setUpMainPanel();
+
+        add(form, BorderLayout.CENTER);
     }
 
-    private void addActionsPanel(PasswordVaultItemState passwordVaultItemState) {
-        if (passwordVaultItemState.getVaultItem().isEmpty()) {
-            return;
-        }
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        final PasswordVaultItemState passwordVaultItemState = (PasswordVaultItemState) evt.getNewValue();
+        dispatchStates(passwordVaultItemState);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("Action performed: " + e.getActionCommand());
+    }
+
+    private void dispatchStates(PasswordVaultItemState passwordVaultItemState) {
+        form.setError(passwordVaultItemState.getError());
+
+        titleLabel.setText(passwordVaultItemState.getTitle());
+        usernameLabel.setText(USERNAME + passwordVaultItemState.getUsername());
+        passwordLabel.setText(PASSWORD + hidePassword);
+        urlLabel.setText(URL + passwordVaultItemState.getUrl());
+    }
+
+    private void addBackButton() {
+        final JButton backButton = new DoorkeyButton.DoorkeyButtonBuilder("< Back")
+                .addListener(event -> {
+                    // TODO: Refactor everything into a package inside service.
+                    // TODO: Create the presenter, etc.
+                    // TODO: Add a controller, and make controller call interactor, which calls the presenter
+                    // TODO: to switch the view.
+                    this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
+                    this.viewManagerModel.onStateChanged();
+                }
+        ).build();
+        add(backButton);
+    }
+
+    private void addActionsPanel() {
         final JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         actionsPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         actionsPanel.setPreferredSize(new Dimension(300, 40));
@@ -60,79 +139,57 @@ public class PasswordVaultItemView extends JPanel implements PropertyChangeListe
         final JButton deleteButton = addDeleteButton();
         actionsPanel.add(editButton);
         actionsPanel.add(deleteButton);
-        panel.add(actionsPanel);
+        add(actionsPanel);
     }
 
-    private void addVaultItemTitle(PasswordVaultItemState passwordVaultItemState) {
-        if (passwordVaultItemState.getVaultItem().isEmpty()) {
-            return;
-        }
-        final PasswordVaultItemState state = passwordVaultItemViewModel.getState();
-        final JLabel titleLabel = new JLabel(state.getTitle());
+    private void addVaultItemTitle() {
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new DoorkeyFont(18));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
+        add(titleLabel);
+        add(Box.createRigidArea(new Dimension(0, 5)));
     }
 
-    private void addUsernamePanel(PasswordVaultItemState passwordVaultItemState) {
-        if (passwordVaultItemState.getVaultItem().isEmpty()) {
-            return;
-        }
-        final PasswordVaultItemState state = passwordVaultItemViewModel.getState();
+    private void addUsernamePanel() {
         final JPanel usernamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         usernamePanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        final JLabel usernameLabel = addLabel("Username:");
+
+        usernameLabel.setPreferredSize(new Dimension(150, usernameLabel.getPreferredSize().height));
         usernamePanel.add(usernameLabel);
-        usernamePanel.add(addDisplay(state.getUsername(), usernameLabel.getHeight()));
-        usernamePanel.add(addCopyButton(usernameLabel.getPreferredSize().height, "username", state.getUsername()));
+        usernamePanel.add(usernameCopy);
+
         usernamePanel.setMaximumSize(new Dimension(300, usernamePanel.getPreferredSize().height));
         form.add(usernamePanel);
         form.add(Box.createRigidArea(new Dimension(0, 20)));
     }
 
-    private void addPasswordPanel(PasswordVaultItemState passwordVaultItemState) {
-        if (passwordVaultItemState.getVaultItem().isEmpty()) {
-            return;
-        }
-        final PasswordVaultItemState state = passwordVaultItemViewModel.getState();
+    private void addPasswordPanel() {
         final JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         passwordPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        final JLabel passwordLabel = addLabel("Password:");
+
+        passwordLabel.setPreferredSize(new Dimension(150, passwordLabel.getPreferredSize().height));
         passwordPanel.add(passwordLabel);
-        final JLabel passwordDisplay = addDisplay(hidePassword, passwordLabel.getHeight());
-        passwordPanel.add(addCopyButton(passwordLabel.getPreferredSize().height, "password", state.getPassword()));
-        passwordPanel.add(addHideButton(passwordLabel.getPreferredSize().height, passwordDisplay, state.getPassword()));
+        passwordPanel.add(passwordCopy);
+
         passwordPanel.setMaximumSize(new Dimension(300, passwordPanel.getPreferredSize().height));
         form.add(passwordPanel);
         form.add(Box.createRigidArea(new Dimension(0, 20)));
     }
 
-    private void addUrlPanel(PasswordVaultItemState passwordVaultItemState) {
-        if (passwordVaultItemState.getVaultItem().isEmpty()) {
-            return;
-        }
-        final PasswordVaultItemState state = passwordVaultItemViewModel.getState();
+    private void addUrlPanel() {
         final JPanel urlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         urlPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        final JLabel urlLabel = addLabel("URL:     ");
+
+        urlLabel.setPreferredSize(new Dimension(150, urlLabel.getPreferredSize().height));
         urlPanel.add(urlLabel);
-        urlPanel.add(addDisplay(state.getUrl(), urlLabel.getHeight()));
-        urlPanel.add(addUrl(urlLabel.getPreferredSize().height, state.getUrl()));
+        urlPanel.add(urlCopy);
+
         urlPanel.setMaximumSize(new Dimension(300, urlPanel.getPreferredSize().height));
         form.add(urlPanel);
     }
 
-    private JLabel addLabel(String text) {
-        final JLabel label = new JLabel(text);
-        label.setForeground(Color.WHITE);
-        label.setFont(new DoorkeyFont());
-        return label;
-    }
-
-    private JLabel addDisplay(String text, int height) {
+    private JLabel createJlabel(String text, int height) {
         final JLabel display = new JLabel(text);
         display.setForeground(Color.WHITE);
         display.setFont(new DoorkeyFont());
@@ -141,13 +198,23 @@ public class PasswordVaultItemView extends JPanel implements PropertyChangeListe
         final Border border = BorderFactory.createLineBorder(ViewConstants.TEXT_MUTED_COLOR, 1);
         display.setBorder(border);
         display.setVisible(true);
+
         return display;
     }
 
-    private JButton addCopyButton(int height, String type, String copyText) {
+    /**
+     * Create a copy button, given a copy function that is executed EACH time the button is clicked.
+     * The function may be dependent on the state, so it is natural to expect the return value to be
+     * variable. The function must be of type () -> String.
+     * @param height The height of the button.
+     * @param type The type parameter of the button, a String.
+     * @param copyFn The function that is executed when the button is clicked.
+     * @return The JButton that is created.
+     */
+    private JButton createCopyButton(int height, String type, Copier copyFn) {
         final JButton copyButton = new DoorkeyButton.DoorkeyButtonBuilder("📋")
                 .addListener(event -> {
-                    copyMessageSequence(type, copyText);
+                    copyMessageSequence(type, copyFn.copy());
                 })
                 .build();
         copyButton.setBackground(ViewConstants.BACKGROUND_COLOR);
@@ -260,37 +327,25 @@ public class PasswordVaultItemView extends JPanel implements PropertyChangeListe
         repaint();
     }
 
-    @NotNull
-    private static JPanel getMainPanel() {
-        final JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
-        return panel;
-    }
-
-    private void setUpMainFrame() {
-        // The following line is commented out, as it can be activated once
-        // the panels are made prettier, and the support to add/close is added.
-        //
-        // this.setUndecorated(true);
-        //
-        this.setSize(400, 500);
-        this.setLayout(new BorderLayout());
+    private void setUpMainPanel() {
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(ViewConstants.BACKGROUND_COLOR);
+        this.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        final PasswordVaultItemState passwordVaultItemState = (PasswordVaultItemState) evt.getNewValue();
-        addVaultItemTitle(passwordVaultItemState);
-        addActionsPanel(passwordVaultItemState);
-        addUsernamePanel(passwordVaultItemState);
-        addPasswordPanel(passwordVaultItemState);
-        addUsernamePanel(passwordVaultItemState);
-        this.revalidate();
-        this.repaint();
+    private PasswordVaultItemState getState() {
+        return passwordVaultItemViewModel.getState();
     }
 
+    /**
+     * Copy the text.
+     */
+    private interface Copier {
+        /**
+         * Copy the text.
+         * @return The text to copy.
+         */
+        String copy();
+    }
 }
 

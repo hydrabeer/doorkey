@@ -1,31 +1,33 @@
 package views;
 
-import entity.AbstractVaultItem;
-import entity.PasswordVaultItem;
-
 import java.util.Optional;
 
+import entity.PasswordVaultItem;
+
+/**
+ * The state of a password vault item.
+ */
 public class PasswordVaultItemState {
     private Optional<PasswordVaultItem> vaultItem;
-    private String error;
-    private String message;
+    private String error = "";
+    private String message = "";
 
     public PasswordVaultItemState() {
         this.vaultItem = Optional.empty();
-        this.error = "";
-        this.message = "";
     }
 
     public PasswordVaultItemState(PasswordVaultItem item) {
         this.vaultItem = Optional.of(item);
-        this.error = "";
-        this.message = "";
     }
 
     public Optional<PasswordVaultItem> getVaultItem() {
         return vaultItem;
     }
 
+    /**
+     * Gets the title of the vault item.
+     * @return The title of the vault item, if present. Otherwise, an empty string.
+     */
     public String getTitle() {
         if (vaultItem.isPresent()) {
             return vaultItem.get().getTitle();
@@ -33,10 +35,10 @@ public class PasswordVaultItemState {
         return "";
     }
 
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-
+    /**
+     * Gets the username of the vault item.
+     * @return The username of the vault item, if present. Otherwise, an empty string.
+     */
     public String getUsername() {
         if (vaultItem.isPresent()) {
             return vaultItem.get().getUsername();
@@ -44,10 +46,10 @@ public class PasswordVaultItemState {
         return "";
     }
 
-//    public void setUsername(String username) {
-//        this.username = username;
-//    }
-
+    /**
+     * Gets the password of the vault item.
+     * @return The password of the vault item, if present. Otherwise, an empty string.
+     */
     public String getPassword() {
         if (vaultItem.isPresent()) {
             return vaultItem.get().getPassword();
@@ -55,20 +57,16 @@ public class PasswordVaultItemState {
         return "";
     }
 
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-
+    /**
+     * Gets the url of the vault item.
+     * @return The url of the vault item, if present. Otherwise, an empty string.
+     */
     public String getUrl() {
         if (vaultItem.isPresent()) {
             return vaultItem.get().getUrl();
         }
         return "";
     }
-
-//    public void setUrl(String url) {
-//        this.url = url;
-//    }
 
     public String getError() {
         return error;

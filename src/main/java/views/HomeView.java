@@ -1,18 +1,23 @@
 package views;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
 import data_access.authentication.FireStoreUserDataAccessObject;
 import entity.AbstractVaultItem;
-import entity.PasswordVaultItem;
-import service.ViewManagerModel;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomeState;
 import service.home.interface_adapter.HomeViewModel;
@@ -25,20 +30,16 @@ import views.components.DoorkeyFont;
 public class HomeView extends JPanel implements ActionListener, PropertyChangeListener {
     private final HomeController homeController;
     private final HomeViewModel homeViewModel;
-    private final ViewManagerModel viewManagerModel;
     private final JLabel userInfo = new JLabel();
     private final JLabel userRepositoryInfo = new JLabel();
-    private final JLabel itemsLabel = new JLabel();
     private final JPanel vaultPanel = new JPanel();
 
     public HomeView(
             HomeViewModel homeViewModel,
-            HomeController homeController,
-            ViewManagerModel viewManagerModel
+            HomeController homeController
     ) {
         this.homeController = homeController;
         this.homeViewModel = homeViewModel;
-        this.viewManagerModel = viewManagerModel;
         this.homeViewModel.addPropertyChangeListener(this);
 
         setUpMainPanel();
@@ -53,7 +54,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final HomeState homeState = (HomeState) evt.getNewValue();
-        addVaultItemsPanel(homeState);
+        dispatchStates(homeState);
     }
 
     @Override
@@ -62,30 +63,8 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     }
 
     private void dispatchStates(HomeState homeState) {
-        if (homeState.getUser().isPresent()) {
-            userInfo.setText(homeState.getUser().get().getEmail());
-        }
-
-        if (homeState.getUserRepository().isPresent()) {
-            if (homeState.getUserRepository().get() instanceof FireStoreUserDataAccessObject) {
-                userRepositoryInfo.setText("Firebase");
-            }
-            else {
-                userRepositoryInfo.setText("Local");
-            }
-        }
-
-        final StringBuilder vaultItems = new StringBuilder();
-        if (homeViewModel.getState().getUser().isEmpty()) {
-            return;
-        }
-
-        for (AbstractVaultItem vaultItem : homeViewModel.getState().getUser().get().getVault().getItems()) {
-            // TODO: Decryption Strategy
-            vaultItems.append(vaultItem.getTitle()).append("\n");
-        }
-
-        itemsLabel.setText(vaultItems.toString());
+        setVaultItems(homeState);
+        setRepositoryInfo(homeState);
     }
 
     private void setUpMainPanel() {
@@ -112,41 +91,26 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
 
     private void addBackButton() {
         final DoorkeyButton back = new DoorkeyButton.DoorkeyButtonBuilder("< Back")
-                .addListener(event -> {
-                    viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
-                    viewManagerModel.onStateChanged();
-                }).build();
+                .addListener(event -> homeController.displayLoginView()).build();
         this.add(back);
     }
 
-    private void addVaultItems() {
-        itemsLabel.setForeground(Color.WHITE);
-        itemsLabel.setFont(new DoorkeyFont());
-        itemsLabel.setAlignmentX(CENTER_ALIGNMENT);
-
-        add(itemsLabel);
-    }
-    private void addVaultItemsPanel(HomeState homeState) {
-        // Create the parent panel with BoxLayout (vertical alignment)
+    private void setVaultItems(HomeState homeState) {
         final JPanel parentPanel = new JPanel();
         parentPanel.setLayout(new BoxLayout(parentPanel, BoxLayout.Y_AXIS));
         parentPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
 
-        // Wrap the parent panel in a JScrollPane
         final JScrollPane scrollPane = new JScrollPane(parentPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setBackground(ViewConstants.BACKGROUND_COLOR);
 
         if (homeState.getUser().isPresent()) {
-            userInfo.setText(homeState.getUser().get().getEmail());
-        }
-
-        if (homeState.getUserRepository().isPresent()) {
-            if (homeState.getUserRepository().get() instanceof FireStoreUserDataAccessObject) {
-                userRepositoryInfo.setText("Firebase");
+            final String email = homeState.getUser().get().getEmail();
+            if (email != null) {
+                userInfo.setText(email);
             }
             else {
-                userRepositoryInfo.setText("Local");
+                userInfo.setText("Used locally - no email");
             }
         }
 
@@ -155,10 +119,24 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         }
 
         for (AbstractVaultItem vaultItem : homeViewModel.getState().getUser().get().getVault().getItems()) {
-            // TODO: Decryption Strategy
             parentPanel.add(addVaultItem(vaultItem));
         }
+
+        // Baris: Added this line to remove all the components from the vaultPanel
+        vaultPanel.removeAll();
         vaultPanel.add(scrollPane);
+    }
+
+    // TODO: Remove this user repository info text (the entire if statement and its body)
+    private void setRepositoryInfo(HomeState homeState) {
+        if (homeState.getUserRepository().isPresent()) {
+            if (homeState.getUserRepository().get() instanceof FireStoreUserDataAccessObject) {
+                userRepositoryInfo.setText("Firebase");
+            }
+            else {
+                userRepositoryInfo.setText("Local");
+            }
+        }
     }
 
     private JPanel addVaultItem(AbstractVaultItem vaultItem) {
