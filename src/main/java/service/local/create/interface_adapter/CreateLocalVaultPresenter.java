@@ -33,9 +33,10 @@ public class CreateLocalVaultPresenter implements CreateLocalVaultOutputBoundary
     public void prepareSuccessView(CreateLocalVaultOutputData createLocalVaultOutputData) {
         final HomeState currentHomeViewState = homeViewModel.getState();
 
-        UserRepository repository = new LocalVaultUserDataAccessObject();
+        final UserRepository repository = new LocalVaultUserDataAccessObject();
         try {
-            AbstractUser user = repository.signupUser(createLocalVaultOutputData.getPath(), createLocalVaultOutputData.getPassword());
+            final AbstractUser user = repository.signupUser(createLocalVaultOutputData.getPath(),
+                    createLocalVaultOutputData.getPassword());
         
             currentHomeViewState.setUser(user);
             currentHomeViewState.setUserRepository(repository);
@@ -45,8 +46,9 @@ public class CreateLocalVaultPresenter implements CreateLocalVaultOutputBoundary
 
             this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
             this.viewManagerModel.onStateChanged();
-        } catch (AuthException e) {
-            prepareErrorView(e.getMessage());
+        }
+        catch (AuthException exception) {
+            prepareErrorView(exception.getMessage());
             return;
         }
     }

@@ -33,9 +33,10 @@ public class LoadLocalVaultPresenter implements LoadLocalVaultOutputBoundary {
     public void prepareSuccessView(LoadLocalVaultOutputData loadLocalVaultOutputData) {
         final HomeState currentHomeViewState = homeViewModel.getState();
 
-        UserRepository repository = new LocalVaultUserDataAccessObject();
+        final UserRepository repository = new LocalVaultUserDataAccessObject();
         try {
-            AbstractUser user = repository.signInUser(loadLocalVaultOutputData.getPath(), loadLocalVaultOutputData.getPassword());
+            final AbstractUser user = repository.signInUser(loadLocalVaultOutputData.getPath(),
+                    loadLocalVaultOutputData.getPassword());
 
             currentHomeViewState.setUser(user);
             currentHomeViewState.setUserRepository(repository);
@@ -45,8 +46,9 @@ public class LoadLocalVaultPresenter implements LoadLocalVaultOutputBoundary {
 
             this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
             this.viewManagerModel.onStateChanged();
-        } catch (AuthException e) {
-            prepareErrorView(e.getMessage());
+        }
+        catch (AuthException exception) {
+            prepareErrorView(exception.getMessage());
             return;
         }
     }
