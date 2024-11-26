@@ -36,4 +36,13 @@ public interface UserRepository {
      * @throws AuthException If the item could not be added to the user's vault.
      */
     void addVaultItem(AbstractUser user, AbstractVaultItem item) throws AuthException;
+
+    /**
+     * Remove an item from the user's vault.
+     *
+     * @param user The user to remove the item from.
+     * @param item The item to remove from the user's vault.
+     * @throws AuthException If the item could not be removed from the user's vault.
+     */
+    void removeVaultItem(AbstractUser user, AbstractVaultItem item) throws AuthException;
 }

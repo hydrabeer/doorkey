@@ -6,7 +6,7 @@ import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import data_access.authentication.FireStoreUserDataAccessObject;
+import data_access.FireStoreUserDataAccessObject;
 import data_access.authentication.FirebaseAuthRepository;
 import interface_adapter.net.http.CommonHttpClient;
 import interface_adapter.net.http.HttpClient;
