@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * Test suite for the LoginInteractor.
  */
 public class LoginInteractorTest {
-    private LoginInteractor loginInteractor;
-    private MockUserRepository mockUserRepository;
-    private MockLoginPresenter mockLoginPresenter;
+    private MockUserRepository mockUserRepository = new MockUserRepository();
+    private MockLoginPresenter mockLoginPresenter = new MockLoginPresenter();
+    private LoginInteractor loginInteractor = new LoginInteractor(mockUserRepository, mockLoginPresenter);
 
 
     @BeforeEach

@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * Test suite for the SignupInteractor.
  */
 public class SignupInteractorTest {
-    private SignupInteractor signupInteractor;
-    private MockUserRepository mockUserRepository;
-    private MockSignupPresenter mockSignupPresenter;
+    private MockUserRepository mockUserRepository = new MockUserRepository();
+    private MockSignupPresenter mockSignupPresenter = new MockSignupPresenter();
+    private SignupInteractor signupInteractor = new SignupInteractor(mockUserRepository, mockSignupPresenter);
 
     @BeforeEach
     public void setUp() {
