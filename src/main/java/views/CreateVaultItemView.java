@@ -26,6 +26,7 @@ import javax.swing.event.DocumentListener;
 
 import service.password_validation.interface_adapter.PasswordValidationController;
 import service.password_validation.interface_adapter.PasswordValidationViewModel;
+import static views.ViewConstants.DEFAULT_FONT_NAME;
 
 /**
  * The dialog view for creating a new vault item.
@@ -35,7 +36,6 @@ public class CreateVaultItemView extends JDialog {
     private final PasswordValidationViewModel viewModel;
     private final PasswordValidationController controller;
 
-    // UI Components
     private JTextField urlField;
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -81,7 +81,6 @@ public class CreateVaultItemView extends JDialog {
         setResizable(false);
         setLocationRelativeTo(owner);
 
-        // Add property change listener
         viewModel.addPropertyChangeListener(evt -> {
             if (SwingUtilities.isEventDispatchThread()) {
                 updateView(evt);
@@ -98,9 +97,9 @@ public class CreateVaultItemView extends JDialog {
      * Initializes all UI components.
      */
     private void initializeComponents() {
-        final Font titleFont = new Font("Futura", Font.BOLD, 30);
-        final Font labelFont = new Font("Futura", Font.PLAIN, 16);
-        final Font requirementFont = new Font("Futura", Font.PLAIN, 14);
+        final Font titleFont = new Font(DEFAULT_FONT_NAME, Font.BOLD, 30);
+        final Font labelFont = new Font(DEFAULT_FONT_NAME, Font.PLAIN, 16);
+        final Font requirementFont = new Font(DEFAULT_FONT_NAME, Font.PLAIN, 14);
 
         titleLabel = new JLabel("New Vault Item");
         titleLabel.setFont(titleFont);
@@ -196,7 +195,6 @@ public class CreateVaultItemView extends JDialog {
         panel.setLayout(new GridLayout(0, 2, 20, 20));
         panel.setMaximumSize(new Dimension(componentWidth, 0));
 
-        // Initialize requirement labels and assign to instance variables
         lengthRequirementLabel = createRequirementLabel("At least 8 characters", font);
         upperLowerRequirementLabel = createRequirementLabel("At least one uppercase and lowercase letter", font);
         numericRequirementLabel = createRequirementLabel("At least one number", font);
@@ -248,7 +246,7 @@ public class CreateVaultItemView extends JDialog {
         contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
         final JLabel requirementsTitle = 
-            createLabel("Password Guidelines:", new Font("Futura", Font.BOLD, 18));
+            createLabel("Password Guidelines:", new Font(DEFAULT_FONT_NAME, Font.BOLD, 18));
         requirementsTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(requirementsTitle);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -256,7 +254,7 @@ public class CreateVaultItemView extends JDialog {
         contentPanel.add(requirementsPanel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 30)));
 
-        final JLabel strengthLabel = createLabel("Password Strength:", new Font("Futura", Font.PLAIN, 16));
+        final JLabel strengthLabel = createLabel("Password Strength:", new Font(DEFAULT_FONT_NAME, Font.PLAIN, 16));
         strengthLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(strengthLabel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -290,7 +288,6 @@ public class CreateVaultItemView extends JDialog {
         buttonsPanel.setBackground(Color.BLACK);
         buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 40, 0));
 
-        // Add Save and Cancel buttons
         buttonsPanel.add(saveButton);
         buttonsPanel.add(cancelButton);
 
@@ -326,7 +323,7 @@ public class CreateVaultItemView extends JDialog {
      */
     private JButton createStyledButton(String text) {
         final JButton button = new JButton(text);
-        button.setFont(new Font("Futura", Font.BOLD, 16));
+        button.setFont(new Font(DEFAULT_FONT_NAME, Font.BOLD, 16));
         button.setForeground(Color.WHITE);
         button.setBackground(Color.BLACK);
         button.setFocusPainted(false);
@@ -358,14 +355,14 @@ public class CreateVaultItemView extends JDialog {
             }
         });
 
-        // Optionally, add DocumentListener to confirmPasswordField to validate matching passwords
+        // add DocumentListener to confirmPasswordField to validate matching passwords
         confirmPasswordField.getDocument().addDocumentListener(new SimpleDocumentListener() {
             @Override
             public void update(DocumentEvent e) {
                 final String password = new String(passwordField.getPassword());
                 final String confirmPassword = new String(confirmPasswordField.getPassword());
                 // Implement matching logic if necessary
-                // For example, update a label or enable/disable the save button
+                // enable/disable the save button
             }
         });
     }
