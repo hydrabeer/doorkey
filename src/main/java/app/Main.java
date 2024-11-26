@@ -9,6 +9,7 @@ import views.ViewConstants;
  * The main class for our program.
  */
 public class Main {
+
     /**
      * The main method that starts the GUI.
      *
@@ -29,7 +30,8 @@ public class Main {
                 .addLocalVaultView()
                 .addCreateLocalVaultView()
                 .addLocalVaultView()
-                .setInitialView(ViewConstants.LOGIN_VIEW)
+                .addCreateVaultItemView()
+                .setInitialView(ViewConstants.CREATE_VAULT_ITEM_VIEW)
                 .build();
 
         mainFrame.setVisible(true);
