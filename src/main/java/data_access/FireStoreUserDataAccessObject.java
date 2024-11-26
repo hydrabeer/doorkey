@@ -1,7 +1,8 @@
-package data_access.authentication;
+package data_access;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -104,6 +105,23 @@ public class FireStoreUserDataAccessObject implements UserRepository {
 
         user.getVault().addItem(item);
 
+        addAllItemsToVault(cloudUser);
+    }
+
+    @Override
+    public void removeVaultItem(AbstractUser user, AbstractVaultItem item) throws AuthException {
+        if (!(user instanceof CloudUser cloudUser)) {
+            throw new IllegalArgumentException("User must be a CloudUser.");
+        }
+
+        final List<AbstractVaultItem> vaultItems = user.getVault().getItems();
+        vaultItems.remove(item);
+        user.getVault().setItems(vaultItems);
+
+        addAllItemsToVault(cloudUser);
+    }
+
+    private void addAllItemsToVault(CloudUser cloudUser) throws AuthException {
         if (!cloudUser.getRemoteAuth().isRefreshTokenValid()) {
             final AuthResponse newAuth = authRepository.refreshToken(cloudUser.getRemoteAuth().getRefreshToken());
             cloudUser.setRemoteAuth(new RemoteAuth(newAuth));
