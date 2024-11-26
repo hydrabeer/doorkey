@@ -112,6 +112,19 @@ public class AppBuilder {
         views.add(loadLocalVaultView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
         return this;
     }
+    /**
+     * Adds the CreateVaultItemView to the viewsPanel.
+     *
+     * @return The AppBuilder instance.
+     */
+    public AppBuilder addCreateVaultItemView() {
+        final PasswordValidationViewModel passwordValidationViewModel = new PasswordValidationViewModel();
+        final PasswordValidationController passwordValidationController = new PasswordValidationController();
+        final CreateVaultItemView createVaultItemView = new CreateVaultItemView(
+                mainFrame, passwordValidationViewModel, passwordValidationController);
+        views.add(createVaultItemView, ViewConstants.CREATE_VAULT_ITEM_VIEW);
+        return this;
+    }
 
     /**
      * Adds the HomeView to the viewsPanel.
