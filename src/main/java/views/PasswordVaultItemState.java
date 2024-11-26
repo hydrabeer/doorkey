@@ -1,55 +1,74 @@
 package views;
 
+import entity.AbstractVaultItem;
 import entity.PasswordVaultItem;
 
+import java.util.Optional;
+
 public class PasswordVaultItemState {
-    private String title;
-    private String username;
-    private String password;
-    private String url;
+    private Optional<PasswordVaultItem> vaultItem;
     private String error;
     private String message;
 
-    public PasswordVaultItemState(PasswordVaultItem item) {
-        this.title = item.getTitle();
-        this.username = item.getUsername();
-        this.password = item.getPassword();
-        this.url = item.getUrl();
+    public PasswordVaultItemState() {
+        this.vaultItem = Optional.empty();
         this.error = "";
         this.message = "";
     }
 
-    public String getTitle() {
-        return title;
+    public PasswordVaultItemState(PasswordVaultItem item) {
+        this.vaultItem = Optional.of(item);
+        this.error = "";
+        this.message = "";
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public Optional<PasswordVaultItem> getVaultItem() {
+        return vaultItem;
     }
+
+    public String getTitle() {
+        if (vaultItem.isPresent()) {
+            return vaultItem.get().getTitle();
+        }
+        return "";
+    }
+
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
 
     public String getUsername() {
-        return username;
+        if (vaultItem.isPresent()) {
+            return vaultItem.get().getUsername();
+        }
+        return "";
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+//    public void setUsername(String username) {
+//        this.username = username;
+//    }
 
     public String getPassword() {
-        return password;
+        if (vaultItem.isPresent()) {
+            return vaultItem.get().getPassword();
+        }
+        return "";
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
 
     public String getUrl() {
-        return url;
+        if (vaultItem.isPresent()) {
+            return vaultItem.get().getUrl();
+        }
+        return "";
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+//    public void setUrl(String url) {
+//        this.url = url;
+//    }
 
     public String getError() {
         return error;

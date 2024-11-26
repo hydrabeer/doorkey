@@ -11,6 +11,9 @@ import data_access.authentication.FirebaseAuthRepository;
 import interface_adapter.net.http.CommonHttpClient;
 import interface_adapter.net.http.HttpClient;
 import service.ViewManagerModel;
+import service.copy_credentials.CopyCredentialsInteractor;
+import service.copy_credentials.interface_adapter.CopyCredentialsController;
+import service.copy_credentials.interface_adapter.CopyCredentialsPresenter;
 import service.home.HomeInteractor;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomePresenter;
@@ -31,13 +34,10 @@ import service.signup.SignupInteractor;
 import service.signup.interface_adapter.SignupController;
 import service.signup.interface_adapter.SignupPresenter;
 import service.signup.interface_adapter.SignupViewModel;
-import views.CreateLocalVaultView;
-import views.HomeView;
-import views.LoadLocalVaultView;
-import views.LoginView;
-import views.SignupView;
-import views.ViewConstants;
-import views.ViewManager;
+import service.url_redirect.UrlRedirectInteractor;
+import service.url_redirect.UrlRedirectPresenter;
+import service.url_redirect.interface_adapter.UrlRedirectController;
+import views.*;
 
 /**
  * A builder class for the application.
@@ -119,7 +119,8 @@ public class AppBuilder {
      * @return The AppBuilder instance.
      */
     public AppBuilder addHomeView() {
-        final HomePresenter homePresenter = new HomePresenter(homeViewModel, viewManagerModel);
+        final PasswordVaultItemViewModel passwordVaultItemViewModel = new PasswordVaultItemViewModel();
+        final HomePresenter homePresenter = new HomePresenter(homeViewModel, passwordVaultItemViewModel, viewManagerModel);
         final HomeInteractor homeInteractor = new HomeInteractor(homePresenter);
         final HomeController homeController = new HomeController(homeInteractor);
         final HomeView homeView = new HomeView(homeViewModel, homeController, viewManagerModel);
@@ -154,6 +155,31 @@ public class AppBuilder {
         final LoginController loginController = new LoginController(loginInteractor);
         final LoginView loginView = new LoginView(loginViewModel, loginController, viewManagerModel);
         views.add(loginView, ViewConstants.LOGIN_VIEW);
+        return this;
+    }
+
+    /**
+     * Adds the PasswordVaultItemView to the viewsPanel.
+     *
+     * @return The AppBuilder instance.
+     */
+    public AppBuilder addPasswordVaultItemView() {
+        final PasswordVaultItemViewModel passwordVaultItemViewModel = new PasswordVaultItemViewModel();
+        final CopyCredentialsPresenter copyCredentialsPresenter = new
+                CopyCredentialsPresenter(passwordVaultItemViewModel);
+        final CopyCredentialsInteractor copyCredentialsInteractor = new
+                CopyCredentialsInteractor(copyCredentialsPresenter);
+        final CopyCredentialsController copyCredentialsController = new
+                CopyCredentialsController(copyCredentialsInteractor);
+        final UrlRedirectPresenter urlRedirectPresenter = new
+                UrlRedirectPresenter(passwordVaultItemViewModel);
+        final UrlRedirectInteractor urlRedirectInteractor = new
+                UrlRedirectInteractor(urlRedirectPresenter);
+        final UrlRedirectController urlRedirectController = new
+                UrlRedirectController(urlRedirectInteractor);
+        final PasswordVaultItemView passwordVaultItemView = new PasswordVaultItemView(viewManagerModel,
+                copyCredentialsController, urlRedirectController, passwordVaultItemViewModel);
+        views.add(passwordVaultItemView, ViewConstants.PASSWORD_VAULT_ITEM_VIEW);
         return this;
     }
 
