@@ -8,8 +8,6 @@ import entity.AbstractUser;
 import entity.AbstractVaultItem;
 import entity.LocalUser;
 import entity.LocalVault;
-import exception.AuthException;
-import interface_adapter.net.auth.AuthErrorReason;
 import repository.UserRepository;
 
 /**
