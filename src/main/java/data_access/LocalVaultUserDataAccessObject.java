@@ -32,7 +32,7 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
     public AbstractUser signupUser(String filepath, String vaultPassword) throws IOException {
         this.path = filepath;
         this.password = vaultPassword;
-        return new LocalUser(new LocalVault(new ArrayList<>(), this.path, this.password));
+        return new LocalUser(new LocalVault(new ArrayList<>(), this.path, this.password), this.password);
     }
 
     /**
@@ -55,7 +55,7 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
             final LocalVault vault = new LocalVault(new ArrayList<>(), this.path, this.password);
             vault.loadFromJSON(content);
 
-            return new LocalUser(vault);
+            return new LocalUser(vault, this.password);
         }
         catch (java.nio.file.NoSuchFileException exception) {
             throw new IOException("File not found: " + this.path);
