@@ -22,7 +22,7 @@ public class Main {
      * Initializes the main UI.
      */
     private static void initializeMainUi() {
-        final JFrame mainFrame = new AppBuilder("Doorkey", 400, 550)
+        final JFrame mainFrame = new AppBuilder("Doorkey", 500, 650)
                 .addHomeView()
                 .addLoginView()
                 .addSignupView()
