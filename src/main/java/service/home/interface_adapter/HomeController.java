@@ -27,6 +27,6 @@ public class HomeController {
      * Display login view.
      */
     public void displayLoginView() {
-        interactor.displayHomeView();
+        interactor.displayLoginView();
     }
 }

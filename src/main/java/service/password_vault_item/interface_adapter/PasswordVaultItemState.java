@@ -1,4 +1,4 @@
-package views;
+package service.password_vault_item.interface_adapter;
 
 import java.util.Optional;
 

@@ -12,7 +12,7 @@ public interface HomeOutputBoundary {
     void prepareShowVaultView(HomeOutputData homeOutputData);
 
     /**
-     * Displays the home view.
+     * Displays the login view.
      */
-    void displayHomeView();
+    void displayLoginView();
 }

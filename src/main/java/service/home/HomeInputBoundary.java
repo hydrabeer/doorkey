@@ -11,7 +11,7 @@ public interface HomeInputBoundary {
     void displayVaultItem(HomeInputData homeInputData);
 
     /**
-     * Display the home view.
+     * Display the login view.
      */
-    void displayHomeView();
+    void displayLoginView();
 }

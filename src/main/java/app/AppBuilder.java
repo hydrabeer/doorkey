@@ -30,6 +30,10 @@ import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
 import service.login.interface_adapter.LoginViewModel;
+import service.password_vault_item.PasswordVaultItemInteractor;
+import service.password_vault_item.interface_adapter.PasswordVaultItemController;
+import service.password_vault_item.interface_adapter.PasswordVaultItemPresenter;
+import service.password_vault_item.interface_adapter.PasswordVaultItemViewModel;
 import service.signup.SignupInteractor;
 import service.signup.interface_adapter.SignupController;
 import service.signup.interface_adapter.SignupPresenter;
@@ -42,7 +46,6 @@ import views.HomeView;
 import views.LoadLocalVaultView;
 import views.LoginView;
 import views.PasswordVaultItemView;
-import views.PasswordVaultItemViewModel;
 import views.SignupView;
 import views.ViewConstants;
 import views.ViewManager;
@@ -191,11 +194,17 @@ public class AppBuilder {
         );
         final UrlRedirectInteractor urlRedirectInteractor = new UrlRedirectInteractor(urlRedirectPresenter);
         final UrlRedirectController urlRedirectController = new UrlRedirectController(urlRedirectInteractor);
+        final PasswordVaultItemPresenter passwordVaultItemPresenter = new PasswordVaultItemPresenter(
+                passwordVaultItemViewModel, viewManagerModel);
+        final PasswordVaultItemInteractor passwordVaultItemInteractor = new PasswordVaultItemInteractor(
+                passwordVaultItemPresenter);
+        final PasswordVaultItemController passwordVaultItemController = new PasswordVaultItemController(
+                passwordVaultItemInteractor);
         final PasswordVaultItemView passwordVaultItemView = new PasswordVaultItemView(
                 copyCredentialsController,
                 urlRedirectController,
-                passwordVaultItemViewModel,
-                viewManagerModel
+                passwordVaultItemController,
+                passwordVaultItemViewModel
         );
         views.add(passwordVaultItemView, ViewConstants.PASSWORD_VAULT_ITEM_VIEW);
         return this;

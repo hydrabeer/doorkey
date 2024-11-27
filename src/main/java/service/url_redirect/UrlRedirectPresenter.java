@@ -1,6 +1,6 @@
 package service.url_redirect;
 
-import views.PasswordVaultItemViewModel;
+import service.password_vault_item.interface_adapter.PasswordVaultItemViewModel;
 
 /**
  * Gives information from the interactor to the User.

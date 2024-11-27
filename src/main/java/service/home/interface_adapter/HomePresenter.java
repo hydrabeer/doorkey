@@ -5,8 +5,8 @@ import entity.PasswordVaultItem;
 import service.ViewManagerModel;
 import service.home.HomeOutputBoundary;
 import service.home.HomeOutputData;
-import views.PasswordVaultItemState;
-import views.PasswordVaultItemViewModel;
+import service.password_vault_item.interface_adapter.PasswordVaultItemState;
+import service.password_vault_item.interface_adapter.PasswordVaultItemViewModel;
 import views.ViewConstants;
 
 /**
@@ -49,8 +49,10 @@ public class HomePresenter implements HomeOutputBoundary {
     }
 
     @Override
-    public void displayHomeView() {
-        this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
+    public void displayLoginView() {
+        homeViewModel.setState(new HomeState());
+        homeViewModel.onStateChanged();
+        this.viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
         this.viewManagerModel.onStateChanged();
     }
 }

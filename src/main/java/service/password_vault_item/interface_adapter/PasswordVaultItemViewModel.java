@@ -1,6 +1,7 @@
-package views;
+package service.password_vault_item.interface_adapter;
 
 import interface_adapter.ViewModel;
+import views.ViewConstants;
 
 /**
  * The password vault item view model.

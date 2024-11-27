@@ -1,7 +1,7 @@
 package service.copy_credentials.interface_adapter;
 
 import service.copy_credentials.CopyCredenentialsOutputBoundary;
-import views.PasswordVaultItemViewModel;
+import service.password_vault_item.interface_adapter.PasswordVaultItemViewModel;
 
 /**
  * Copy Credentials presenter.
