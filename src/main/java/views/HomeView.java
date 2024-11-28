@@ -1,13 +1,24 @@
 package views;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.*;
-import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 import data_access.authentication.FireStoreUserDataAccessObject;
 import entity.AbstractVaultItem;
@@ -163,7 +174,8 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         final JPanel centerPanel = new JPanel(new GridBagLayout());
         centerPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         final JLabel welcomeLabel = new JLabel(
-                "<html><div style='text-align: center;'>Welcome to Your DoorKey Vault!<br>Choose or add an item to get started.</div></html>");
+                "<html><div style='text-align: center;'>Welcome to Your DoorKey "
+                        + "Vault!<br>Choose or add an item to get started.</div></html>");
         welcomeLabel.setFont(new DoorkeyFont());
         welcomeLabel.setForeground(Color.WHITE);
         centerPanel.add(welcomeLabel);
@@ -180,21 +192,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         searchLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         topPanel.add(searchLabel);
 
-        // Search Bar
-        final JTextField searchField = new JTextField();
-        searchField.setFont(new DoorkeyFont());
-        searchField.setBackground(ViewConstants.BACKGROUND_COLOR);
-        searchField.setForeground(Color.WHITE);
-        searchField.setCaretColor(Color.WHITE);
-        searchField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.WHITE, 1, true),
-                BorderFactory.createEmptyBorder(4, 100, 4, 100))
-        );
-
-        searchField.setPreferredSize(new Dimension(200, 30));
-        searchField.setMaximumSize(new Dimension(200, 30));
-        searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        topPanel.add(searchField, BorderLayout.NORTH);
+        topPanel.add(createSearchPanel(), BorderLayout.NORTH);
         rightPanel.add(topPanel, BorderLayout.NORTH);
 
         // Buttons
@@ -208,6 +206,23 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         rightPanel.setPreferredSize(new Dimension(200, 470));
         rightPanel.setMaximumSize(new Dimension(200, 470));
         add(rightPanel, BorderLayout.CENTER);
+    }
+
+    private JTextField createSearchPanel() {
+        final JTextField searchField = new JTextField();
+        searchField.setFont(new DoorkeyFont());
+        searchField.setBackground(ViewConstants.BACKGROUND_COLOR);
+        searchField.setForeground(Color.WHITE);
+        searchField.setCaretColor(Color.WHITE);
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.WHITE, 1, true),
+                BorderFactory.createEmptyBorder(4, 100, 4, 100))
+        );
+
+        searchField.setPreferredSize(new Dimension(200, 30));
+        searchField.setMaximumSize(new Dimension(200, 30));
+        searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return searchField;
     }
 
     private JButton creatSignOutButton() {

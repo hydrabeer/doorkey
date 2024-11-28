@@ -12,7 +12,8 @@ public class PasswordVaultItemPresenter implements PasswordVaultItemOutputBounda
     private final PasswordVaultItemViewModel vaultItemViewModel;
     private final ViewManagerModel viewManagerModel;
 
-    public PasswordVaultItemPresenter(PasswordVaultItemViewModel vaultItemViewModel, ViewManagerModel viewManagerModel) {
+    public PasswordVaultItemPresenter(
+            PasswordVaultItemViewModel vaultItemViewModel, ViewManagerModel viewManagerModel) {
         this.vaultItemViewModel = vaultItemViewModel;
         this.viewManagerModel = viewManagerModel;
     }
