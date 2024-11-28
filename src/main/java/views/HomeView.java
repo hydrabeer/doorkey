@@ -9,7 +9,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.*;
 import javax.swing.border.Border;
 
-import data_access.authentication.FireStoreUserDataAccessObject;
+import data_access.FireStoreUserDataAccessObject;
 import entity.AbstractVaultItem;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomeState;
