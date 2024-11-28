@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import data_access.authentication.FireStoreUserDataAccessObject;
+import data_access.FireStoreUserDataAccessObject;
 import entity.AbstractVaultItem;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomeState;

@@ -6,7 +6,7 @@ import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import data_access.authentication.FireStoreUserDataAccessObject;
+import data_access.FireStoreUserDataAccessObject;
 import data_access.authentication.FirebaseAuthRepository;
 import interface_adapter.net.http.CommonHttpClient;
 import interface_adapter.net.http.HttpClient;
@@ -44,6 +44,7 @@ import service.url_redirect.interface_adapter.UrlRedirectController;
 import views.CreateLocalVaultView;
 import views.HomeView;
 import views.LoadLocalVaultView;
+import views.LocalVaultView;
 import views.LoginView;
 import views.PasswordVaultItemView;
 import views.SignupView;
@@ -89,6 +90,17 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the LocalVaultView to the viewsPanel.
+     *
+     * @return The AppBuilder instance.
+     */
+    public AppBuilder addLocalVaultView() {
+        final LocalVaultView localVaultView = new LocalVaultView(viewManagerModel);
+        views.add(localVaultView, ViewConstants.LOCAL_VAULT_VIEW);
+        return this;
+    }
+
+    /**
      * Adds the CreateLocalVaultView to the viewsPanel.
      *
      * @return The AppBuilder instance.
@@ -96,7 +108,7 @@ public class AppBuilder {
     public AppBuilder addCreateLocalVaultView() {
         final CreateLocalVaultViewModel createLocalVaultViewModel = new CreateLocalVaultViewModel();
         final CreateLocalVaultPresenter createLocalVaultPresenter = new CreateLocalVaultPresenter(
-                createLocalVaultViewModel, viewManagerModel);
+                createLocalVaultViewModel, homeViewModel, viewManagerModel);
         final CreateLocalVaultInteractor createLocalVaultInteractor = new CreateLocalVaultInteractor(
                 createLocalVaultPresenter);
         final CreateLocalVaultController createLocalVaultController = new CreateLocalVaultController(
@@ -108,14 +120,14 @@ public class AppBuilder {
     }
 
     /**
-     * Adds the LocalVaultView to the viewsPanel.
+     * Adds the LoadLocalVaultView to the viewsPanel.
      *
      * @return The AppBuilder instance.
      */
-    public AppBuilder addLocalVaultView() {
+    public AppBuilder addLoadLocalVaultView() {
         final LoadLocalVaultViewModel loadLocalVaultViewModel = new LoadLocalVaultViewModel();
         final LoadLocalVaultPresenter loadLocalVaultPresenter = new LoadLocalVaultPresenter(
-                loadLocalVaultViewModel, viewManagerModel);
+                loadLocalVaultViewModel, homeViewModel, viewManagerModel);
         final LoadLocalVaultInteractor loadLocalVaultInteractor = new LoadLocalVaultInteractor(
                 loadLocalVaultPresenter);
         final LoadLocalVaultController loadLocalVaultController = new LoadLocalVaultController(
