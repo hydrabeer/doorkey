@@ -152,6 +152,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
 
     private JButton addAccessButton(int height, AbstractVaultItem vaultItem) {
         final JButton accessButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDD13")
+                // button text is unlock character
                 .addListener(event -> {
                     homeController.displayVaultItem(vaultItem);
                 })

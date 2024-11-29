@@ -2,6 +2,7 @@ package service.home.interface_adapter;
 
 import entity.AbstractVaultItem;
 import entity.PasswordVaultItem;
+import exception.InvalidVaultItemException;
 import service.ViewManagerModel;
 import service.home.HomeOutputBoundary;
 import service.home.HomeOutputData;
@@ -29,7 +30,7 @@ public class HomePresenter implements HomeOutputBoundary {
     }
 
     @Override
-    public void prepareShowVaultView(HomeOutputData homeOutputData) {
+    public void prepareShowVaultView(HomeOutputData homeOutputData) throws InvalidVaultItemException {
         final AbstractVaultItem item = homeOutputData.getVaultItem();
         switch (item.getType()) {
             case "passwordItem" -> {
@@ -44,7 +45,7 @@ public class HomePresenter implements HomeOutputBoundary {
             //                );
             //                noteVaultItemViewModel.onStateChanged();
             //            }
-            default -> throw new RuntimeException("Unhandled vault item type: " + item.getType());
+            default -> throw new InvalidVaultItemException("Unhandled vault item type");
         }
     }
 

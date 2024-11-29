@@ -1,5 +1,7 @@
 package service.home;
 
+import exception.InvalidVaultItemException;
+
 /**
  * The Home output boundary.
  */
@@ -9,7 +11,7 @@ public interface HomeOutputBoundary {
      *
      * @param homeOutputData The home output data.
      */
-    void prepareShowVaultView(HomeOutputData homeOutputData);
+    void prepareShowVaultView(HomeOutputData homeOutputData) throws InvalidVaultItemException;
 
     /**
      * Displays the login view.
