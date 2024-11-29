@@ -22,5 +22,6 @@ public final class ViewConstants {
     public static final String LOAD_LOCAL_VAULT_VIEW = "load_local_vault";
     public static final String CREATE_LOCAL_VAULT_VIEW = "create_local_vault";
     public static final String HOME_VIEW = "home";
+    public static final String PASSWORD_VAULT_ITEM_VIEW = "password_vault_item";
     public static final String SEARCH_VIEW = "search";
 }
