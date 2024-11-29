@@ -1,5 +1,7 @@
 package service.home;
 
+import exception.InvalidVaultItemException;
+
 /**
  * The Home interactor.
  */
@@ -11,7 +13,7 @@ public class HomeInteractor implements HomeInputBoundary {
     }
 
     @Override
-    public void displayVaultItem(HomeInputData homeInputData) {
+    public void displayVaultItem(HomeInputData homeInputData) throws InvalidVaultItemException {
         homePresenter.prepareShowVaultView(new HomeOutputData(homeInputData.getChosenVaultItem()));
     }
 
