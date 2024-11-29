@@ -35,4 +35,12 @@ public class CloudUserTest {
         assertTrue(user.getVault().getItems().get(0) == item);
         assertTrue(user.getRemoteAuth() == remoteAuth);
     }
+
+    @Test
+    void testSetGetRemoteAuth() {
+        CloudUser user = new CloudUser(userAndGoogleEmail, userPassword, new LocalVault(items), remoteAuth);
+        RemoteAuth newAuth = new RemoteAuth("newIdToken", "newRefreshToken", "newLocalId", 120);
+        user.setRemoteAuth(newAuth);
+        assertTrue(user.getRemoteAuth() == newAuth);
+    }
 }

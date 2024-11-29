@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CommonUserTest {
     private static final String title = "Google";
@@ -26,5 +27,44 @@ public class CommonUserTest {
         assertTrue(user.getVault() == vault);
         assertTrue(user.getPassword().equals(userPassword));
         assertTrue(user.getVault().getItems().get(0) == item);
+    }
+
+    @Test
+    void testGetEmail() {
+        AbstractVault vault = new LocalVault(items);
+        AbstractUser user = new CommonUser(email, userPassword, vault);
+        assertEquals(email, user.getEmail());
+    }
+
+    @Test
+    void testSetEmail() {
+        AbstractVault vault = new LocalVault(items);
+        AbstractUser user = new CommonUser(email, userPassword, vault);
+        String newEmail = "newemail@gmail.com";
+        user.setEmail(newEmail);
+        assertEquals(newEmail, user.getEmail());
+    }
+
+    @Test
+    void testGetPassword() {
+        AbstractVault vault = new LocalVault(items);
+        AbstractUser user = new CommonUser(email, userPassword, vault);
+        assertEquals(userPassword, user.getPassword());
+    }
+
+    @Test
+    void testGetVault() {
+        AbstractVault vault = new LocalVault(items);
+        AbstractUser user = new CommonUser(email, userPassword, vault);
+        assertEquals(vault, user.getVault());
+    }
+
+    @Test
+    void testSetVault() {
+        AbstractVault vault = new LocalVault(items);
+        AbstractUser user = new CommonUser(email, userPassword, vault);
+        AbstractVault newVault = new LocalVault(new ArrayList<>());
+        user.setVault(newVault);
+        assertEquals(newVault, user.getVault());
     }
 }
