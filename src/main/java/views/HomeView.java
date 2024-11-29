@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 
 import data_access.FireStoreUserDataAccessObject;
 import entity.AbstractVaultItem;
+import exception.InvalidVaultItemException;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomeState;
 import service.home.interface_adapter.HomeViewModel;
@@ -154,7 +155,12 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         final JButton accessButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDD13")
                 // button text is unlock character
                 .addListener(event -> {
-                    homeController.displayVaultItem(vaultItem);
+                    try {
+                        homeController.displayVaultItem(vaultItem);
+                    }
+                    catch (InvalidVaultItemException exception) {
+                        throw new RuntimeException(exception);
+                    }
                 })
                 .build();
         accessButton.setBackground(ViewConstants.BACKGROUND_COLOR);
