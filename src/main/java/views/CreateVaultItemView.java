@@ -2,12 +2,11 @@ package views;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Component; // <-- Added import
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,8 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
+import javax.swing.text.JTextComponent;
 import service.password_validation.interface_adapter.PasswordValidationController;
 import service.password_validation.interface_adapter.PasswordValidationViewModel;
 
@@ -38,28 +36,23 @@ public class CreateVaultItemView extends JPanel {
     private JTextField usernameField;
     private JPasswordField passwordInputField;
     private JPasswordField confirmPasswordField;
-    private JLabel titleLabel;
-    private JLabel urlLabel;
-    private JLabel vaultTitleLabel;
-    private JLabel usernameLabel;
-    private JLabel passwordLabel;
-    private JLabel confirmPasswordLabel;
-    private JPanel requirementsPanel;
-    private JProgressBar strengthBar;
-    private JButton saveButton;
-    private JButton cancelButton;
 
     private JLabel lengthRequirementLabel;
     private JLabel upperLowerRequirementLabel;
     private JLabel numericRequirementLabel;
     private JLabel specialCharRequirementLabel;
 
+    private JProgressBar strengthBar;
+
+    private JButton saveButton;
+    private JButton cancelButton;
+
     private final int componentWidth = 300;
 
     /**
      * Constructs the CreateVaultItemView dialog.
      *
-     * @param viewModel The view model for password validation.
+     * @param viewModel  The view model for password validation.
      * @param controller The controller for password validation.
      */
     public CreateVaultItemView(
@@ -86,29 +79,63 @@ public class CreateVaultItemView extends JPanel {
      * Initializes all UI components.
      */
     private void initializeComponents() {
-        final Font titleFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 18);
         final Font labelFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12);
         final Font requirementFont = new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 10);
 
-        titleLabel = new JLabel("New Vault Item");
-        titleLabel.setFont(titleFont);
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel urlLabel = new JLabel("Enter URL");
+        urlLabel.setFont(labelFont);
+        urlLabel.setForeground(Color.WHITE);
 
-        urlLabel = createLabel("Enter URL", labelFont);
-        vaultTitleLabel = createLabel("Enter Vault Title", labelFont);
-        usernameLabel = createLabel("Enter your username", labelFont);
-        passwordLabel = createLabel("Enter your password", labelFont);
-        confirmPasswordLabel = createLabel("Confirm your password", labelFont);
+        JLabel vaultTitleLabel = new JLabel("Enter Vault Title");
+        vaultTitleLabel.setFont(labelFont);
+        vaultTitleLabel.setForeground(Color.WHITE);
 
-        urlField = createTextField();
-        vaultTitleField = createTextField();
-        usernameField = createTextField();
-        passwordInputField = createPasswordField();
-        confirmPasswordField = createPasswordField();
+        JLabel usernameLabel = new JLabel("Enter your username");
+        usernameLabel.setFont(labelFont);
+        usernameLabel.setForeground(Color.WHITE);
 
-        requirementsPanel = createRequirementsPanel(requirementFont);
+        JLabel passwordLabel = new JLabel("Enter your password");
+        passwordLabel.setFont(labelFont);
+        passwordLabel.setForeground(Color.WHITE);
 
+        JLabel confirmPasswordLabel = new JLabel("Confirm your password");
+        confirmPasswordLabel.setFont(labelFont);
+        confirmPasswordLabel.setForeground(Color.WHITE);
+
+        // Initialize text fields
+        urlField = new JTextField(15);
+        configureTextComponent(urlField);
+
+        vaultTitleField = new JTextField(15);
+        configureTextComponent(vaultTitleField);
+
+        usernameField = new JTextField(15);
+        configureTextComponent(usernameField);
+
+        passwordInputField = new JPasswordField(15);
+        configureTextComponent(passwordInputField);
+
+        confirmPasswordField = new JPasswordField(15);
+        configureTextComponent(confirmPasswordField);
+
+        // Initialize password requirement labels
+        lengthRequirementLabel = new JLabel("At least 8 characters");
+        lengthRequirementLabel.setFont(requirementFont);
+        lengthRequirementLabel.setForeground(Color.RED);
+
+        upperLowerRequirementLabel = new JLabel("At least one uppercase and lowercase letter");
+        upperLowerRequirementLabel.setFont(requirementFont);
+        upperLowerRequirementLabel.setForeground(Color.RED);
+
+        numericRequirementLabel = new JLabel("At least one number");
+        numericRequirementLabel.setFont(requirementFont);
+        numericRequirementLabel.setForeground(Color.RED);
+
+        specialCharRequirementLabel = new JLabel("At least one special character");
+        specialCharRequirementLabel.setFont(requirementFont);
+        specialCharRequirementLabel.setForeground(Color.RED);
+
+        // Initialize strength bar
         strengthBar = new JProgressBar(0, 100);
         strengthBar.setPreferredSize(new Dimension(componentWidth, 15));
         strengthBar.setMaximumSize(new Dimension(componentWidth, 15));
@@ -116,242 +143,31 @@ public class CreateVaultItemView extends JPanel {
         strengthBar.setForeground(Color.GRAY);
         strengthBar.setBackground(Color.DARK_GRAY);
         strengthBar.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        strengthBar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Initialize buttons
         saveButton = createStyledButton("Save", 90, 35);
         cancelButton = createStyledButton("Cancel", 90, 35);
     }
 
     /**
-     * Creates a JLabel with specified text and font.
+     * Configures a JTextComponent with predefined settings.
      *
-     * @param text The text for the label.
-     * @param font The font to apply.
-     * @return A configured JLabel.
+     * @param textComponent The text component to configure.
      */
-    private JLabel createLabel(String text, Font font) {
-        final JLabel label = new JLabel(text);
-        label.setFont(font);
-        label.setForeground(Color.WHITE);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
+    private void configureTextComponent(JTextComponent textComponent) {
+        textComponent.setMaximumSize(new Dimension(componentWidth, 25));
+        textComponent.setBackground(Color.BLACK);
+        textComponent.setForeground(Color.WHITE);
+        textComponent.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        textComponent.setCaretColor(Color.WHITE);
+        textComponent.setSelectionColor(new Color(80, 80, 80));
     }
 
     /**
-     * Creates a JTextField with predefined settings.
+     * Creates a styled JButton with black background, white text, and gray border.
      *
-     * @return A configured JTextField.
-     */
-    private JTextField createTextField() {
-        final JTextField textField = new JTextField(15);
-        textField.setMaximumSize(new Dimension(componentWidth, 25));
-        textField.setBackground(Color.BLACK);
-        textField.setForeground(Color.WHITE);
-        textField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        textField.setCaretColor(Color.WHITE);
-        textField.setSelectionColor(new Color(80, 80, 80));
-        textField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        return textField;
-    }
-
-    /**
-     * Creates a JPasswordField with predefined settings.
-     *
-     * @return A configured JPasswordField.
-     */
-    private JPasswordField createPasswordField() {
-        final JPasswordField passwordField = new JPasswordField(15);
-        passwordField.setMaximumSize(new Dimension(componentWidth, 25));
-        passwordField.setBackground(Color.BLACK);
-        passwordField.setForeground(Color.WHITE);
-        passwordField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        passwordField.setCaretColor(Color.WHITE);
-        passwordField.setSelectionColor(new Color(80, 80, 80));
-        passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        return passwordField;
-    }
-
-    /**
-     * Creates the password guidelines panel arranged in two columns without
-     * hyphens.
-     *
-     * @param font The font to apply to requirement labels.
-     * @return A configured JPanel with password guidelines.
-     */
-    private JPanel createRequirementsPanel(Font font) {
-        final JPanel panel = new JPanel();
-        panel.setBackground(Color.BLACK);
-        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setMaximumSize(new Dimension(componentWidth, Integer.MAX_VALUE));
-
-        lengthRequirementLabel =
-            createRequirementLabel("At least 8 characters", font);
-        upperLowerRequirementLabel =
-            createRequirementLabel("At least one uppercase and lowercase letter", font);
-        numericRequirementLabel =
-            createRequirementLabel("At least one number", font);
-        specialCharRequirementLabel =
-            createRequirementLabel("At least one special character", font);
-
-        panel.add(lengthRequirementLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 5)));
-        panel.add(upperLowerRequirementLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 5)));
-        panel.add(numericRequirementLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 5)));
-        panel.add(specialCharRequirementLabel);
-
-        return panel;
-    }
-
-    /**
-     * Creates a JLabel for password guidelines.
-     *
-     * @param text The text for the requirement.
-     * @param font The font to apply.
-     * @return A configured JLabel.
-     */
-    private JLabel createRequirementLabel(String text, Font font) {
-        final JLabel label = new JLabel(text);
-        label.setFont(font);
-        label.setForeground(Color.RED);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return label;
-    }
-
-    /**
-     * Arranges all components within the dialog.
-     */
-    private void layoutComponents() {
-
-        final JPanel contentPanel = new JPanel();
-        contentPanel.setBackground(Color.BLACK);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-
-        final JPanel topFieldsPanel = new JPanel();
-        topFieldsPanel.setBackground(Color.BLACK);
-        topFieldsPanel.setLayout(new BoxLayout(topFieldsPanel, BoxLayout.Y_AXIS));
-        topFieldsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        final JPanel passwordGuidelinesPanel = new JPanel();
-        passwordGuidelinesPanel.setBackground(Color.BLACK);
-        passwordGuidelinesPanel.setLayout(new BoxLayout(passwordGuidelinesPanel, BoxLayout.Y_AXIS));
-        passwordGuidelinesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        final JPanel passwordStrengthPanel = new JPanel();
-        passwordStrengthPanel.setBackground(Color.BLACK);
-        passwordStrengthPanel.setLayout(new BoxLayout(passwordStrengthPanel, BoxLayout.Y_AXIS));
-        passwordStrengthPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        final JPanel confirmPasswordPanel = new JPanel();
-        confirmPasswordPanel.setBackground(Color.BLACK);
-        confirmPasswordPanel.setLayout(new BoxLayout(confirmPasswordPanel, BoxLayout.Y_AXIS));
-        confirmPasswordPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        final JPanel buttonsPanel = createButtonsPanel();
-
-        addWithSpacing(topFieldsPanel, titleLabel, 20);
-        addWithSpacing(topFieldsPanel, createFieldPanel(urlLabel, urlField), 10);
-        addWithSpacing(topFieldsPanel, createFieldPanel(vaultTitleLabel, vaultTitleField), 10);
-        addWithSpacing(topFieldsPanel, createFieldPanel(usernameLabel, usernameField), 10);
-        addWithSpacing(topFieldsPanel, createFieldPanel(passwordLabel, passwordInputField), 10);
-
-        final JLabel requirementsTitle =
-            createLabel("Password Guidelines:", new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 14));
-        requirementsTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        addWithSpacing(passwordGuidelinesPanel, requirementsTitle, 5);
-        addWithSpacing(passwordGuidelinesPanel, requirementsPanel, 15);
-
-        final JLabel strengthLabel =
-            createLabel("Password Strength:", new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12));
-        strengthLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        passwordStrengthPanel.add(strengthLabel);
-        passwordStrengthPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        passwordStrengthPanel.add(strengthBar);
-        passwordStrengthPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-
-        addWithSpacing(confirmPasswordPanel, createFieldPanel(confirmPasswordLabel, confirmPasswordField), 10);
-
-        contentPanel.add(topFieldsPanel);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        contentPanel.add(passwordGuidelinesPanel);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        contentPanel.add(passwordStrengthPanel);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        contentPanel.add(confirmPasswordPanel);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        contentPanel.add(buttonsPanel);
-
-        final JPanel wrapperPanel = new JPanel();
-        wrapperPanel.setBackground(Color.BLACK);
-        wrapperPanel.setLayout(new BoxLayout(wrapperPanel, BoxLayout.Y_AXIS));
-        wrapperPanel.add(Box.createVerticalGlue());
-        wrapperPanel.add(contentPanel);
-        wrapperPanel.add(Box.createVerticalGlue());
-
-        this.setLayout(new BorderLayout());
-        this.add(wrapperPanel, BorderLayout.CENTER);
-    }
-
-    /**
-     * Adds a component and a rigid area to the specified panel.
-     *
-     * @param panel The panel to add components to.
-     * @param component The component to add.
-     * @param spacingHeight The height of the rigid area.
-     */
-    private void addWithSpacing(JPanel panel, Component component, int spacingHeight) {
-        panel.add(component);
-        panel.add(Box.createRigidArea(new Dimension(0, spacingHeight)));
-    }
-
-    /**
-     * Creates a panel containing the Save and Cancel buttons aligned
-     * horizontally.
-     *
-     * @return A JPanel containing the Save and Cancel buttons.
-     */
-    private JPanel createButtonsPanel() {
-        final JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setBackground(Color.BLACK);
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
-
-        buttonsPanel.add(saveButton);
-        buttonsPanel.add(cancelButton);
-
-        return buttonsPanel;
-    }
-
-    /**
-     * Creates a panel containing a label and its corresponding field.
-     *
-     * @param label The JLabel to display.
-     * @param field The input component (JTextField or JPasswordField).
-     * @return A JPanel containing the label and field.
-     */
-    private JPanel createFieldPanel(JLabel label, Component field) {
-        final JPanel panel = new JPanel();
-        panel.setBackground(Color.BLACK);
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        panel.add(label);
-        panel.add(Box.createRigidArea(new Dimension(0, 4)));
-        panel.add(field);
-
-        return panel;
-    }
-
-    /**
-     * Creates a styled JButton with black background, white text, and gray
-     * border.
-     *
-     * @param text The text to display on the button.
-     * @param width The preferred width of the button.
+     * @param text   The text to display on the button.
+     * @param width  The preferred width of the button.
      * @param height The preferred height of the button.
      * @return A styled JButton.
      */
@@ -364,8 +180,127 @@ public class CreateVaultItemView extends JPanel {
         button.setBorder(new LineBorder(Color.GRAY, 1));
         button.setPreferredSize(new Dimension(width, height));
         button.setMaximumSize(new Dimension(width, height));
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
         return button;
+    }
+
+    /**
+     * Arranges all components within the dialog.
+     */
+    private void layoutComponents() {
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBackground(Color.BLACK);
+        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setBackground(Color.BLACK);
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        contentPanel.setMaximumSize(new Dimension(componentWidth, Integer.MAX_VALUE));
+
+        JLabel titleLabel = new JLabel("New Vault Item");
+        titleLabel.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 18));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        contentPanel.add(titleLabel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        contentPanel.add(createLabeledField("Enter URL", urlField));
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        contentPanel.add(createLabeledField("Enter Vault Title", vaultTitleField));
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        contentPanel.add(createLabeledField("Enter your username", usernameField));
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        contentPanel.add(createLabeledField("Enter your password", passwordInputField));
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        // Password guidelines
+        JLabel guidelinesLabel = new JLabel("Password Guidelines:");
+        guidelinesLabel.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 14));
+        guidelinesLabel.setForeground(Color.WHITE);
+        guidelinesLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        contentPanel.add(guidelinesLabel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+
+        // Requirements panel
+        JPanel requirementsPanel = new JPanel();
+        requirementsPanel.setBackground(Color.BLACK);
+        requirementsPanel.setLayout(new BoxLayout(requirementsPanel, BoxLayout.Y_AXIS));
+        requirementsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        requirementsPanel.add(lengthRequirementLabel);
+        requirementsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        requirementsPanel.add(upperLowerRequirementLabel);
+        requirementsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        requirementsPanel.add(numericRequirementLabel);
+        requirementsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        requirementsPanel.add(specialCharRequirementLabel);
+
+        contentPanel.add(requirementsPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        // Password strength
+        JLabel strengthLabel = new JLabel("Password Strength:");
+        strengthLabel.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12));
+        strengthLabel.setForeground(Color.WHITE);
+        strengthLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        contentPanel.add(strengthLabel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        strengthBar.setAlignmentX(Component.LEFT_ALIGNMENT);
+        contentPanel.add(strengthBar);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        // Confirm password field
+        contentPanel.add(createLabeledField("Confirm your password", confirmPasswordField));
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        // Buttons panel
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setBackground(Color.BLACK);
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+        buttonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // Add buttons with spacing
+        buttonsPanel.add(saveButton);
+        buttonsPanel.add(Box.createRigidArea(new Dimension(20, 0)));
+        buttonsPanel.add(cancelButton);
+
+        contentPanel.add(buttonsPanel);
+
+        // Add contentPanel to the main panel
+        this.add(contentPanel);
+        // Add glue to push content to the top
+        this.add(Box.createVerticalGlue());
+    }
+
+    /**
+     * Creates a panel with a label and associated field.
+     *
+     * @param labelText The text for the label.
+     * @param field     The field component.
+     * @return A JPanel containing the label and field.
+     */
+    private JPanel createLabeledField(String labelText, JTextComponent field) {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.BLACK);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT); // Left-aligned
+
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12));
+        label.setForeground(Color.WHITE);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        field.setAlignmentX(Component.LEFT_ALIGNMENT); // Left-aligned
+
+        panel.add(label);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
+        panel.add(field);
+
+        return panel;
     }
 
     /**
@@ -392,8 +327,7 @@ public class CreateVaultItemView extends JPanel {
         confirmPasswordField.getDocument().addDocumentListener(new SimpleDocumentListener() {
             @Override
             public void update(DocumentEvent e) {
-                final String password = new String(passwordInputField.getPassword());
-                final String confirmPassword = new String(confirmPasswordField.getPassword());
+                // Placeholder for confirm password logic
             }
         });
     }
@@ -406,34 +340,24 @@ public class CreateVaultItemView extends JPanel {
     private void updateView(PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
         switch (propertyName) {
-            case "lengthReq" ->
-                updateRequirementLabel(lengthRequirementLabel, viewModel.isLengthReq());
-            case "upperLowerReq" ->
-                updateRequirementLabel(upperLowerRequirementLabel, viewModel.isUpperLowerReq());
-            case "numericReq" ->
-                updateRequirementLabel(numericRequirementLabel, viewModel.isNumericReq());
-            case "specialCharReq" ->
-                updateRequirementLabel(specialCharRequirementLabel, viewModel.isSpecialCharReq());
-            case "entropy" ->
-                updateStrengthBar((int) viewModel.getEntropy());
+            case "lengthReq" -> updateRequirementLabel(lengthRequirementLabel, viewModel.isLengthReq());
+            case "upperLowerReq" -> updateRequirementLabel(upperLowerRequirementLabel, viewModel.isUpperLowerReq());
+            case "numericReq" -> updateRequirementLabel(numericRequirementLabel, viewModel.isNumericReq());
+            case "specialCharReq" -> updateRequirementLabel(specialCharRequirementLabel, viewModel.isSpecialCharReq());
+            case "entropy" -> updateStrengthBar((int) viewModel.getEntropy());
             default -> {
             }
         }
     }
 
     /**
-     * Updates the color of a requirement label based on whether the requirement
-     * is met.
+     * Updates the color of a requirement label based on whether the requirement is met.
      *
-     * @param label The JLabel to update.
-     * @param requirementMet True if the requirement is met; false otherwise.
+     * @param label           The JLabel to update.
+     * @param requirementMet  True if the requirement is met; false otherwise.
      */
     private void updateRequirementLabel(JLabel label, boolean requirementMet) {
-        if (requirementMet) {
-            label.setForeground(Color.GREEN);
-        } else {
-            label.setForeground(Color.RED);
-        }
+        label.setForeground(requirementMet ? Color.GREEN : Color.RED);
     }
 
     /**
@@ -446,23 +370,18 @@ public class CreateVaultItemView extends JPanel {
         strengthBar.setValue(value);
 
         switch (entropyScore) {
-            case 0, 1 ->
-                strengthBar.setForeground(Color.RED);
-            case 2 ->
-                strengthBar.setForeground(Color.ORANGE);
-            case 3 ->
-                strengthBar.setForeground(Color.YELLOW);
-            case 4 ->
-                strengthBar.setForeground(Color.GREEN);
-            default ->
-                strengthBar.setForeground(Color.GRAY);
+            case 0, 1 -> strengthBar.setForeground(Color.RED);
+            case 2 -> strengthBar.setForeground(Color.ORANGE);
+            case 3 -> strengthBar.setForeground(Color.YELLOW);
+            case 4 -> strengthBar.setForeground(Color.GREEN);
+            default -> strengthBar.setForeground(Color.GRAY);
         }
     }
 
     /**
      * Simplified DocumentListener for convenience.
      */
-    public abstract class SimpleDocumentListener implements DocumentListener {
+    public abstract class SimpleDocumentListener implements javax.swing.event.DocumentListener {
 
         /**
          * Updates the password validation when the password field changes.
