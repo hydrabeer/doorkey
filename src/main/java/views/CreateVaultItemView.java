@@ -11,6 +11,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
@@ -20,6 +21,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;
 
+import service.create_vault_item.interface_adapter.CreateVaultItemController;
+import service.create_vault_item.interface_adapter.CreateVaultItemViewModel;
 import service.password_validation.interface_adapter.PasswordValidationController;
 import service.password_validation.interface_adapter.PasswordValidationViewModel;
 
@@ -28,6 +31,8 @@ import service.password_validation.interface_adapter.PasswordValidationViewModel
  */
 public class CreateVaultItemView extends JPanel {
 
+    private final CreateVaultItemViewModel createVaultItemViewModel;
+    private final CreateVaultItemController createVaultItemController;
     private final PasswordValidationViewModel viewModel;
     private final PasswordValidationController controller;
 
@@ -54,10 +59,15 @@ public class CreateVaultItemView extends JPanel {
      *
      * @param viewModel  The view model for password validation.
      * @param controller The controller for password validation.
+     * @param createVaultItemController The controller for creating vault item.
+     * @param createVaultItemViewModel The view model for creating vault item.
      */
-    public CreateVaultItemView(
-            PasswordValidationViewModel viewModel, PasswordValidationController controller) {
+    public CreateVaultItemView(CreateVaultItemViewModel createVaultItemViewModel,
+        CreateVaultItemController createVaultItemController, 
+        PasswordValidationViewModel viewModel, PasswordValidationController controller) {
         this.viewModel = viewModel;
+        this.createVaultItemController = createVaultItemController;
+        this.createVaultItemViewModel = createVaultItemViewModel;
         this.controller = controller;
         initializeComponents();
         layoutComponents();
@@ -66,16 +76,34 @@ public class CreateVaultItemView extends JPanel {
 
         viewModel.addPropertyChangeListener(evt -> {
             if (SwingUtilities.isEventDispatchThread()) {
-                updateView(evt);
+                updatePasswordValidationView(evt);
             }
             else {
-                SwingUtilities.invokeLater(() -> updateView(evt));
+                SwingUtilities.invokeLater(() -> updatePasswordValidationView(evt));
             }
         });
 
         controller.validatePassword("", false);
     }
 
+    private void updatePasswordValidationView(PropertyChangeEvent evt) {
+        final String propertyName = evt.getPropertyName();
+        switch (propertyName) {
+            case "lengthReq" -> updateRequirementLabel(
+                lengthRequirementLabel, viewModel.isLengthReq());
+            case "upperLowerReq" -> updateRequirementLabel(
+                upperLowerRequirementLabel, viewModel.isUpperLowerReq());
+            case "numericReq" -> updateRequirementLabel(
+                numericRequirementLabel, viewModel.isNumericReq());
+            case "specialCharReq" -> updateRequirementLabel(
+                specialCharRequirementLabel, viewModel.isSpecialCharReq());
+            case "entropy" -> updateStrengthBar((int) viewModel.getEntropy());
+            default -> {
+                // Nothing more to be done here
+            }
+        }
+    }
+    
     /**
      * Initializes all UI components.
      */
@@ -369,11 +397,23 @@ public class CreateVaultItemView extends JPanel {
     private void registerEventHandlers() {
 
         saveButton.addActionListener(event -> {
-            System.out.println("Save button clicked. Placeholder action executed.");
+            final String url = urlField.getText();
+            final String vaultTitle = vaultTitleField.getText();
+            final String username = usernameField.getText();
+            final String password = new String(passwordInputField.getPassword());
+            final String confirmPassword = new String(confirmPasswordField.getPassword());
+
+            if (!password.equals(confirmPassword)) {
+                JOptionPane.showMessageDialog(this, "Passwords do not match", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else {
+                createVaultItemController.createVaultItem(url, vaultTitle, username, password);
+                createVaultItemController.displayHomeView();
+            }
         });
 
         cancelButton.addActionListener(event -> {
-            System.out.println("Cancel button clicked. Placeholder action executed.");
+            createVaultItemController.displayHomeView();
         });
 
         passwordInputField.getDocument().addDocumentListener(new SimpleDocumentListener() {
