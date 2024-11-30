@@ -2,18 +2,25 @@ package app;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.util.Optional;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import data_access.FireStoreUserDataAccessObject;
 import data_access.authentication.FirebaseAuthRepository;
+import entity.AbstractUser;
 import interface_adapter.net.http.CommonHttpClient;
 import interface_adapter.net.http.HttpClient;
+import repository.UserRepository;
 import service.ViewManagerModel;
 import service.copy_credentials.CopyCredentialsInteractor;
 import service.copy_credentials.interface_adapter.CopyCredentialsController;
 import service.copy_credentials.interface_adapter.CopyCredentialsPresenter;
+import service.create_vault_item.CreateVaultItemInteractor;
+import service.create_vault_item.interface_adapter.CreateVaultItemController;
+import service.create_vault_item.interface_adapter.CreateVaultItemPresenter;
+import service.create_vault_item.interface_adapter.CreateVaultItemViewModel;
 import service.home.HomeInteractor;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomePresenter;
@@ -67,6 +74,7 @@ public class AppBuilder {
     private final FireStoreUserDataAccessObject fireStoreUserDataAccessObject;
     private final HomeViewModel homeViewModel;
     private final PasswordVaultItemViewModel passwordVaultItemViewModel;
+    private final CreateVaultItemViewModel createVaultItemViewModel;
 
     public AppBuilder(String title, int width, int height) {
         this.mainFrame = new JFrame(title);
@@ -92,6 +100,55 @@ public class AppBuilder {
         final FirebaseAuthRepository firebaseAuthRepository = new FirebaseAuthRepository(httpClient);
         this.fireStoreUserDataAccessObject = new FireStoreUserDataAccessObject(firebaseAuthRepository, httpClient);
         this.passwordVaultItemViewModel = new PasswordVaultItemViewModel();
+        this.createVaultItemViewModel = new CreateVaultItemViewModel();
+    }
+
+    /**
+     * Adds the CreateVaultItemView to the viewsPanel.
+     *
+     * @return The AppBuilder instance.
+     */
+    public AppBuilder addCreateVaultItemView() {
+
+        final CreateVaultItemPresenter createVaultItemPresenter =
+                new CreateVaultItemPresenter(createVaultItemViewModel, viewManagerModel);
+
+        final Optional<AbstractUser> currentUserOptional = homeViewModel.getState().getUser();
+        final Optional<UserRepository> userRepositoryOptional = homeViewModel.getState().getUserRepository();
+
+        if (currentUserOptional.isPresent() && userRepositoryOptional.isPresent()) {
+            final AbstractUser currentUser = currentUserOptional.get();
+            final UserRepository userRepository = userRepositoryOptional.get();
+
+            final CreateVaultItemInteractor createVaultItemInteractor = new CreateVaultItemInteractor(
+                        createVaultItemPresenter, userRepository, currentUser);
+
+            final CreateVaultItemController createVaultItemController =
+                new CreateVaultItemController(createVaultItemInteractor);
+
+            final PasswordValidationViewModel passwordValidationViewModel = 
+                new PasswordValidationViewModel();
+            final PasswordValidationPresenter passwordValidationPresenter = 
+                new PasswordValidationPresenter(passwordValidationViewModel);
+            final PasswordValidationInteractor passwordValidationInteractor = 
+                new PasswordValidationInteractor(passwordValidationPresenter);
+            final PasswordValidationController passwordValidationController = 
+                new PasswordValidationController(passwordValidationInteractor);
+
+            final CreateVaultItemView createVaultItemView = new CreateVaultItemView(
+                        createVaultItemViewModel,
+                        createVaultItemController,
+                        passwordValidationViewModel,
+                        passwordValidationController
+                );
+
+            views.add(createVaultItemView, ViewConstants.CREATE_VAULT_ITEM_VIEW);
+        }
+        else {
+                // Case where the user or repository is not available
+        }
+
+        return this;
     }
 
     /**
@@ -144,27 +201,6 @@ public class AppBuilder {
     }
 
     /**
-     * Adds the CreateVaultItemView to the viewsPanel.
-     *
-     * @return The AppBuilder instance.
-     */
-    public AppBuilder addCreateVaultItemView() {
-        final PasswordValidationViewModel passwordValidationViewModel = new PasswordValidationViewModel();
-        final PasswordValidationPresenter passwordValidationPresenter = 
-                new PasswordValidationPresenter(passwordValidationViewModel);
-        final PasswordValidationInteractor passwordValidationInteractor = 
-                new PasswordValidationInteractor(passwordValidationPresenter);
-        final PasswordValidationController passwordValidationController = 
-                new PasswordValidationController(passwordValidationInteractor);
-
-        final CreateVaultItemView createVaultItemView = new CreateVaultItemView(
-                passwordValidationViewModel, passwordValidationController);
-
-        views.add(createVaultItemView, ViewConstants.CREATE_VAULT_ITEM_VIEW);
-        return this;
-    }
-
-    /**
      * Adds the HomeView to the viewsPanel.
      *
      * @return The AppBuilder instance.
@@ -173,6 +209,7 @@ public class AppBuilder {
         final HomePresenter homePresenter = new HomePresenter(
                 homeViewModel,
                 passwordVaultItemViewModel,
+                createVaultItemViewModel,
                 viewManagerModel
         );
         final HomeInteractor homeInteractor = new HomeInteractor(homePresenter);
