@@ -9,6 +9,7 @@ public interface HomeInputBoundary {
 
     /**
      * Display a vault item.
+     *
      * @param homeInputData The home input data.
      * @throws InvalidVaultItemException If the vault item is invalid.
      */
@@ -18,4 +19,10 @@ public interface HomeInputBoundary {
      * Display the login view.
      */
     void displayLoginView();
+
+    /**
+     * Display the CreateVaultItem view.
+     */
+    void displayCreateVaultItemView();
+
 }
