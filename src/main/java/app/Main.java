@@ -32,9 +32,8 @@ public class Main {
                 .addCreateLocalVaultView()
                 .addLocalVaultView()
                 .addCreateVaultItemView()
-                .setInitialView(ViewConstants.CREATE_VAULT_ITEM_VIEW)
                 .addPasswordVaultItemView()
-                .setInitialView(ViewConstants.LOGIN_VIEW)
+                .setInitialView(ViewConstants.CREATE_VAULT_ITEM_VIEW)
                 .build();
 
         mainFrame.setVisible(true);

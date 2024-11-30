@@ -150,12 +150,12 @@ public class AppBuilder {
      */
     public AppBuilder addCreateVaultItemView() {
         final PasswordValidationViewModel passwordValidationViewModel = new PasswordValidationViewModel();
-        final PasswordValidationPresenter passwordValidationPresenter
-                = new PasswordValidationPresenter(passwordValidationViewModel);
-        final PasswordValidationInteractor passwordValidationInteractor
-                = new PasswordValidationInteractor(passwordValidationPresenter);
-        final PasswordValidationController passwordValidationController
-                = new PasswordValidationController(passwordValidationInteractor);
+        final PasswordValidationPresenter passwordValidationPresenter = 
+                new PasswordValidationPresenter(passwordValidationViewModel);
+        final PasswordValidationInteractor passwordValidationInteractor = 
+                new PasswordValidationInteractor(passwordValidationPresenter);
+        final PasswordValidationController passwordValidationController = 
+                new PasswordValidationController(passwordValidationInteractor);
 
         final CreateVaultItemView createVaultItemView = new CreateVaultItemView(
                 passwordValidationViewModel, passwordValidationController);
