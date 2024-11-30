@@ -80,6 +80,8 @@ clicking Sign Up. If you prefer to use a local vault, click Use Locally. You can
 cloud vault later by signing up for an account. Make sure to choose a strong, memorable password
 for your vault. A great way to do this is to use a 
 [passphrase](https://www.privacyguides.org/en/basics/passwords-overview/#diceware-passphrases).
+
+<img src="readme_img/welcome_view.png" width="300">
 ### Adding Credentials
 To add a new credential, click the "+" button. Fill in the title, username, password, and URL 
 fields, and click Save. You can also generate a password by clicking the icon next to the 
