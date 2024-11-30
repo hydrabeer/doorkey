@@ -1,5 +1,7 @@
 package service.login;
 
+import java.io.IOException;
+
 import entity.AbstractUser;
 import exception.AuthException;
 import repository.UserRepository;
@@ -55,6 +57,9 @@ public class LoginInteractor implements LoginInputBoundary {
         }
         catch (AuthException authException) {
             loginPresenter.prepareErrorView(authException.getViewMessage());
+        }
+        catch (IOException ioException) {
+            loginPresenter.prepareErrorView(ioException.getMessage());
         }
     }
 }

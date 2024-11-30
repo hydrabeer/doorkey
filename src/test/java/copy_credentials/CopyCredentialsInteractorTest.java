@@ -23,14 +23,10 @@ public class CopyCredentialsInteractorTest {
         UsernameInputData usernameInputData = new UsernameInputData(testUsername);
         CopyCredenentialsOutputBoundary copyCredenentialsOutputBoundary = new CopyCredenentialsOutputBoundary() {
             @Override
-            public void displayUsernameCopyMessage(String message) {
+            public void displayCopyMessage(String message) {
 
             }
 
-            @Override
-            public void displayPasswordCopyMessage(String message) {
-
-            }
         };
         CopyCredentialsInputBoundary copyCredentialsInputBoundary = new CopyCredentialsInteractor(copyCredenentialsOutputBoundary);
         copyCredentialsInputBoundary.copyUsername(usernameInputData);
@@ -42,14 +38,10 @@ public class CopyCredentialsInteractorTest {
         PasswordInputData passwordInputData = new PasswordInputData(testPassword);
         CopyCredenentialsOutputBoundary copyCredenentialsOutputBoundary = new CopyCredenentialsOutputBoundary() {
             @Override
-            public void displayUsernameCopyMessage(String message) {
+            public void displayCopyMessage(String message) {
 
             }
 
-            @Override
-            public void displayPasswordCopyMessage(String message) {
-
-            }
         };
         CopyCredentialsInputBoundary copyCredentialsInputBoundary = new CopyCredentialsInteractor(copyCredenentialsOutputBoundary);
         copyCredentialsInputBoundary.copyPassword(passwordInputData);

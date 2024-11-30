@@ -16,4 +16,9 @@ public interface CopyCredentialsInputBoundary {
      * @param passwordInputData data object that holds username string.
      */
     void copyPassword(PasswordInputData passwordInputData);
+
+    /**
+     * Clear system clipboard after 10 seconds and display message.
+     */
+    void clearClipboard();
 }

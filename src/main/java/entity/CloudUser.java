@@ -10,10 +10,11 @@ public class CloudUser extends AbstractUser {
 
     public CloudUser(
             String email,
+            String password,
             AbstractVault vault,
             RemoteAuth auth
     ) {
-        super(email, vault);
+        super(email, password, vault);
         this.remoteAuth = auth;
     }
 

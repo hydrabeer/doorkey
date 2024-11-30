@@ -23,15 +23,18 @@ public class Main {
      * Initializes the main UI.
      */
     private static void initializeMainUi() {
-        final JFrame mainFrame = new AppBuilder("DoorKey", 400, 550)
+        final JFrame mainFrame = new AppBuilder("Doorkey", 500, 650)
                 .addHomeView()
                 .addLoginView()
                 .addSignupView()
                 .addLocalVaultView()
+                .addLoadLocalVaultView()
                 .addCreateLocalVaultView()
                 .addLocalVaultView()
                 .addCreateVaultItemView()
                 .setInitialView(ViewConstants.CREATE_VAULT_ITEM_VIEW)
+                .addPasswordVaultItemView()
+                .setInitialView(ViewConstants.LOGIN_VIEW)
                 .build();
 
         mainFrame.setVisible(true);

@@ -21,4 +21,43 @@ public class PasswordVaultItemTest {
         assertTrue(json.getString("password").equals(password));
         assertTrue(json.getString("url").equals(url));
     }
+
+    @Test
+    void testPasswordVaultItemFromJSON() {
+        PasswordVaultItem item = new PasswordVaultItem(title, username, password, url);
+        String json = item.toJSONObject().toString();
+        item = new PasswordVaultItem(new JSONObject(json));
+
+        assertTrue(item.getTitle().equals(title));
+        assertTrue(item.getUsername().equals(username));
+        assertTrue(item.getPassword().equals(password));
+        assertTrue(item.getUrl().equals(url));
+    }
+
+    @Test
+    void testSetUsername() {
+        PasswordVaultItem item = new PasswordVaultItem(title, username, password, url);
+        String newUsername = "newuser@gmail.com";
+        item.setUsername(newUsername);
+
+        assertTrue(item.getUsername().equals(newUsername));
+    }
+
+    @Test
+    void testSetPassword() {
+        PasswordVaultItem item = new PasswordVaultItem(title, username, password, url);
+        String newPassword = "newPa55w0rD";
+        item.setPassword(newPassword);
+
+        assertTrue(item.getPassword().equals(newPassword));
+    }
+
+    @Test
+    void testSetUrl() {
+        PasswordVaultItem item = new PasswordVaultItem(title, username, password, url);
+        String newUrl = "https://newurl.com";
+        item.setUrl(newUrl);
+
+        assertTrue(item.getUrl().equals(newUrl));
+    }
 }
