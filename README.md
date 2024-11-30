@@ -27,7 +27,8 @@
 Doorkey keeps your passwords secure and remembers them for you. Unlike other password managers,
 Doorkey lets you choose between storing your vault locally and in the cloud. Combined with being 
 fully open source, this means Doorkey is configurable to be a true zero-trust solution or an
-industry-standard cloud vault.
+industry-standard cloud vault. Additionally, you can generate securely random passwords and copy them
+to your clipboard for easy pasting.
 ### Why we made it
 Doorkey was created out of a shared passion for cybersecurity and free software. Data breaches are 
 becoming more common and more severe, and the best way to protect yourself is to use unique, complex 
@@ -36,11 +37,12 @@ you can stay safe online.
 
 ## Features
 ### Local and Cloud Storage
-Create a local vault to store your credentials on your device, or use a cloud vault to access your
+Create an encrypted local vault to store your credentials securely on your device, or use a cloud vault to access your
 credentials from anywhere.
 ### Password Generation
 Generate secure, random passwords with Doorkey's password generator. Customize the length,
-character set, and other parameters to satisfy the requirements of any website.
+character set, and other parameters to satisfy the requirements of any website. Passwords are generated using atmospheric noise,
+which is a true source of random and thus highly secure.
 ### Password Strength Analysis
 Get instant feedback on the strength of your passwords with smart password strength analysis.
 ### Search
