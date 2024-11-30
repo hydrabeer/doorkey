@@ -14,6 +14,7 @@ import views.ViewConstants;
  * Presents the home view.
  */
 public class HomePresenter implements HomeOutputBoundary {
+
     private final HomeViewModel homeViewModel;
     private final PasswordVaultItemViewModel passwordVaultItemViewModel;
     private final ViewManagerModel viewManagerModel;
@@ -45,7 +46,8 @@ public class HomePresenter implements HomeOutputBoundary {
             //                );
             //                noteVaultItemViewModel.onStateChanged();
             //            }
-            default -> throw new InvalidVaultItemException("Unhandled vault item type");
+            default ->
+                throw new InvalidVaultItemException("Unhandled vault item type");
         }
     }
 
@@ -54,6 +56,14 @@ public class HomePresenter implements HomeOutputBoundary {
         homeViewModel.setState(new HomeState());
         homeViewModel.onStateChanged();
         this.viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
+        this.viewManagerModel.onStateChanged();
+    }
+
+    @Override
+    public void displayCreateVaultItemView() {
+        homeViewModel.setState(new HomeState());
+        homeViewModel.onStateChanged();
+        this.viewManagerModel.setState(ViewConstants.CREATE_VAULT_ITEM_VIEW);
         this.viewManagerModel.onStateChanged();
     }
 }
