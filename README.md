@@ -82,6 +82,7 @@ for your vault. A great way to do this is to use a
 [passphrase](https://www.privacyguides.org/en/basics/passwords-overview/#diceware-passphrases).
 
 <img src="readme_img/welcome_view.png" width="300">
+
 ### Adding Credentials
 To add a new credential, click the "+" button. Fill in the title, username, password, and URL 
 fields, and click Save. You can also generate a password by clicking the icon next to the 
@@ -115,5 +116,11 @@ As busy students, we may not be able to respond to every piece of feedback. Howe
 feedback and will do our best to consider it when planning future updates to Doorkey.
 
 ## Contributing
-Contributions to Doorkey are closed, but reach out via the feedback form if you're interested in
-contributing. We may open contributions if there is sufficient interest.
+We welcome contributions and improvements to Doorkey through pull requests. We are happy to accept
+a variety of improvements, such as bug fixes, new feature implementations, more tests, etc. To do this, you can fork
+the repository with "Fork" in the top right of the page to create your own copy to work on. When you are finished
+implementing your changes, you can create a pull request back to this repository and we will review it.
+
+Pull requests should have a description detailing what changes were made, any introduced regressions or potential incompatibilities,
+and a screenshot and/or instruction on how to use the new changes, if applicable. Make sure all the checks (JUnit tests, etc.) are passing
+before requesting a review as this will ensure the code is ready to be reviewed with no immediate changes.
