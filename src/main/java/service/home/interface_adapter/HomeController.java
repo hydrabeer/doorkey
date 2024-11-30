@@ -35,7 +35,7 @@ public class HomeController {
     }
 
     /**
-     * Display login view.
+     * Display CreateVaultItem view.
      */
     public void displayCreateVaultItemView() {
         interactor.displayCreateVaultItemView();
