@@ -52,8 +52,8 @@ public class PasswordValidationInteractorTest {
     // Boundary Data Testing
     @Test
     void testBoundaryPasswordMinimumLength() {
-        final String password = "A1z!23?#";
-        final boolean enforceEntropy = true;
+        final String password = "z0A!2*?#";
+        final boolean enforceEntropy = false;
         final PasswordValidationRequestModel requestModel =
             new PasswordValidationRequestModel(password, enforceEntropy);
 
@@ -246,6 +246,25 @@ public class PasswordValidationInteractorTest {
         assertFalse(response.isUpperLowerReq());
         assertFalse(response.isNumericReq());
         assertFalse(response.isSpecialCharReq());
+    }
+
+    @Test
+    void testPasswordFailsAllRequirements() {
+        final String password = "short";
+        final boolean enforceEntropy = true;
+        final PasswordValidationRequestModel requestModel =
+            new PasswordValidationRequestModel(password, enforceEntropy);
+
+        interactor.validate(requestModel);
+        final PasswordValidationResponseModel response = presenter.getResponseModel();
+
+        assertNotNull(response);
+        assertFalse(response.isValid());
+        assertFalse(response.isLengthReq());
+        assertFalse(response.isUpperLowerReq());
+        assertFalse(response.isNumericReq());
+        assertFalse(response.isSpecialCharReq());
+        assertTrue(response.getEntropy() < 2);
     }
 
     private static final class TestPasswordValidationPresenter implements PasswordValidationOutputBoundary {
