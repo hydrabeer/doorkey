@@ -106,14 +106,14 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBackground(ViewConstants.BACKGROUND_COLOR);
-        scrollPane.setPreferredSize(new Dimension(150, 470));
-        scrollPane.setMaximumSize(new Dimension(150, 470));
+        scrollPane.setPreferredSize(new Dimension(200, 470));
+        scrollPane.setMaximumSize(new Dimension(200, 470));
         // Baris: Added this line to remove all the components from the vaultPanel
         vaultPanel.removeAll();
         vaultPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         vaultPanel.add(scrollPane);
-        vaultPanel.setPreferredSize(new Dimension(150, 500));
-        vaultPanel.setMaximumSize(new Dimension(150, 500));
+        vaultPanel.setPreferredSize(new Dimension(200, 500));
+        vaultPanel.setMaximumSize(new Dimension(200, 500));
     }
 
     // TODO: Remove this user repository info text (the entire if statement and its body)
@@ -210,8 +210,8 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         buttonPanel.add(signOutButton, BorderLayout.CENTER);
         buttonPanel.add(addItemButton, BorderLayout.CENTER);
         rightPanel.add(buttonPanel, BorderLayout.SOUTH);
-        rightPanel.setPreferredSize(new Dimension(200, 470));
-        rightPanel.setMaximumSize(new Dimension(200, 470));
+        rightPanel.setPreferredSize(new Dimension(250, 470));
+        rightPanel.setMaximumSize(new Dimension(250, 470));
         add(rightPanel, BorderLayout.CENTER);
     }
 
@@ -223,11 +223,11 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         searchField.setCaretColor(Color.WHITE);
         searchField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.WHITE, 1, true),
-                BorderFactory.createEmptyBorder(4, 100, 4, 100))
+                BorderFactory.createEmptyBorder(4, 10, 4, 10))
         );
 
-        searchField.setPreferredSize(new Dimension(200, 30));
-        searchField.setMaximumSize(new Dimension(200, 30));
+        searchField.setPreferredSize(new Dimension(250, 30));
+        searchField.setMaximumSize(new Dimension(250, 30));
         searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
         return searchField;
     }
