@@ -6,6 +6,7 @@ import exception.InvalidVaultItemException;
  * The Home interactor.
  */
 public class HomeInteractor implements HomeInputBoundary {
+
     private final HomeOutputBoundary homePresenter;
 
     public HomeInteractor(HomeOutputBoundary homePresenter) {
@@ -20,5 +21,10 @@ public class HomeInteractor implements HomeInputBoundary {
     @Override
     public void displayLoginView() {
         homePresenter.displayLoginView();
+    }
+
+    @Override
+    public void displayCreateVaultItemView() {
+        homePresenter.displayCreateVaultItemView();
     }
 }
