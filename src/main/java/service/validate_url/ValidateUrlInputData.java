@@ -6,9 +6,9 @@ import java.util.Map;
  * Input data for validating URLs.
  */
 public class ValidateUrlInputData {
-    private String apiUrl;
-    private Map<String, String> headers;
-    private String url;
+    private final String apiUrl;
+    private final Map<String, String> headers;
+    private final String url;
 
     public ValidateUrlInputData(String apiUrl, Map<String, String> headers, String url) {
         this.apiUrl = apiUrl;
