@@ -18,4 +18,9 @@ public interface HomeInputBoundary {
      * Display the login view.
      */
     void displayLoginView();
+
+    /**
+     * Display the import view.
+     */
+    void displayImportView();
 }
