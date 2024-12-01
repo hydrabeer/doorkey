@@ -11,6 +11,8 @@ import data_access.LocalVaultUserRepository;
 import data_access.authentication.FirebaseAuthRepository;
 import interface_adapter.net.http.CommonHttpClient;
 import interface_adapter.net.http.HttpClient;
+import interface_adapter.validate_url.PhishingUrlValidator;
+import interface_adapter.validate_url.PhishtankPhishingUrlValidator;
 import repository.CommonRepositoryProvider;
 import repository.RepositoryProvider;
 import service.ViewManagerModel;
@@ -132,6 +134,9 @@ public class AppBuilder {
                 passwordValidationInteractor
         );
 
+        final HttpClient client = new CommonHttpClient();
+        final PhishingUrlValidator phishtankPhishingUrlValidator =
+                new PhishtankPhishingUrlValidator(client);
         final CreateVaultItemPresenter createVaultItemPresenter = new CreateVaultItemPresenter(
                 createVaultItemViewModel,
                 homeViewModel,
@@ -139,6 +144,7 @@ public class AppBuilder {
         );
         final CreateVaultItemInteractor createVaultItemInteractor = new CreateVaultItemInteractor(
                 repositoryProvider,
+                phishtankPhishingUrlValidator,
                 createVaultItemPresenter
         );
         final CreateVaultItemController createVaultItemController = new CreateVaultItemController(

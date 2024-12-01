@@ -26,5 +26,4 @@ public final class ViewConstants {
     public static final String SEARCH_VIEW = "search";
     public static final String CREATE_VAULT_ITEM_VIEW = "create_vault_item_view";
     public static final String IMPORT_VAULT_ITEM_VIEW = "import_vault_item";
-    public static final String VALIDATE_URL_VIEW = "validate_url";
 }
