@@ -11,22 +11,28 @@ import repository.UserRepository;
  * The CreateVaultItem Interactor.
  */
 public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
-
     private final CreateVaultItemOutputBoundary presenter;
-    private final UserRepository userRepository;
-    private final AbstractUser user;
 
-    public CreateVaultItemInteractor(
-            CreateVaultItemOutputBoundary presenter,
-            UserRepository userRepository,
-            AbstractUser user) {
+    public CreateVaultItemInteractor(CreateVaultItemOutputBoundary presenter) {
         this.presenter = presenter;
-        this.userRepository = userRepository;
-        this.user = user;
     }
 
     @Override
     public void createVaultItem(CreateVaultItemRequestModel requestModel) {
+        final String password = requestModel.getPassword();
+        final String repeatedPassword = requestModel.getRepeatedPassword();
+        final boolean isPasswordValid = password.equals(repeatedPassword);
+
+        if (
+            !isPasswordValid
+        ) {
+            presenter.displayErrorMessage("Passwords must match");
+            return;
+        }
+
+        final AbstractUser user = requestModel.getUser();
+        final UserRepository userRepository = requestModel.getUserRepository();
+        
         try {
             final PasswordVaultItem vaultItem = new PasswordVaultItem(
                     requestModel.getVaultTitle(),
@@ -36,13 +42,22 @@ public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
             );
 
             userRepository.addVaultItem(user, vaultItem);
-            final CreateVaultItemResponseModel responseModel =
-                    new CreateVaultItemResponseModel(true, "Vault item created successfully");
+
+            final CreateVaultItemResponseModel responseModel = new CreateVaultItemResponseModel(
+                true,
+                "Vault item created successfully"
+            );
+
             presenter.presentCreateVaultItemResponse(responseModel);
         }
         catch (AuthException | IOException ex) { 
-            // This should never run
+            presenter.displayErrorMessage("Error occured saving vault item");
         }
+    }
+
+    @Override
+    public void cancel() {
+        presenter.cancel();
     }
 
     @Override

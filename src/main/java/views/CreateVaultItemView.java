@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -16,25 +17,27 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;
 
 import service.create_vault_item.interface_adapter.CreateVaultItemController;
+import service.create_vault_item.interface_adapter.CreateVaultItemState;
 import service.create_vault_item.interface_adapter.CreateVaultItemViewModel;
+import service.home.interface_adapter.HomeState;
+import service.home.interface_adapter.HomeViewModel;
 import service.password_validation.interface_adapter.PasswordValidationController;
 import service.password_validation.interface_adapter.PasswordValidationViewModel;
 
 /**
  * The dialog view for creating a new vault item.
  */
-public class CreateVaultItemView extends JPanel {
-
+public class CreateVaultItemView extends JPanel implements PropertyChangeListener {
     private final CreateVaultItemViewModel createVaultItemViewModel;
     private final CreateVaultItemController createVaultItemController;
-    private final PasswordValidationViewModel viewModel;
-    private final PasswordValidationController controller;
+    private final PasswordValidationViewModel passwordValidationViewModel;
+    private final PasswordValidationController passwordValidationController;
+    private final HomeViewModel homeViewModel;
 
     private JTextField urlField;
     private JTextField vaultTitleField;
@@ -49,61 +52,69 @@ public class CreateVaultItemView extends JPanel {
 
     private JProgressBar strengthBar;
 
-    private JButton saveButton;
-    private JButton cancelButton;
+    private final JButton saveButton = createStyledButton("Save", 90, 35);
+    private final JButton cancelButton = createStyledButton("Cancel", 90, 35);
 
     private final int componentWidth = 300;
 
     /**
      * Constructs the CreateVaultItemView dialog.
      *
-     * @param viewModel  The view model for password validation.
-     * @param controller The controller for password validation.
-     * @param createVaultItemController The controller for creating vault item.
-     * @param createVaultItemViewModel The view model for creating vault item.
+     * @param homeViewModel The view model for the home view.
+     * @param createVaultItemViewModel The view model for creating vault items.
+     * @param createVaultItemController The controller for creating vault items.
+     * @param passwordValidationViewModel The view model for password validation.
+     * @param passwordValidationController The controller for password validation.
      */
-    public CreateVaultItemView(CreateVaultItemViewModel createVaultItemViewModel,
-        CreateVaultItemController createVaultItemController, 
-        PasswordValidationViewModel viewModel, PasswordValidationController controller) {
-        this.viewModel = viewModel;
-        this.createVaultItemController = createVaultItemController;
+    public CreateVaultItemView(
+            HomeViewModel homeViewModel,
+            CreateVaultItemViewModel createVaultItemViewModel,
+            CreateVaultItemController createVaultItemController,
+            PasswordValidationViewModel passwordValidationViewModel,
+            PasswordValidationController passwordValidationController
+    ) {
+        this.homeViewModel = homeViewModel;
         this.createVaultItemViewModel = createVaultItemViewModel;
-        this.controller = controller;
+        this.createVaultItemController = createVaultItemController;
+        this.passwordValidationViewModel = passwordValidationViewModel;
+        this.passwordValidationController = passwordValidationController;
+        this.createVaultItemViewModel.addPropertyChangeListener(this);
+
         initializeComponents();
         layoutComponents();
         registerEventHandlers();
         setPreferredSize(new Dimension(400, 550));
 
-        viewModel.addPropertyChangeListener(evt -> {
-            if (SwingUtilities.isEventDispatchThread()) {
-                updatePasswordValidationView(evt);
-            }
-            else {
-                SwingUtilities.invokeLater(() -> updatePasswordValidationView(evt));
-            }
+        passwordValidationViewModel.addPropertyChangeListener(evt -> {
+            updatePasswordValidationView(evt);
         });
 
-        controller.validatePassword("", false);
+        passwordValidationController.validatePassword("", false);
     }
 
-    private void updatePasswordValidationView(PropertyChangeEvent evt) {
-        final String propertyName = evt.getPropertyName();
-        switch (propertyName) {
-            case "lengthReq" -> updateRequirementLabel(
-                lengthRequirementLabel, viewModel.isLengthReq());
-            case "upperLowerReq" -> updateRequirementLabel(
-                upperLowerRequirementLabel, viewModel.isUpperLowerReq());
-            case "numericReq" -> updateRequirementLabel(
-                numericRequirementLabel, viewModel.isNumericReq());
-            case "specialCharReq" -> updateRequirementLabel(
-                specialCharRequirementLabel, viewModel.isSpecialCharReq());
-            case "entropy" -> updateStrengthBar((int) viewModel.getEntropy());
-            default -> {
-                // Nothing more to be done here
-            }
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        final CreateVaultItemState state = (CreateVaultItemState) evt.getNewValue();
+        final String errorMessage = state.getErrorMessage();
+
+        if (errorMessage.isEmpty()) {
+            JOptionPane.showMessageDialog(this, errorMessage);
+        }
+
+        final boolean shouldClearFields = state.getClearFields();
+        if (shouldClearFields) {
+            resetTextFieldValues();
         }
     }
-    
+
+    private void resetTextFieldValues() {
+        urlField.setText("");
+        vaultTitleField.setText("");
+        usernameField.setText("");
+        passwordInputField.setText("");
+        confirmPasswordField.setText("");
+    }
+
     /**
      * Initializes all UI components.
      */
@@ -117,105 +128,14 @@ public class CreateVaultItemView extends JPanel {
         confirmPasswordField = createPasswordField(15);
 
         lengthRequirementLabel = createRequirementLabel("At least 8 characters", requirementFont);
-        upperLowerRequirementLabel =
-            createRequirementLabel("At least one uppercase and lowercase letter", requirementFont);
+        upperLowerRequirementLabel = createRequirementLabel(
+                "At least one uppercase and lowercase letter",
+                requirementFont
+        );
         numericRequirementLabel = createRequirementLabel("At least one number", requirementFont);
         specialCharRequirementLabel = createRequirementLabel("At least one special character", requirementFont);
 
         strengthBar = createStrengthBar();
-
-        saveButton = createStyledButton("Save", 90, 35);
-        cancelButton = createStyledButton("Cancel", 90, 35);
-    }
-
-    /**
-     * Creates a requirement JLabel with specified text and font, defaulting to
-     * red color.
-     *
-     * @param text The text for the requirement label.
-     * @param font The font to apply.
-     * @return Configured JLabel.
-     */
-    private JLabel createRequirementLabel(String text, Font font) {
-        final JLabel label = new JLabel(text);
-        label.setFont(font);
-        label.setForeground(Color.RED);
-        return label;
-    }
-
-    /**
-     * Creates a JTextField with specified columns and configures it.
-     *
-     * @param columns The number of columns for the text field.
-     * @return Configured JTextField.
-     */
-    private JTextField createTextField(int columns) {
-        final JTextField field = new JTextField(columns);
-        configureTextComponent(field);
-        return field;
-    }
-
-    /**
-     * Creates a JPasswordField with specified columns and configures it.
-     *
-     * @param columns The number of columns for the password field.
-     * @return Configured JPasswordField.
-     */
-    private JPasswordField createPasswordField(int columns) {
-        final JPasswordField field = new JPasswordField(columns);
-        configureTextComponent(field);
-        return field;
-    }
-
-    /**
-     * Creates and configures the strength progress bar.
-     *
-     * @return Configured JProgressBar.
-     */
-    private JProgressBar createStrengthBar() {
-        final JProgressBar bar = new JProgressBar(0, 100);
-        bar.setPreferredSize(new Dimension(componentWidth, 15));
-        bar.setMaximumSize(new Dimension(componentWidth, 15));
-        bar.setStringPainted(false);
-        bar.setForeground(Color.GRAY);
-        bar.setBackground(Color.DARK_GRAY);
-        bar.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        return bar;
-    }
-
-    /**
-     * Configures a JTextComponent with predefined settings.
-     *
-     * @param textComponent The text component to configure.
-     */
-    private void configureTextComponent(JTextComponent textComponent) {
-        textComponent.setMaximumSize(new Dimension(componentWidth, 25));
-        textComponent.setBackground(Color.BLACK);
-        textComponent.setForeground(Color.WHITE);
-        textComponent.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        textComponent.setCaretColor(Color.WHITE);
-        textComponent.setSelectionColor(new Color(80, 80, 80));
-    }
-
-    /**
-     * Creates a styled JButton with black background, white text, and gray
-     * border.
-     *
-     * @param text   The text to display on the button.
-     * @param width  The preferred width of the button.
-     * @param height The preferred height of the button.
-     * @return A styled JButton.
-     */
-    private JButton createStyledButton(String text, int width, int height) {
-        final JButton button = new JButton(text);
-        button.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 12));
-        button.setForeground(Color.WHITE);
-        button.setBackground(Color.BLACK);
-        button.setFocusPainted(false);
-        button.setBorder(new LineBorder(Color.GRAY, 1));
-        button.setPreferredSize(new Dimension(width, height));
-        button.setMaximumSize(new Dimension(width, height));
-        return button;
     }
 
     /**
@@ -259,6 +179,202 @@ public class CreateVaultItemView extends JPanel {
     }
 
     /**
+     * Registers event handlers for the UI components.
+     */
+    private void registerEventHandlers() {
+        saveButton.addActionListener(event -> onSaveButtonClicked());
+
+        cancelButton.addActionListener(event -> {
+            createVaultItemController.cancel();
+        });
+
+        passwordInputField.getDocument().addDocumentListener(new SimpleDocumentListener() {
+            @Override
+            public void update(DocumentEvent e) {
+                final String password = new String(passwordInputField.getPassword());
+                passwordValidationController.validatePassword(password, false);
+            }
+        });
+    }
+
+    /**
+     * Event handler for when the save button is clicked.
+     */
+    private void onSaveButtonClicked() {
+        final String url = urlField.getText();
+        final String vaultTitle = vaultTitleField.getText();
+        final String username = usernameField.getText();
+        final String password = new String(passwordInputField.getPassword());
+        final String repeatedPassword = new String(confirmPasswordField.getPassword());
+
+        final HomeState homeState = homeViewModel.getState();
+        if (homeState.getUser().isPresent() && homeState.getUserRepository().isPresent()) {
+            createVaultItemController.createVaultItem(
+                homeState.getUser().get(),
+                homeState.getUserRepository().get(),
+                url,
+                vaultTitle,
+                username,
+                password,
+                repeatedPassword
+            );
+        }
+    }
+
+    /**
+     * Updates the UI components based on changes in the password validation
+     * view model.
+     *
+     * @param evt The property change event.
+     */
+    private void updatePasswordValidationView(PropertyChangeEvent evt) {
+        final String propertyName = evt.getPropertyName();
+        switch (propertyName) {
+            case "lengthReq" ->
+                updateRequirementLabel(lengthRequirementLabel, passwordValidationViewModel.isLengthReq());
+            case "upperLowerReq" ->
+                updateRequirementLabel(upperLowerRequirementLabel, passwordValidationViewModel.isUpperLowerReq());
+            case "numericReq" ->
+                updateRequirementLabel(numericRequirementLabel, passwordValidationViewModel.isNumericReq());
+            case "specialCharReq" ->
+                updateRequirementLabel(specialCharRequirementLabel, passwordValidationViewModel.isSpecialCharReq());
+            case "entropy" ->
+                updateStrengthBar((int) passwordValidationViewModel.getEntropy());
+            default -> {
+                // Nothing more to be done here
+            }
+        }
+    }
+
+    /**
+     * Updates the color of a requirement label based on whether the requirement
+     * is met.
+     *
+     * @param label The JLabel to update.
+     * @param requirementMet True if the requirement is met; false otherwise.
+     */
+    private void updateRequirementLabel(JLabel label, boolean requirementMet) {
+        if (requirementMet) {
+            label.setForeground(Color.GREEN);
+        }
+        else {
+            label.setForeground(Color.RED);
+        }
+    }
+
+    /**
+     * Updates the strength bar based on the entropy score.
+     *
+     * @param entropyScore The entropy score (0-4).
+     */
+    private void updateStrengthBar(int entropyScore) {
+        final int value = entropyScore * 25;
+        strengthBar.setValue(value);
+
+        switch (entropyScore) {
+            case 0, 1 ->
+                strengthBar.setForeground(Color.RED);
+            case 2 ->
+                strengthBar.setForeground(Color.ORANGE);
+            case 3 ->
+                strengthBar.setForeground(Color.YELLOW);
+            case 4 ->
+                strengthBar.setForeground(Color.GREEN);
+            default ->
+                strengthBar.setForeground(Color.GRAY);
+        }
+    }
+
+    /**
+     * Initializes a requirement JLabel.
+     *
+     * @param text The text for the label.
+     * @param font The font to use.
+     * @return The initialized JLabel.
+     */
+    private JLabel createRequirementLabel(String text, Font font) {
+        final JLabel label = new JLabel(text);
+        label.setFont(font);
+        label.setForeground(Color.RED);
+        return label;
+    }
+
+    /**
+     * Creates a JTextField with specified columns and configures it.
+     *
+     * @param columns The number of columns for the text field.
+     * @return Configured JTextField.
+     */
+    private JTextField createTextField(int columns) {
+        final JTextField field = new JTextField(columns);
+        configureTextComponent(field);
+        return field;
+    }
+
+    /**
+     * Creates a JPasswordField with specified columns and configures it.
+     *
+     * @param columns The number of columns for the password field.
+     * @return Configured JPasswordField.
+     */
+    private JPasswordField createPasswordField(int columns) {
+        final JPasswordField field = new JPasswordField(columns);
+        configureTextComponent(field);
+        return field;
+    }
+
+    /**
+     * Configures a JTextComponent with predefined settings.
+     *
+     * @param textComponent The text component to configure.
+     */
+    private void configureTextComponent(JTextComponent textComponent) {
+        textComponent.setMaximumSize(new Dimension(componentWidth, 25));
+        textComponent.setBackground(Color.BLACK);
+        textComponent.setForeground(Color.WHITE);
+        textComponent.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        textComponent.setCaretColor(Color.WHITE);
+        textComponent.setSelectionColor(new Color(80, 80, 80));
+    }
+
+    /**
+     * Creates and configures the strength progress bar.
+     *
+     * @return Configured JProgressBar.
+     */
+    private JProgressBar createStrengthBar() {
+        final JProgressBar bar = new JProgressBar(0, 100);
+        bar.setPreferredSize(new Dimension(componentWidth, 15));
+        bar.setMaximumSize(new Dimension(componentWidth, 15));
+        bar.setStringPainted(false);
+        bar.setForeground(Color.GRAY);
+        bar.setBackground(Color.DARK_GRAY);
+        bar.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        return bar;
+    }
+
+    /**
+     * Creates a styled JButton with black background, white text, and gray
+     * border.
+     *
+     * @param text The text to display on the button.
+     * @param width The preferred width of the button.
+     * @param height The preferred height of the button.
+     * @return A styled JButton.
+     */
+    private JButton createStyledButton(String text, int width, int height) {
+        final JButton button = new JButton(text);
+        button.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 12));
+        button.setForeground(Color.WHITE);
+        button.setBackground(Color.BLACK);
+        button.setFocusPainted(false);
+        button.setBorder(new LineBorder(Color.GRAY, 1));
+        button.setPreferredSize(new Dimension(width, height));
+        button.setMaximumSize(new Dimension(width, height));
+        return button;
+    }
+
+    /**
      * Creates the main content panel.
      *
      * @return Configured JPanel.
@@ -283,6 +399,33 @@ public class CreateVaultItemView extends JPanel {
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         return titleLabel;
+    }
+
+    /**
+     * Creates a panel with a label and associated field.
+     *
+     * @param labelText The text for the label.
+     * @param field The field component.
+     * @return A JPanel containing the label and field.
+     */
+    private JPanel createLabeledField(String labelText, JTextComponent field) {
+        final JPanel panel = new JPanel();
+        panel.setBackground(Color.BLACK);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        final JLabel label = new JLabel(labelText);
+        label.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12));
+        label.setForeground(Color.WHITE);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        field.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panel.add(label);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
+        panel.add(field);
+
+        return panel;
     }
 
     /**
@@ -365,135 +508,13 @@ public class CreateVaultItemView extends JPanel {
     }
 
     /**
-     * Creates a panel with a label and associated field.
-     *
-     * @param labelText The text for the label.
-     * @param field     The field component.
-     * @return A JPanel containing the label and field.
-     */
-    private JPanel createLabeledField(String labelText, JTextComponent field) {
-        final JPanel panel = new JPanel();
-        panel.setBackground(Color.BLACK);
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        final JLabel label = new JLabel(labelText);
-        label.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12));
-        label.setForeground(Color.WHITE);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        field.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        panel.add(label);
-        panel.add(Box.createRigidArea(new Dimension(0, 5)));
-        panel.add(field);
-
-        return panel;
-    }
-
-    /**
-     * Registers event handlers for the UI components.
-     */
-    private void registerEventHandlers() {
-
-        saveButton.addActionListener(event -> {
-            final String url = urlField.getText();
-            final String vaultTitle = vaultTitleField.getText();
-            final String username = usernameField.getText();
-            final String password = new String(passwordInputField.getPassword());
-            final String confirmPassword = new String(confirmPasswordField.getPassword());
-
-            if (!password.equals(confirmPassword)) {
-                JOptionPane.showMessageDialog(this, "Passwords do not match", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            else {
-                createVaultItemController.createVaultItem(url, vaultTitle, username, password);
-                createVaultItemController.displayHomeView();
-            }
-        });
-
-        cancelButton.addActionListener(event -> {
-            createVaultItemController.displayHomeView();
-        });
-
-        passwordInputField.getDocument().addDocumentListener(new SimpleDocumentListener() {
-            @Override
-            public void update(DocumentEvent e) {
-                final String password = new String(passwordInputField.getPassword());
-                controller.validatePassword(password, false);
-            }
-        });
-
-        confirmPasswordField.getDocument().addDocumentListener(new SimpleDocumentListener() {
-            @Override
-            public void update(DocumentEvent e) {
-                // Placeholder for confirm password logic
-            }
-        });
-    }
-
-    /**
-     * Updates the UI components based on changes in the view model.
-     *
-     * @param evt The property change event.
-     */
-    private void updateView(PropertyChangeEvent evt) {
-        final String propertyName = evt.getPropertyName();
-        switch (propertyName) {
-            case "lengthReq" -> updateRequirementLabel(lengthRequirementLabel, viewModel.isLengthReq());
-            case "upperLowerReq" -> updateRequirementLabel(upperLowerRequirementLabel, viewModel.isUpperLowerReq());
-            case "numericReq" -> updateRequirementLabel(numericRequirementLabel, viewModel.isNumericReq());
-            case "specialCharReq" -> updateRequirementLabel(specialCharRequirementLabel, viewModel.isSpecialCharReq());
-            case "entropy" -> updateStrengthBar((int) viewModel.getEntropy());
-            default -> {
-                // Nothing more to be done here
-            }
-        }
-    }
-
-    /**
-     * Updates the color of a requirement label based on whether the requirement is met.
-     *
-     * @param label           The JLabel to update.
-     * @param requirementMet  True if the requirement is met; false otherwise.
-     */
-    private void updateRequirementLabel(JLabel label, boolean requirementMet) {
-        if (requirementMet) {
-            label.setForeground(Color.GREEN);
-        }
-        else {
-            label.setForeground(Color.RED);
-        }
-        
-    }
-
-    /**
-     * Updates the strength bar based on the entropy score.
-     *
-     * @param entropyScore The entropy score (0-4).
-     */
-    private void updateStrengthBar(int entropyScore) {
-        final int value = entropyScore * 25;
-        strengthBar.setValue(value);
-
-        switch (entropyScore) {
-            case 0, 1 -> strengthBar.setForeground(Color.RED);
-            case 2 -> strengthBar.setForeground(Color.ORANGE);
-            case 3 -> strengthBar.setForeground(Color.YELLOW);
-            case 4 -> strengthBar.setForeground(Color.GREEN);
-            default -> strengthBar.setForeground(Color.GRAY);
-        }
-    }
-
-    /**
      * Simplified DocumentListener for convenience.
      */
-    public abstract class SimpleDocumentListener implements javax.swing.event.DocumentListener {
+    private abstract class SimpleDocumentListener implements javax.swing.event.DocumentListener {
 
         /**
-         * Updates the password validation when the password field changes.
-         *
-         * @param event The document event.
+         * Updates a Document Event.
+         * @param event The event which is being updated.
          */
         public abstract void update(DocumentEvent event);
 
