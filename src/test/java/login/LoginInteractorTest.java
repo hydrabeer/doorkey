@@ -19,7 +19,6 @@ public class LoginInteractorTest {
     private MockLoginPresenter mockLoginPresenter = new MockLoginPresenter();
     private LoginInteractor loginInteractor = new LoginInteractor(mockUserRepository, mockLoginPresenter);
 
-
     @BeforeEach
     public void setUp() {
         mockUserRepository = new MockUserRepository();
