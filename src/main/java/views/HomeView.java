@@ -21,8 +21,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import data_access.FireStoreUserDataAccessObject;
+import entity.AbstractUser;
 import entity.AbstractVaultItem;
 import exception.InvalidVaultItemException;
+import repository.UserRepository;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomeState;
 import service.home.interface_adapter.HomeViewModel;
@@ -39,6 +41,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     private final JLabel userRepositoryInfo = new JLabel();
     private final JPanel vaultPanel = new JPanel();
     private final JButton addItemButton = createAddButton();
+    private final JButton importItemButton = createImportButton();
 
     public HomeView(
             HomeViewModel homeViewModel,
@@ -98,22 +101,26 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
             return;
         }
 
+        if (homeViewModel.getState().getUserRepository().isEmpty()) {
+            return;
+        }
+
         for (AbstractVaultItem vaultItem : homeViewModel.getState().getUser().get().getVault().getItems()) {
-            parentPanel.add(addVaultItem(vaultItem));
+            parentPanel.add(addVaultItem(vaultItem, homeState.getUser().get(), homeState.getUserRepository().get()));
             parentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
         final JScrollPane scrollPane = new JScrollPane(parentPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBackground(ViewConstants.BACKGROUND_COLOR);
-        scrollPane.setPreferredSize(new Dimension(200, 470));
-        scrollPane.setMaximumSize(new Dimension(200, 470));
+        scrollPane.setPreferredSize(new Dimension(150, 470));
+        scrollPane.setMaximumSize(new Dimension(150, 470));
         // Baris: Added this line to remove all the components from the vaultPanel
         vaultPanel.removeAll();
         vaultPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         vaultPanel.add(scrollPane);
-        vaultPanel.setPreferredSize(new Dimension(200, 500));
-        vaultPanel.setMaximumSize(new Dimension(200, 500));
+        vaultPanel.setPreferredSize(new Dimension(150, 500));
+        vaultPanel.setMaximumSize(new Dimension(150, 500));
     }
 
     // TODO: Remove this user repository info text (the entire if statement and its body)
@@ -128,7 +135,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         }
     }
 
-    private JPanel addVaultItem(AbstractVaultItem vaultItem) {
+    private JPanel addVaultItem(AbstractVaultItem vaultItem, AbstractUser user, UserRepository userRepository) {
         final JPanel vaultItemPanel = new JPanel();
         vaultItemPanel.setLayout(new BorderLayout());
         vaultItemPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -144,19 +151,20 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         final JLabel subTitle = new JLabel(vaultItem.getType());
         subTitle.setForeground(Color.WHITE);
         subTitle.setFont(new DoorkeyFont());
-        final JButton accessButton = addAccessButton(subTitle.getHeight(), vaultItem);
+        final JButton accessButton = addAccessButton(subTitle.getHeight(), vaultItem, user, userRepository);
         vaultItemPanel.add(title, BorderLayout.NORTH);
         vaultItemPanel.add(subTitle, BorderLayout.SOUTH);
         vaultItemPanel.add(accessButton, BorderLayout.EAST);
         return vaultItemPanel;
     }
 
-    private JButton addAccessButton(int height, AbstractVaultItem vaultItem) {
+    private JButton addAccessButton(
+            int height, AbstractVaultItem vaultItem, AbstractUser user, UserRepository repository) {
         final JButton accessButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDD13")
                 // button text is unlock character
                 .addListener(event -> {
                     try {
-                        homeController.displayVaultItem(vaultItem);
+                        homeController.displayVaultItem(vaultItem, user, repository);
                     }
                     catch (InvalidVaultItemException exception) {
                         throw new RuntimeException(exception);
@@ -202,13 +210,21 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         topPanel.add(createSearchPanel(), BorderLayout.NORTH);
         rightPanel.add(topPanel, BorderLayout.NORTH);
 
-        // Buttons
+        addToButtonPanel(rightPanel);
+
+        rightPanel.setPreferredSize(new Dimension(200, 470));
+        rightPanel.setMaximumSize(new Dimension(200, 470));
+        add(rightPanel, BorderLayout.CENTER);
+    }
+
+    private void addToButtonPanel(JPanel rightPanel) {
         final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         final JButton signOutButton = creatSignOutButton();
 
         buttonPanel.add(signOutButton, BorderLayout.CENTER);
         buttonPanel.add(addItemButton, BorderLayout.CENTER);
+        buttonPanel.add(importItemButton, BorderLayout.CENTER);
         rightPanel.add(buttonPanel, BorderLayout.SOUTH);
         rightPanel.setPreferredSize(new Dimension(250, 470));
         rightPanel.setMaximumSize(new Dimension(250, 470));
@@ -258,5 +274,17 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
                 BorderFactory.createLineBorder(Color.WHITE, 1, true),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         return addButton;
+    }
+
+    private JButton createImportButton() {
+        final JButton importButton = new DoorkeyButton.DoorkeyButtonBuilder("📤")
+                .addListener(event -> homeController.displayImportView())
+                .build();
+        importButton.setBackground(ViewConstants.BACKGROUND_COLOR);
+        importButton.setForeground(Color.WHITE);
+        importButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.WHITE, 1, true),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        return importButton;
     }
 }

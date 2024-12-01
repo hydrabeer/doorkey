@@ -10,9 +10,11 @@ import java.net.URISyntaxException;
  * Opens the URL
  */
 public class UrlRedirectInteractor implements UrlRedirectInputBoundary {
+    private final DesktopWrapper desktopWrapper;
     private final UrlRedirectOutputBoundary boundary;
 
-    public UrlRedirectInteractor(UrlRedirectOutputBoundary boundary) {
+    public UrlRedirectInteractor(DesktopWrapper desktopWrapper, UrlRedirectOutputBoundary boundary) {
+        this.desktopWrapper = desktopWrapper;
         this.boundary = boundary;
     }
 
@@ -22,9 +24,8 @@ public class UrlRedirectInteractor implements UrlRedirectInputBoundary {
      */
     public void openUrl(UrlInputData urlInputData) {
         try {
-            final Desktop desktop = Desktop.getDesktop();
-            if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                desktop.browse(new URI(urlInputData.getUrl()));
+            if (desktopWrapper.isSupported(Desktop.Action.BROWSE)) {
+                desktopWrapper.browse(new URI(urlInputData.getUrl()));
             }
             else {
                 boundary.displayError("Opening URLs is not supported on this system.");

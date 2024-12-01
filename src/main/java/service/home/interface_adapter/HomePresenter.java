@@ -34,7 +34,9 @@ public class HomePresenter implements HomeOutputBoundary {
         final AbstractVaultItem item = homeOutputData.getVaultItem();
         switch (item.getType()) {
             case "passwordItem" -> {
-                this.passwordVaultItemViewModel.setState(new PasswordVaultItemState((PasswordVaultItem) item));
+                this.passwordVaultItemViewModel.setState(
+                        new PasswordVaultItemState((PasswordVaultItem) item,
+                                homeOutputData.getUser(), homeOutputData.getUserRepository()));
                 this.passwordVaultItemViewModel.onStateChanged();
                 this.viewManagerModel.setState(ViewConstants.PASSWORD_VAULT_ITEM_VIEW);
                 this.viewManagerModel.onStateChanged();
@@ -45,17 +47,22 @@ public class HomePresenter implements HomeOutputBoundary {
             //                );
             //                noteVaultItemViewModel.onStateChanged();
             //            }
-            default ->
-                throw new InvalidVaultItemException("Unhandled vault item type");
+            default -> throw new InvalidVaultItemException("Unhandled vault item type: " + item.getType());
         }
+    }
+
+    @Override
+    public void displayImportView() {
+        viewManagerModel.setState(ViewConstants.IMPORT_VAULT_ITEM_VIEW);
+        viewManagerModel.onStateChanged();
     }
 
     @Override
     public void displayLoginView() {
         homeViewModel.setState(new HomeState());
         homeViewModel.onStateChanged();
-        this.viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
-        this.viewManagerModel.onStateChanged();
+        viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
+        viewManagerModel.onStateChanged();
     }
 
     @Override

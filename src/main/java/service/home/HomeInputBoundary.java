@@ -25,4 +25,8 @@ public interface HomeInputBoundary {
      */
     void displayCreateVaultItemView();
 
+    /**
+     * Display the import view.
+     */
+    void displayImportView();
 }

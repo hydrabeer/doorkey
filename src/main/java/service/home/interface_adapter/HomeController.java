@@ -1,7 +1,9 @@
 package service.home.interface_adapter;
 
+import entity.AbstractUser;
 import entity.AbstractVaultItem;
 import exception.InvalidVaultItemException;
+import repository.UserRepository;
 import service.home.HomeInputBoundary;
 import service.home.HomeInputData;
 
@@ -20,10 +22,13 @@ public class HomeController {
      * Display a vault item.
      *
      * @param vaultItem The vault item to display.
+     * @param user The user of vault item.
+     * @param repository The user repository.
      * @throws InvalidVaultItemException If the vault item is invalid.
      */
-    public void displayVaultItem(AbstractVaultItem vaultItem) throws InvalidVaultItemException {
-        final HomeInputData homeInputData = new HomeInputData(vaultItem);
+    public void displayVaultItem(AbstractVaultItem vaultItem,
+                                 AbstractUser user, UserRepository repository) throws InvalidVaultItemException {
+        final HomeInputData homeInputData = new HomeInputData(vaultItem, user, repository);
         interactor.displayVaultItem(homeInputData);
     }
 
@@ -41,4 +46,10 @@ public class HomeController {
         interactor.displayCreateVaultItemView();
     }
 
+    /**
+     * Display the import item view.
+     */
+    public void displayImportView() {
+        interactor.displayImportView();
+    }
 }

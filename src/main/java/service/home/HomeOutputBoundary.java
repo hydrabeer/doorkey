@@ -24,4 +24,9 @@ public interface HomeOutputBoundary {
      * Displays the CreateVaultItem view.
      */
     void displayCreateVaultItemView();
+
+    /**
+     * Displays the import view.
+     */
+    void displayImportView();
 }
