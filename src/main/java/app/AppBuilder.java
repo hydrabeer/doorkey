@@ -1,6 +1,7 @@
 package app;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -40,8 +41,8 @@ import service.signup.interface_adapter.SignupViewModel;
 import service.url_redirect.DesktopWrapper;
 import service.url_redirect.RealDesktopWrapper;
 import service.url_redirect.UrlRedirectInteractor;
-import service.url_redirect.interface_adapter.UrlRedirectPresenter;
 import service.url_redirect.interface_adapter.UrlRedirectController;
+import service.url_redirect.interface_adapter.UrlRedirectPresenter;
 import views.CreateLocalVaultView;
 import views.HomeView;
 import views.LoadLocalVaultView;
