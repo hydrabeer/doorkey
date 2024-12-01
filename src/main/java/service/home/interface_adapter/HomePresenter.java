@@ -64,4 +64,10 @@ public class HomePresenter implements HomeOutputBoundary {
         viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
         viewManagerModel.onStateChanged();
     }
+
+    @Override
+    public void displayCreateVaultItemView() {
+        viewManagerModel.setState(ViewConstants.CREATE_VAULT_ITEM_VIEW);
+        viewManagerModel.onStateChanged();
+    }
 }

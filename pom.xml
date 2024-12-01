@@ -50,6 +50,12 @@
 			<artifactId>bcprov-jdk18on</artifactId>
 			<version>1.79</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn -->
+		<dependency>
+  			<groupId>com.nulab-inc</groupId>
+  			<artifactId>zxcvbn</artifactId>
+  			<version>1.9.0</version>
+		</dependency>
 	</dependencies>
 
 	<properties>

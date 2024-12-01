@@ -14,6 +14,10 @@ import service.ViewManagerModel;
 import service.copy_credentials.CopyCredentialsInteractor;
 import service.copy_credentials.interface_adapter.CopyCredentialsController;
 import service.copy_credentials.interface_adapter.CopyCredentialsPresenter;
+import service.create_vault_item.CreateVaultItemInteractor;
+import service.create_vault_item.interface_adapter.CreateVaultItemController;
+import service.create_vault_item.interface_adapter.CreateVaultItemPresenter;
+import service.create_vault_item.interface_adapter.CreateVaultItemViewModel;
 import service.home.HomeInteractor;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomePresenter;
@@ -34,6 +38,10 @@ import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
 import service.login.interface_adapter.LoginViewModel;
+import service.password_validation.PasswordValidationInteractor;
+import service.password_validation.interface_adapter.PasswordValidationController;
+import service.password_validation.interface_adapter.PasswordValidationPresenter;
+import service.password_validation.interface_adapter.PasswordValidationViewModel;
 import service.password_vault_item.PasswordVaultItemInteractor;
 import service.password_vault_item.interface_adapter.PasswordVaultItemController;
 import service.password_vault_item.interface_adapter.PasswordVaultItemPresenter;
@@ -48,6 +56,7 @@ import service.url_redirect.UrlRedirectInteractor;
 import service.url_redirect.interface_adapter.UrlRedirectController;
 import service.url_redirect.interface_adapter.UrlRedirectPresenter;
 import views.CreateLocalVaultView;
+import views.CreateVaultItemView;
 import views.HomeView;
 import views.ImportVaultItemView;
 import views.LoadLocalVaultView;
@@ -62,12 +71,14 @@ import views.ViewManager;
  * A builder class for the application.
  */
 public class AppBuilder {
+
     private final JFrame mainFrame;
     private final JPanel views;
     private final ViewManagerModel viewManagerModel;
     private final FireStoreUserDataAccessObject fireStoreUserDataAccessObject;
     private final HomeViewModel homeViewModel;
     private final PasswordVaultItemViewModel passwordVaultItemViewModel;
+    private final CreateVaultItemViewModel createVaultItemViewModel;
     private final ImportVaultItemViewModel importVaultItemViewModel;
 
     public AppBuilder(String title, int width, int height) {
@@ -81,10 +92,10 @@ public class AppBuilder {
         // the panels are made prettier, and the support to add/close is added.
         //
         // mainFrame.setUndecorated(true);
-
         this.homeViewModel = new HomeViewModel();
         this.passwordVaultItemViewModel = new PasswordVaultItemViewModel();
         this.importVaultItemViewModel = new ImportVaultItemViewModel();
+        this.createVaultItemViewModel = new CreateVaultItemViewModel();
 
         final CardLayout cardLayout = new CardLayout();
         this.views = new JPanel(cardLayout);
@@ -98,6 +109,47 @@ public class AppBuilder {
         this.fireStoreUserDataAccessObject = new FireStoreUserDataAccessObject(firebaseAuthRepository, httpClient);
     }
 
+    /**
+     * Adds the CreateVaultItemView to the viewsPanel.
+     *
+     * @return The AppBuilder instance.
+     */
+    public AppBuilder addCreateVaultItemView() {
+        final PasswordValidationViewModel passwordValidationViewModel = new PasswordValidationViewModel();
+        final PasswordValidationPresenter passwordValidationPresenter = new PasswordValidationPresenter(
+                passwordValidationViewModel
+        );
+        final PasswordValidationInteractor passwordValidationInteractor = new PasswordValidationInteractor(
+                passwordValidationPresenter
+        );
+        final PasswordValidationController passwordValidationController = new PasswordValidationController(
+                passwordValidationInteractor
+        );
+
+        final CreateVaultItemPresenter createVaultItemPresenter = new CreateVaultItemPresenter(
+                createVaultItemViewModel,
+                homeViewModel,
+                viewManagerModel
+        );
+        final CreateVaultItemInteractor createVaultItemInteractor = new CreateVaultItemInteractor(
+                createVaultItemPresenter
+        );
+        final CreateVaultItemController createVaultItemController = new CreateVaultItemController(
+                createVaultItemInteractor
+        );
+
+        final CreateVaultItemView createVaultItemView = new CreateVaultItemView(
+                homeViewModel,
+                createVaultItemViewModel,
+                createVaultItemController,
+                passwordValidationViewModel,
+                passwordValidationController
+        );
+
+        views.add(createVaultItemView, ViewConstants.CREATE_VAULT_ITEM_VIEW);
+        return this;
+    }
+    
     /**
      * Adds the LocalVaultView to the viewsPanel.
      *

@@ -265,7 +265,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     private JButton createAddButton() {
         final JButton addButton = new DoorkeyButton.DoorkeyButtonBuilder("➕")
                 .addListener(event -> {
-                        // TODO: Add Item logic.
+                    homeController.displayCreateVaultItemView();
                 }
                 ).build();
         addButton.setBackground(ViewConstants.BACKGROUND_COLOR);

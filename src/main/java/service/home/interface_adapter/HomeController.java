@@ -11,6 +11,7 @@ import service.home.HomeInputData;
  * The Home controller.
  */
 public class HomeController {
+
     private final HomeInputBoundary interactor;
 
     public HomeController(HomeInputBoundary interactor) {
@@ -19,6 +20,7 @@ public class HomeController {
 
     /**
      * Display a vault item.
+     *
      * @param vaultItem The vault item to display.
      * @param user The user of vault item.
      * @param repository The user repository.
@@ -35,6 +37,13 @@ public class HomeController {
      */
     public void displayLoginView() {
         interactor.displayLoginView();
+    }
+
+    /**
+     * Display CreateVaultItem view.
+     */
+    public void displayCreateVaultItemView() {
+        interactor.displayCreateVaultItemView();
     }
 
     /**
