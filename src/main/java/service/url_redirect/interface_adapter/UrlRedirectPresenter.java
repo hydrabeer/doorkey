@@ -1,6 +1,7 @@
-package service.url_redirect;
+package service.url_redirect.interface_adapter;
 
 import service.password_vault_item.interface_adapter.PasswordVaultItemViewModel;
+import service.url_redirect.UrlRedirectOutputBoundary;
 
 /**
  * Gives information from the interactor to the User.

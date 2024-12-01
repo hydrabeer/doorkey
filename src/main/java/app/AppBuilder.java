@@ -42,9 +42,11 @@ import service.signup.SignupInteractor;
 import service.signup.interface_adapter.SignupController;
 import service.signup.interface_adapter.SignupPresenter;
 import service.signup.interface_adapter.SignupViewModel;
+import service.url_redirect.DesktopWrapper;
+import service.url_redirect.RealDesktopWrapper;
 import service.url_redirect.UrlRedirectInteractor;
-import service.url_redirect.UrlRedirectPresenter;
 import service.url_redirect.interface_adapter.UrlRedirectController;
+import service.url_redirect.interface_adapter.UrlRedirectPresenter;
 import views.CreateLocalVaultView;
 import views.HomeView;
 import views.ImportVaultItemView;
@@ -237,10 +239,12 @@ public class AppBuilder {
         final UrlRedirectPresenter urlRedirectPresenter = new UrlRedirectPresenter(
                 passwordVaultItemViewModel
         );
-        final UrlRedirectInteractor urlRedirectInteractor = new UrlRedirectInteractor(urlRedirectPresenter);
+        final DesktopWrapper desktopWrapper = new RealDesktopWrapper();
+        final UrlRedirectInteractor urlRedirectInteractor = new UrlRedirectInteractor(
+                desktopWrapper, urlRedirectPresenter);
         final UrlRedirectController urlRedirectController = new UrlRedirectController(urlRedirectInteractor);
         final PasswordVaultItemPresenter passwordVaultItemPresenter = new PasswordVaultItemPresenter(
-                passwordVaultItemViewModel, viewManagerModel);
+                passwordVaultItemViewModel, viewManagerModel, homeViewModel);
         final PasswordVaultItemInteractor passwordVaultItemInteractor = new PasswordVaultItemInteractor(
                 passwordVaultItemPresenter);
         final PasswordVaultItemController passwordVaultItemController = new PasswordVaultItemController(

@@ -21,8 +21,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import data_access.FireStoreUserDataAccessObject;
+import entity.AbstractUser;
 import entity.AbstractVaultItem;
 import exception.InvalidVaultItemException;
+import repository.UserRepository;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomeState;
 import service.home.interface_adapter.HomeViewModel;
@@ -99,8 +101,12 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
             return;
         }
 
+        if (homeViewModel.getState().getUserRepository().isEmpty()) {
+            return;
+        }
+
         for (AbstractVaultItem vaultItem : homeViewModel.getState().getUser().get().getVault().getItems()) {
-            parentPanel.add(addVaultItem(vaultItem));
+            parentPanel.add(addVaultItem(vaultItem, homeState.getUser().get(), homeState.getUserRepository().get()));
             parentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
         final JScrollPane scrollPane = new JScrollPane(parentPanel);
@@ -129,7 +135,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         }
     }
 
-    private JPanel addVaultItem(AbstractVaultItem vaultItem) {
+    private JPanel addVaultItem(AbstractVaultItem vaultItem, AbstractUser user, UserRepository userRepository) {
         final JPanel vaultItemPanel = new JPanel();
         vaultItemPanel.setLayout(new BorderLayout());
         vaultItemPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -145,19 +151,20 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         final JLabel subTitle = new JLabel(vaultItem.getType());
         subTitle.setForeground(Color.WHITE);
         subTitle.setFont(new DoorkeyFont());
-        final JButton accessButton = addAccessButton(subTitle.getHeight(), vaultItem);
+        final JButton accessButton = addAccessButton(subTitle.getHeight(), vaultItem, user, userRepository);
         vaultItemPanel.add(title, BorderLayout.NORTH);
         vaultItemPanel.add(subTitle, BorderLayout.SOUTH);
         vaultItemPanel.add(accessButton, BorderLayout.EAST);
         return vaultItemPanel;
     }
 
-    private JButton addAccessButton(int height, AbstractVaultItem vaultItem) {
+    private JButton addAccessButton(
+            int height, AbstractVaultItem vaultItem, AbstractUser user, UserRepository repository) {
         final JButton accessButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDD13")
                 // button text is unlock character
                 .addListener(event -> {
                     try {
-                        homeController.displayVaultItem(vaultItem);
+                        homeController.displayVaultItem(vaultItem, user, repository);
                     }
                     catch (InvalidVaultItemException exception) {
                         throw new RuntimeException(exception);

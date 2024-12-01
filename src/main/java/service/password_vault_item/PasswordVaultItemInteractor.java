@@ -1,5 +1,9 @@
 package service.password_vault_item;
 
+import java.io.IOException;
+
+import exception.AuthException;
+
 /**
  * The Password Vault item Interactor.
  * Calls Presenter
@@ -17,12 +21,16 @@ public class PasswordVaultItemInteractor implements PasswordVaultItemInputBounda
     }
 
     @Override
-    public void displayEditView() {
-
+    public void deleteItem(PasswordVaultItemInputData passwordVaultItemInputData) throws AuthException, IOException {
+        final PasswordVaultItemOutputData passwordVaultItemOutputData = new PasswordVaultItemOutputData(
+                passwordVaultItemInputData.getUser(), passwordVaultItemInputData.getUserRepository());
+        passwordVaultItemInputData.getUserRepository().removeVaultItem(
+                passwordVaultItemInputData.getUser(), passwordVaultItemInputData.getPasswordVaultItem());
+        passwordVaultItemPresenter.deleteItem(passwordVaultItemOutputData);
     }
 
     @Override
-    public void displayDeleteView() {
-
+    public void displayDeleteMessage() {
+        passwordVaultItemPresenter.displayDeleteMessage();
     }
 }

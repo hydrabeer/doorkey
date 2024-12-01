@@ -34,7 +34,9 @@ public class HomePresenter implements HomeOutputBoundary {
         final AbstractVaultItem item = homeOutputData.getVaultItem();
         switch (item.getType()) {
             case "passwordItem" -> {
-                this.passwordVaultItemViewModel.setState(new PasswordVaultItemState((PasswordVaultItem) item));
+                this.passwordVaultItemViewModel.setState(
+                        new PasswordVaultItemState((PasswordVaultItem) item,
+                                homeOutputData.getUser(), homeOutputData.getUserRepository()));
                 this.passwordVaultItemViewModel.onStateChanged();
                 this.viewManagerModel.setState(ViewConstants.PASSWORD_VAULT_ITEM_VIEW);
                 this.viewManagerModel.onStateChanged();

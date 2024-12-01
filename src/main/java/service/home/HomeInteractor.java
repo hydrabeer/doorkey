@@ -14,7 +14,8 @@ public class HomeInteractor implements HomeInputBoundary {
 
     @Override
     public void displayVaultItem(HomeInputData homeInputData) throws InvalidVaultItemException {
-        homePresenter.prepareShowVaultView(new HomeOutputData(homeInputData.getChosenVaultItem()));
+        homePresenter.prepareShowVaultView(new HomeOutputData(
+                homeInputData.getChosenVaultItem(), homeInputData.getChosenUser(), homeInputData.getUserRepository()));
     }
 
     @Override
