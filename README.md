@@ -71,6 +71,11 @@ Java 21. You can skip this step if you know you have Java 17 or later installed.
 [releases page](https://github.com/hydrabeer/doorkey/releases). 
 - Double-click the downloaded JAR file to run Doorkey.
 
+Alternatively, you can run it from the command line:
+```bash
+java -jar doorkey.jar
+```
+
 On Linux, you may need to make the file executable by running:
 ```bash
 chmod +x doorkey.jar
