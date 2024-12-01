@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import mock.MockCreateLocalVaultPresenter;
+import mock.MockRepositoryProvider;
+import mock.MockUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.local.create.CreateLocalVaultInputData;
@@ -12,14 +14,18 @@ import service.local.create.CreateLocalVaultInteractor;
 import javax.swing.*;
 
 public class CreateLocalVaultInteractorTest {
+    private MockRepositoryProvider repositoryProvider;
+    private MockUserRepository userRepository;
     private MockCreateLocalVaultPresenter presenter;
     private CreateLocalVaultInteractor interactor;
     private CreateLocalVaultInputData inputData;
 
     @BeforeEach
     void setup() {
+        userRepository = new MockUserRepository();
+        repositoryProvider = new MockRepositoryProvider(userRepository);
         presenter = new MockCreateLocalVaultPresenter();
-        interactor = new CreateLocalVaultInteractor(presenter);
+        interactor = new CreateLocalVaultInteractor(repositoryProvider, userRepository, presenter);
         JFileChooser fileChooser = new JFileChooser();
         inputData = new CreateLocalVaultInputData(fileChooser, "password");
     }
@@ -82,7 +88,8 @@ public class CreateLocalVaultInteractorTest {
         inputData = new CreateLocalVaultInputData(fileChooser, "password");
         interactor.createLocalVault(inputData);
         assertEquals(1, presenter.successViews.size());
-        assertEquals("password", presenter.successViews.get(0).getPassword());
-        assertEquals("valid.doorkey", presenter.successViews.get(0).getPath());
+        // Path and password removed from output data - handled in interactor
+        // assertEquals("password", presenter.successViews.get(0).getPassword());
+        // assertEquals("valid.doorkey", presenter.successViews.get(0).getPath());
     }
 }

@@ -28,7 +28,7 @@ import repository.UserRepository;
 /**
  * Data access object for Firestore.
  */
-public class FireStoreUserDataAccessObject implements UserRepository {
+public class FireStoreUserRepository implements UserRepository {
     // Firebase constants
     private static final String PROJECT_ID = "doorkey-csc207";
     private static final String FIRESTORE_BASE_URL = "https://firestore.googleapis.com/v1/projects/"
@@ -53,7 +53,9 @@ public class FireStoreUserDataAccessObject implements UserRepository {
 
     private final AuthRepository authRepository;
 
-    public FireStoreUserDataAccessObject(AuthRepository authRepository, HttpClient httpClient) {
+    private CloudUser currentUser;
+
+    public FireStoreUserRepository(AuthRepository authRepository, HttpClient httpClient) {
         this.authRepository = authRepository;
         this.httpClient = httpClient;
     }
@@ -80,11 +82,23 @@ public class FireStoreUserDataAccessObject implements UserRepository {
             final CloudVault vault = getVault(jsonResponse);
             final RemoteAuth auth = new RemoteAuth(loginResponse);
 
-            return new CloudUser(email, password, vault, auth);
+            final CloudUser user = new CloudUser(email, password, vault, auth);
+            this.currentUser = user;
+            return user;
         }
         catch (HttpRequestException httpRequestException) {
             throw new AuthException(AuthErrorReason.REQUEST_ERROR, httpRequestException.getMessage());
         }
+    }
+
+    @Override
+    public void signOutUser() {
+        this.currentUser = null;
+    }
+
+    @Override
+    public AbstractUser getCurrentUser() {
+        return this.currentUser;
     }
 
     @Override
@@ -94,31 +108,33 @@ public class FireStoreUserDataAccessObject implements UserRepository {
         final RemoteAuth auth = new RemoteAuth(loginResponse);
         createUserDocument(loginResponse);
 
-        return new CloudUser(email, password, new CloudVault(new ArrayList<>()), auth);
+        final CloudUser user = new CloudUser(email, password, new CloudVault(new ArrayList<>()), auth);
+        this.currentUser = user;
+        return user;
     }
 
     @Override
-    public void addVaultItem(AbstractUser user, AbstractVaultItem item) throws AuthException {
-        if (!(user instanceof CloudUser cloudUser)) {
-            throw new IllegalArgumentException("User must be a CloudUser.");
+    public void addVaultItem(AbstractVaultItem item) throws AuthException {
+        if (currentUser == null) {
+            throw new RuntimeException("Attempted to perform operation when the user is not signed in.");
         }
 
-        user.getVault().addItem(item);
+        currentUser.getVault().addItem(item);
 
-        addAllItemsToVault(cloudUser);
+        addAllItemsToVault(currentUser);
     }
 
     @Override
-    public void removeVaultItem(AbstractUser user, AbstractVaultItem item) throws AuthException {
-        if (!(user instanceof CloudUser cloudUser)) {
-            throw new IllegalArgumentException("User must be a CloudUser.");
+    public void removeVaultItem(AbstractVaultItem item) throws AuthException {
+        if (currentUser == null) {
+            throw new RuntimeException("Attempted to perform operation when the user is not signed in.");
         }
 
-        final List<AbstractVaultItem> vaultItems = user.getVault().getItems();
+        final List<AbstractVaultItem> vaultItems = currentUser.getVault().getItems();
         vaultItems.remove(item);
-        user.getVault().setItems(vaultItems);
+        currentUser.getVault().setItems(vaultItems);
 
-        addAllItemsToVault(cloudUser);
+        addAllItemsToVault(currentUser);
     }
 
     private void addAllItemsToVault(CloudUser cloudUser) throws AuthException {

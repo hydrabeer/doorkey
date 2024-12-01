@@ -1,7 +1,6 @@
 package mock;
 
 import service.password_vault_item.PasswordVaultItemOutputBoundary;
-import service.password_vault_item.PasswordVaultItemOutputData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ public class MockPasswordVaultItemPresenter implements PasswordVaultItemOutputBo
     }
 
     @Override
-    public void deleteItem(PasswordVaultItemOutputData outputData) {
+    public void updateDeleteItem() {
 
     }
 

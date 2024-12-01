@@ -28,7 +28,7 @@ public class LoginPresenter implements LoginOutputBoundary {
     @Override
     public void prepareSuccessView(LoginOutputData loginOutputData) {
         final HomeState currentHomeViewState = homeViewModel.getState();
-        currentHomeViewState.setUser(loginOutputData.getUser());
+        currentHomeViewState.setUser(loginOutputData.getUserRepository().getCurrentUser());
         currentHomeViewState.setUserRepository(loginOutputData.getUserRepository());
 
         homeViewModel.setState(currentHomeViewState);

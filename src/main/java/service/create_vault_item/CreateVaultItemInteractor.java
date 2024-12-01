@@ -2,18 +2,23 @@ package service.create_vault_item;
 
 import java.io.IOException;
 
-import entity.AbstractUser;
 import entity.PasswordVaultItem;
 import exception.AuthException;
+import repository.RepositoryProvider;
 import repository.UserRepository;
 
 /**
  * The CreateVaultItem Interactor.
  */
 public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
+    private final RepositoryProvider repositoryProvider;
     private final CreateVaultItemOutputBoundary presenter;
 
-    public CreateVaultItemInteractor(CreateVaultItemOutputBoundary presenter) {
+    public CreateVaultItemInteractor(
+        RepositoryProvider repositoryProvider,
+        CreateVaultItemOutputBoundary presenter
+    ) {
+        this.repositoryProvider = repositoryProvider;
         this.presenter = presenter;
     }
 
@@ -30,8 +35,8 @@ public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
             return;
         }
 
-        final AbstractUser user = requestModel.getUser();
-        final UserRepository userRepository = requestModel.getUserRepository();
+        // Why safe: at this point, user must've already logged in.
+        final UserRepository userRepository = repositoryProvider.getRepositoryUnchecked();
         
         try {
             final PasswordVaultItem vaultItem = new PasswordVaultItem(
@@ -41,7 +46,7 @@ public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
                     requestModel.getUrl()
             );
 
-            userRepository.addVaultItem(user, vaultItem);
+            userRepository.addVaultItem(vaultItem);
 
             final CreateVaultItemResponseModel responseModel = new CreateVaultItemResponseModel(
                 true,
@@ -51,7 +56,7 @@ public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
             presenter.presentCreateVaultItemResponse(responseModel);
         }
         catch (AuthException | IOException exception) { 
-            presenter.displayErrorMessage("Error occured saving vault item");
+            presenter.displayErrorMessage("Error occurred saving vault item");
         }
     }
 

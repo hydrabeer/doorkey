@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import data_access.FireStoreUserDataAccessObject;
 import entity.AbstractUser;
 import entity.AbstractVaultItem;
 import exception.InvalidVaultItemException;
@@ -38,7 +37,6 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     private final HomeController homeController;
     private final HomeViewModel homeViewModel;
     private final JLabel userInfo = new JLabel();
-    private final JLabel userRepositoryInfo = new JLabel();
     private final JPanel vaultPanel = new JPanel();
     private final JButton addItemButton = createAddButton();
     private final JButton importItemButton = createImportButton();
@@ -72,7 +70,6 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
 
     private void dispatchStates(HomeState homeState) {
         setVaultItems(homeState);
-        setRepositoryInfo(homeState);
     }
 
     private void setUpMainPanel() {
@@ -121,18 +118,6 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         vaultPanel.add(scrollPane);
         vaultPanel.setPreferredSize(new Dimension(150, 500));
         vaultPanel.setMaximumSize(new Dimension(150, 500));
-    }
-
-    // TODO: Remove this user repository info text (the entire if statement and its body)
-    private void setRepositoryInfo(HomeState homeState) {
-        if (homeState.getUserRepository().isPresent()) {
-            if (homeState.getUserRepository().get() instanceof FireStoreUserDataAccessObject) {
-                userRepositoryInfo.setText("Firebase");
-            }
-            else {
-                userRepositoryInfo.setText("Local");
-            }
-        }
     }
 
     private JPanel addVaultItem(AbstractVaultItem vaultItem, AbstractUser user, UserRepository userRepository) {
@@ -220,7 +205,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     private void addToButtonPanel(JPanel rightPanel) {
         final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        final JButton signOutButton = creatSignOutButton();
+        final JButton signOutButton = createSignOutButton();
 
         buttonPanel.add(signOutButton, BorderLayout.CENTER);
         buttonPanel.add(addItemButton, BorderLayout.CENTER);
@@ -248,12 +233,12 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         return searchField;
     }
 
-    private JButton creatSignOutButton() {
+    private JButton createSignOutButton() {
         final JButton backButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDD12")
                 .addListener(event -> {
-                    homeController.displayLoginView();
-                }
-                            ).build();
+                    homeController.signOut();
+                })
+                .build();
         backButton.setBackground(ViewConstants.BACKGROUND_COLOR);
         backButton.setForeground(Color.WHITE);
         backButton.setBorder(BorderFactory.createCompoundBorder(
