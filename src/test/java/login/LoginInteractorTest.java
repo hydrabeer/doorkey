@@ -3,11 +3,14 @@ package login;
 import entity.AbstractUser;
 import exception.AuthException;
 import mock.MockLoginPresenter;
+import mock.MockRepositoryProvider;
 import mock.MockUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.login.LoginInteractor;
 import service.login.LoginInputData;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,13 +20,23 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LoginInteractorTest {
     private MockUserRepository mockUserRepository = new MockUserRepository();
     private MockLoginPresenter mockLoginPresenter = new MockLoginPresenter();
-    private LoginInteractor loginInteractor = new LoginInteractor(mockUserRepository, mockLoginPresenter);
+    private MockRepositoryProvider repositoryProvider = new MockRepositoryProvider(mockUserRepository);
+    private LoginInteractor loginInteractor = new LoginInteractor(
+            repositoryProvider,
+            mockUserRepository,
+            mockLoginPresenter
+    );
 
     @BeforeEach
     public void setUp() {
         mockUserRepository = new MockUserRepository();
         mockLoginPresenter = new MockLoginPresenter();
-        loginInteractor = new LoginInteractor(mockUserRepository, mockLoginPresenter);
+        mockUserRepository = new MockUserRepository();
+        loginInteractor = new LoginInteractor(
+                repositoryProvider,
+                mockUserRepository,
+                mockLoginPresenter
+        );
     }
 
     /**
@@ -67,6 +80,26 @@ public class LoginInteractorTest {
     }
 
     /**
+     * Test throw IO exception, which should technically never happen.
+     */
+    @Test
+    public void testLogin_IOException() throws IOException {
+        String email = "user@example.com";
+        String password = "password123";
+        try {
+            mockUserRepository.signupUser(email, password);
+        } catch (AuthException e) {
+            fail("AuthException thrown during signup");
+        }
+
+        LoginInputData inputData = new LoginInputData(email, password);
+        mockUserRepository.setThrowIOExceptionSignin(true);
+        loginInteractor.login(inputData);
+
+        assertFalse(mockLoginPresenter.generalErrors.isEmpty());
+    }
+
+    /**
      * Test login with both invalid email and empty password.
      */
     @Test
@@ -94,7 +127,7 @@ public class LoginInteractorTest {
      * Test login with correct email but wrong password.
      */
     @Test
-    public void testLogin_WrongCredentials() throws AuthException {
+    public void testLogin_WrongCredentials() throws AuthException, IOException {
         String email = "user@example.com";
         String correctPassword = "correctPassword";
         String wrongPassword = "wrongPassword";
@@ -118,7 +151,7 @@ public class LoginInteractorTest {
      * Test successful login with correct email and password.
      */
     @Test
-    public void testLogin_Success() throws AuthException {
+    public void testLogin_Success() throws AuthException, IOException {
         String email = "user@example.com";
         String password = "password123";
         AbstractUser user = mockUserRepository.signupUser(email, password);
@@ -127,7 +160,7 @@ public class LoginInteractorTest {
         loginInteractor.login(inputData);
 
         assertTrue(mockLoginPresenter.hasSuccessView(), "No success view for valid credentials");
-        assertEquals(user, mockLoginPresenter.successViews.get(0).getUser(),
+        assertEquals(user, mockLoginPresenter.successViews.get(0).getUserRepository().getCurrentUser(),
                 "Success view should contain the correct user");
         assertTrue(mockLoginPresenter.hasClearedField("email"),
                 "Clear email error on successful login");

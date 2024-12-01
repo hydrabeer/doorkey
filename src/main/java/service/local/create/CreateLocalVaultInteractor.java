@@ -1,14 +1,28 @@
 package service.local.create;
 
+import java.io.IOException;
+
 import javax.swing.JFileChooser;
+
+import exception.AuthException;
+import repository.RepositoryProvider;
+import repository.UserRepository;
 
 /**
  * The local vault creation interactor.
  */
 public class CreateLocalVaultInteractor implements CreateLocalVaultInputBoundary {
+    private final RepositoryProvider repositoryProvider;
+    private final UserRepository localUserRepository;
     private final CreateLocalVaultOutputBoundary createLocalVaultPresenter;
 
-    public CreateLocalVaultInteractor(CreateLocalVaultOutputBoundary outputPresenter) {
+    public CreateLocalVaultInteractor(
+            RepositoryProvider repositoryProvider,
+            UserRepository localUserRepository,
+            CreateLocalVaultOutputBoundary outputPresenter
+    ) {
+        this.repositoryProvider = repositoryProvider;
+        this.localUserRepository = localUserRepository;
         this.createLocalVaultPresenter = outputPresenter;
     }
 
@@ -29,11 +43,17 @@ public class CreateLocalVaultInteractor implements CreateLocalVaultInputBoundary
                     createLocalVaultPresenter.prepareErrorView("Please enter a password");
                 }
                 else {
-                    final CreateLocalVaultOutputData outputData = new CreateLocalVaultOutputData(
-                        path,
-                        password
-                    );
-                    createLocalVaultPresenter.prepareSuccessView(outputData);
+                    try {
+                        localUserRepository.signupUser(path, password);
+                        repositoryProvider.setRepository(localUserRepository);
+                        final CreateLocalVaultOutputData outputData = new CreateLocalVaultOutputData(
+                                localUserRepository
+                        );
+                        createLocalVaultPresenter.prepareSuccessView(outputData);
+                    }
+                    catch (AuthException | IOException exception) {
+                        createLocalVaultPresenter.prepareErrorView(exception.getMessage());
+                    }
                 }
             }
         }

@@ -13,11 +13,12 @@ import repository.UserRepository;
 /**
  * Repository for user data.
  */
-public class LocalVaultUserDataAccessObject implements UserRepository {
+public class LocalVaultUserRepository implements UserRepository {
     private String path;
     private String password;
+    private LocalUser currentUser;
 
-    public LocalVaultUserDataAccessObject() {
+    public LocalVaultUserRepository() {
     }
 
     /**
@@ -26,13 +27,13 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
      * @param filepath    The path to the local .doorkey vault.
      * @param vaultPassword The password of the user.
      * @return The user that was signed up.
-     * @throws IOException Never. (Other implementations of the DAO may throw, however).
      */
     @Override
-    public AbstractUser signupUser(String filepath, String vaultPassword) throws IOException {
+    public AbstractUser signupUser(String filepath, String vaultPassword) {
         this.path = filepath;
         this.password = vaultPassword;
-        return new LocalUser(new LocalVault(new ArrayList<>(), this.path, this.password), this.password);
+        this.currentUser = new LocalUser(new LocalVault(new ArrayList<>(), this.path, this.password), this.password);
+        return this.currentUser;
     }
 
     /**
@@ -55,7 +56,8 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
             final LocalVault vault = new LocalVault(new ArrayList<>(), this.path, this.password);
             vault.loadFromJSON(content);
 
-            return new LocalUser(vault, this.password);
+            this.currentUser = new LocalUser(vault, this.password);
+            return this.currentUser;
         }
         catch (java.nio.file.NoSuchFileException exception) {
             throw new IOException("File not found: " + this.path);
@@ -65,42 +67,50 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
         }
     }
 
+    @Override
+    public void signOutUser() {
+        this.currentUser = null;
+    }
+
+    @Override
+    public AbstractUser getCurrentUser() {
+        return this.currentUser;
+    }
+
     /**
      * Add an item to the user's local vault.
      *
-     * @param user The user to add the item to.
      * @param item The item to add to the user's vault.
      * @throws IOException If there was an issue updating and saving the local vault to disk.
      */
     @Override
-    public void addVaultItem(AbstractUser user, AbstractVaultItem item) throws IOException {
-        if (!(user instanceof LocalUser)) {
-            throw new IllegalArgumentException("User must be a LocalUser.");
+    public void addVaultItem(AbstractVaultItem item) throws IOException {
+        if (currentUser == null) {
+            throw new RuntimeException("Attempted to perform operation when the user is not signed in.");
         }
 
-        user.getVault().addItem(item);
+        currentUser.getVault().addItem(item);
 
-        saveVaultToDisk(user);
+        saveVaultToDisk(currentUser);
     }
 
     /**
      * Remove an item from the user's local .doorkey vault.
      *
-     * @param user The user to remove the item from.
      * @param item The item to remove from the user's vault.
      * @throws IOException If there was an issue updating and saving the local vault to disk.
      */
     @Override
-    public void removeVaultItem(AbstractUser user, AbstractVaultItem item) throws IOException {
-        if (!(user instanceof LocalUser)) {
-            throw new IllegalArgumentException("User must be a LocalUser.");
+    public void removeVaultItem(AbstractVaultItem item) throws IOException {
+        if (currentUser == null) {
+            throw new RuntimeException("Attempted to perform operation when the user is not signed in.");
         }
 
-        final List<AbstractVaultItem> vaultItems = user.getVault().getItems();
+        final List<AbstractVaultItem> vaultItems = currentUser.getVault().getItems();
         vaultItems.remove(item);
-        user.getVault().setItems(vaultItems);
+        currentUser.getVault().setItems(vaultItems);
 
-        saveVaultToDisk(user);
+        saveVaultToDisk(currentUser);
     }
 
     /**
@@ -108,7 +118,7 @@ public class LocalVaultUserDataAccessObject implements UserRepository {
      * @param user The user to save the vault from.
      * @throws IOException If there was an issue updating and saving the local vault to disk.
      */
-    private void saveVaultToDisk(AbstractUser user) throws IOException {
+    private void saveVaultToDisk(LocalUser user) throws IOException {
         final String exported = user.getVault().toJSON();
         java.nio.file.Files.write(java.nio.file.Paths.get(this.path), exported.getBytes());
     }

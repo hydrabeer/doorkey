@@ -1,10 +1,5 @@
 package service.local.create.interface_adapter;
 
-import java.io.IOException;
-
-import data_access.LocalVaultUserDataAccessObject;
-import entity.AbstractUser;
-import exception.AuthException;
 import repository.UserRepository;
 import service.ViewManagerModel;
 import service.home.interface_adapter.HomeState;
@@ -33,25 +28,17 @@ public class CreateLocalVaultPresenter implements CreateLocalVaultOutputBoundary
     
     @Override
     public void prepareSuccessView(CreateLocalVaultOutputData createLocalVaultOutputData) {
+        final UserRepository repository = createLocalVaultOutputData.getRepository();
+
         final HomeState currentHomeViewState = homeViewModel.getState();
+        currentHomeViewState.setUser(repository.getCurrentUser());
+        currentHomeViewState.setUserRepository(repository);
 
-        final UserRepository repository = new LocalVaultUserDataAccessObject();
-        try {
-            final AbstractUser user = repository.signupUser(createLocalVaultOutputData.getPath(),
-                    createLocalVaultOutputData.getPassword());
-        
-            currentHomeViewState.setUser(user);
-            currentHomeViewState.setUserRepository(repository);
+        homeViewModel.setState(currentHomeViewState);
+        homeViewModel.onStateChanged();
 
-            homeViewModel.setState(currentHomeViewState);
-            homeViewModel.onStateChanged();
-
-            this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
-            this.viewManagerModel.onStateChanged();
-        }
-        catch (AuthException | IOException exception) {
-            prepareErrorView(exception.getMessage());
-        }
+        this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
+        this.viewManagerModel.onStateChanged();
     }
 
     @Override
@@ -60,5 +47,4 @@ public class CreateLocalVaultPresenter implements CreateLocalVaultOutputBoundary
         createLocalVaultState.setSuccess(false);
         createLocalVaultViewModel.onStateChanged();
     }
-    
 }

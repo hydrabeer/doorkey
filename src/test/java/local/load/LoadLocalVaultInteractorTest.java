@@ -1,10 +1,10 @@
 package local.load;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import javax.swing.JFileChooser;
 
+import exception.AuthException;
+import mock.MockRepositoryProvider;
+import mock.MockUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,16 +12,24 @@ import mock.MockLoadLocalVaultPresenter;
 import service.local.load.LoadLocalVaultInputData;
 import service.local.load.LoadLocalVaultInteractor;
 
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class LoadLocalVaultInteractorTest {
+    private MockRepositoryProvider repositoryProvider;
+    private MockUserRepository userRepository;
     private MockLoadLocalVaultPresenter presenter;
     private LoadLocalVaultInteractor interactor;
     private LoadLocalVaultInputData inputData;
 
     @BeforeEach
     void setup() {
+        userRepository = new MockUserRepository();
+        repositoryProvider = new MockRepositoryProvider(userRepository);
         presenter = new MockLoadLocalVaultPresenter();
-        interactor = new LoadLocalVaultInteractor(presenter);
+        interactor = new LoadLocalVaultInteractor(repositoryProvider, userRepository, presenter);
         JFileChooser fileChooser = new JFileChooser();
         inputData = new LoadLocalVaultInputData(fileChooser, "password");
     }
@@ -82,9 +90,15 @@ public class LoadLocalVaultInteractorTest {
             }
         };
         inputData = new LoadLocalVaultInputData(fileChooser, "password");
+        try {
+            userRepository.signupUser("valid.doorkey", "password");
+        } catch (IOException | AuthException e) {
+            fail("Exception thrown");
+        }
         interactor.loadLocalVault(inputData);
         assertEquals(1, presenter.successViews.size());
-        assertEquals("password", presenter.successViews.get(0).getPassword());
-        assertEquals("valid.doorkey", presenter.successViews.get(0).getPath());
+        // Path and password removed from output data - handled in interactor
+        // assertEquals("password", presenter.successViews.get(0).getPassword());
+        // assertEquals("valid.doorkey", presenter.successViews.get(0).getRepository().getCurrentUser().getVault().getSavePath());
     }
 }

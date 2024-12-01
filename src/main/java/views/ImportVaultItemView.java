@@ -18,8 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import service.home.interface_adapter.HomeState;
-import service.home.interface_adapter.HomeViewModel;
 import service.import_vault_item.interface_adapter.ImportVaultItemController;
 import service.import_vault_item.interface_adapter.ImportVaultItemViewModel;
 import views.components.DoorkeyButton;
@@ -30,7 +28,6 @@ import views.components.DoorkeyFont;
  */
 public class ImportVaultItemView extends JPanel implements ActionListener, PropertyChangeListener {
     private final ImportVaultItemViewModel importVaultItemViewModel;
-    private final HomeViewModel homeViewModel;
     private final ImportVaultItemController importVaultItemController;
 
     private final JTextArea importTextField = new JTextArea();
@@ -39,11 +36,9 @@ public class ImportVaultItemView extends JPanel implements ActionListener, Prope
 
     public ImportVaultItemView(
             ImportVaultItemViewModel importVaultItemViewModel,
-            HomeViewModel homeViewModel,
             ImportVaultItemController importVaultItemController
     ) {
         this.importVaultItemViewModel = importVaultItemViewModel;
-        this.homeViewModel = homeViewModel;
         this.importVaultItemController = importVaultItemController;
         this.importVaultItemViewModel.addPropertyChangeListener(this);
 
@@ -137,14 +132,9 @@ public class ImportVaultItemView extends JPanel implements ActionListener, Prope
 
         final DoorkeyButton submitButton = new DoorkeyButton.DoorkeyButtonBuilder("Import")
                 .addListener(event -> {
-                    final HomeState state = homeViewModel.getState();
-                    if (state.getUser().isPresent() && state.getUserRepository().isPresent()) {
-                        final String chosenPasswordManager = (String) passwordManagerChooser.getSelectedItem();
-                        final String jsonText = importTextField.getText();
-                        importVaultItemController.importVaultItems(chosenPasswordManager, jsonText,
-                                state.getUser().get(), state.getUserRepository().get()
-                        );
-                    }
+                    final String chosenPasswordManager = (String) passwordManagerChooser.getSelectedItem();
+                    final String jsonText = importTextField.getText();
+                    importVaultItemController.importVaultItems(chosenPasswordManager, jsonText);
                 })
                 .build();
 

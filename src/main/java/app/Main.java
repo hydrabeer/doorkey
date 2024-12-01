@@ -9,7 +9,6 @@ import views.ViewConstants;
  * The main class for our program.
  */
 public class Main {
-
     /**
      * The main method that starts the GUI.
      *
@@ -30,7 +29,6 @@ public class Main {
                 .addLocalVaultView()
                 .addLoadLocalVaultView()
                 .addCreateLocalVaultView()
-                .addLocalVaultView()
                 .addCreateVaultItemView()
                 .addPasswordVaultItemView()
                 .addImportVaultItemView()

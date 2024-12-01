@@ -2,10 +2,8 @@ package service.password_vault_item.interface_adapter;
 
 import java.io.IOException;
 
-import entity.AbstractUser;
 import entity.PasswordVaultItem;
 import exception.AuthException;
-import repository.UserRepository;
 import service.password_vault_item.PasswordVaultItemInputBoundary;
 import service.password_vault_item.PasswordVaultItemInputData;
 
@@ -30,17 +28,12 @@ public class PasswordVaultItemController {
 
     /**
      * Calls interactor to delete item.
-     * @param user current user
-     * @param userRepository current user repository.
      * @param item vault item to be deleted.
      * @throws AuthException if no authorization.
      * @throws IOException if there is an error.
      */
-    public void deleteItem(
-            AbstractUser user,
-            UserRepository userRepository, PasswordVaultItem item) throws AuthException, IOException {
-        final PasswordVaultItemInputData passwordVaultItemInputData = new PasswordVaultItemInputData(
-                user, userRepository, item);
+    public void deleteItem(PasswordVaultItem item) throws AuthException, IOException {
+        final PasswordVaultItemInputData passwordVaultItemInputData = new PasswordVaultItemInputData(item);
         vaultItemInteractor.deleteItem(passwordVaultItemInputData);
     }
 

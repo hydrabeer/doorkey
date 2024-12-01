@@ -83,8 +83,8 @@ public class CopyCredentialsInteractorTest {
                     assertEquals("",
                             Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor)
                     );
-                } catch (UnsupportedFlavorException | IOException e) {
-                    throw new RuntimeException(e);
+                } catch (UnsupportedFlavorException | IOException exception) {
+                    throw new RuntimeException(exception);
                 } finally {
                     // Signal that the task has finished
                     latch.countDown();

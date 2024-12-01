@@ -1,7 +1,5 @@
 package service.import_vault_item.interface_adapter;
 
-import entity.AbstractUser;
-import repository.UserRepository;
 import service.import_vault_item.ImportVaultItemInputBoundary;
 import service.import_vault_item.ImportVaultItemInputData;
 
@@ -20,20 +18,14 @@ public class ImportVaultItemController {
      *
      * @param passwordManager The chosen password manager, a string. May be null.
      * @param importTextJson  The import JSON value.
-     * @param user            The user.
-     * @param userRepository  The current user repository (remote or local in production).
      */
     public void importVaultItems(
             String passwordManager,
-            String importTextJson,
-            AbstractUser user,
-            UserRepository userRepository
+            String importTextJson
     ) {
         final ImportVaultItemInputData importVaultItemInputData = new ImportVaultItemInputData(
                 passwordManager,
-                importTextJson,
-                user,
-                userRepository
+                importTextJson
         );
         interactor.importVaultItems(importVaultItemInputData);
     }

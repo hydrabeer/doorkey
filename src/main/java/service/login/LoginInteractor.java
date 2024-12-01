@@ -2,8 +2,8 @@ package service.login;
 
 import java.io.IOException;
 
-import entity.AbstractUser;
 import exception.AuthException;
+import repository.RepositoryProvider;
 import repository.UserRepository;
 
 /**
@@ -13,11 +13,17 @@ public class LoginInteractor implements LoginInputBoundary {
     private static final String EMAIL_FIELD = "email";
     private static final String PASSWORD_FIELD = "password";
 
-    private final UserRepository userRepository;
+    private final RepositoryProvider repositoryProvider;
+    private final UserRepository remoteLoginUserRepository;
     private final LoginOutputBoundary loginPresenter;
 
-    public LoginInteractor(UserRepository userRepository, LoginOutputBoundary outputPresenter) {
-        this.userRepository = userRepository;
+    public LoginInteractor(
+            RepositoryProvider repositoryProvider,
+            UserRepository remoteLoginUserRepository,
+            LoginOutputBoundary outputPresenter
+    ) {
+        this.repositoryProvider = repositoryProvider;
+        this.remoteLoginUserRepository = remoteLoginUserRepository;
         this.loginPresenter = outputPresenter;
     }
 
@@ -49,11 +55,12 @@ public class LoginInteractor implements LoginInputBoundary {
         loginPresenter.clearError(PASSWORD_FIELD);
 
         try {
-            final AbstractUser user = this.userRepository.signInUser(
+            this.remoteLoginUserRepository.signInUser(
                     loginInputData.getEmail(),
                     loginInputData.getPassword()
             );
-            loginPresenter.prepareSuccessView(new LoginOutputData(user, userRepository));
+            repositoryProvider.setRepository(remoteLoginUserRepository);
+            loginPresenter.prepareSuccessView(new LoginOutputData(remoteLoginUserRepository));
         }
         catch (AuthException authException) {
             loginPresenter.prepareErrorView(authException.getViewMessage());

@@ -16,9 +16,9 @@ public interface HomeInputBoundary {
     void displayVaultItem(HomeInputData homeInputData) throws InvalidVaultItemException;
 
     /**
-     * Display the login view.
+     * Sign out from the application.
      */
-    void displayLoginView();
+    void signOut();
 
     /**
      * Display the CreateVaultItem view.
