@@ -30,7 +30,6 @@ public class Main {
                 .addLocalVaultView()
                 .addLoadLocalVaultView()
                 .addCreateLocalVaultView()
-                .addLocalVaultView()
                 .addCreateVaultItemView()
                 .addPasswordVaultItemView()
                 .addImportVaultItemView()
