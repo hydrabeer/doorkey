@@ -103,6 +103,10 @@ Once you've added a credential, you can open it by clicking the unlock icon next
 From there, you can copy the username or password by clicking the clipboard icon next to the
 field you want to copy. You can also open the website associated with the credential by clicking
 the link icon next to the URL field.
+
+<img src="readme_img/unlock_credential.png" width="100">
+<img src="readme_img/vault_item_view.png" width="300">
+
 ### Editing Credentials
 To edit a credential, open it and click the pencil icon at the top. Make your changes, and click 
 the save icon.
