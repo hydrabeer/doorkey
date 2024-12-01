@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import data_access.FireStoreUserDataAccessObject;
 import entity.AbstractVaultItem;
 import exception.InvalidVaultItemException;
 import service.home.interface_adapter.HomeController;
@@ -36,9 +35,9 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     private final HomeController homeController;
     private final HomeViewModel homeViewModel;
     private final JLabel userInfo = new JLabel();
-    private final JLabel userRepositoryInfo = new JLabel();
     private final JPanel vaultPanel = new JPanel();
     private final JButton addItemButton = createAddButton();
+    private final JButton importItemButton = createImportButton();
 
     public HomeView(
             HomeViewModel homeViewModel,
@@ -69,7 +68,6 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
 
     private void dispatchStates(HomeState homeState) {
         setVaultItems(homeState);
-        setRepositoryInfo(homeState);
     }
 
     private void setUpMainPanel() {
@@ -114,18 +112,6 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         vaultPanel.add(scrollPane);
         vaultPanel.setPreferredSize(new Dimension(150, 500));
         vaultPanel.setMaximumSize(new Dimension(150, 500));
-    }
-
-    // TODO: Remove this user repository info text (the entire if statement and its body)
-    private void setRepositoryInfo(HomeState homeState) {
-        if (homeState.getUserRepository().isPresent()) {
-            if (homeState.getUserRepository().get() instanceof FireStoreUserDataAccessObject) {
-                userRepositoryInfo.setText("Firebase");
-            }
-            else {
-                userRepositoryInfo.setText("Local");
-            }
-        }
     }
 
     private JPanel addVaultItem(AbstractVaultItem vaultItem) {
@@ -177,7 +163,6 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         rightPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
 
-        // Center Panel for Welcome Message
         final JPanel centerPanel = new JPanel(new GridBagLayout());
         centerPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         final JLabel welcomeLabel = new JLabel(
@@ -192,7 +177,6 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         topPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
 
-        // Search Bar Label
         final JLabel searchLabel = new JLabel("Search Vault:");
         searchLabel.setFont(new DoorkeyFont());
         searchLabel.setForeground(Color.WHITE);
@@ -202,17 +186,22 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         topPanel.add(createSearchPanel(), BorderLayout.NORTH);
         rightPanel.add(topPanel, BorderLayout.NORTH);
 
-        // Buttons
+        addToButtonPanel(rightPanel);
+
+        rightPanel.setPreferredSize(new Dimension(200, 470));
+        rightPanel.setMaximumSize(new Dimension(200, 470));
+        add(rightPanel, BorderLayout.CENTER);
+    }
+
+    private void addToButtonPanel(JPanel rightPanel) {
         final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         final JButton signOutButton = creatSignOutButton();
 
         buttonPanel.add(signOutButton, BorderLayout.CENTER);
         buttonPanel.add(addItemButton, BorderLayout.CENTER);
+        buttonPanel.add(importItemButton, BorderLayout.CENTER);
         rightPanel.add(buttonPanel, BorderLayout.SOUTH);
-        rightPanel.setPreferredSize(new Dimension(200, 470));
-        rightPanel.setMaximumSize(new Dimension(200, 470));
-        add(rightPanel, BorderLayout.CENTER);
     }
 
     private JTextField createSearchPanel() {
@@ -258,5 +247,17 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
                 BorderFactory.createLineBorder(Color.WHITE, 1, true),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         return addButton;
+    }
+
+    private JButton createImportButton() {
+        final JButton importButton = new DoorkeyButton.DoorkeyButtonBuilder("📤")
+                .addListener(event -> homeController.displayImportView())
+                .build();
+        importButton.setBackground(ViewConstants.BACKGROUND_COLOR);
+        importButton.setForeground(Color.WHITE);
+        importButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.WHITE, 1, true),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        return importButton;
     }
 }
