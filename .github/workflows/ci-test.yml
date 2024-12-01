@@ -18,6 +18,13 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: Install web browser
+      run: |
+        sudo apt update
+        sudo apt install -y snapd
+        snap refresh
+        snap install firefox
+        sudo apt install -y chromium
     - name: Install xvfb
       run: |
         sudo apt update
