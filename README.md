@@ -3,6 +3,9 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![JUnit Tests](https://github.com/hydrabeer/doorkey/actions/workflows/ci-test.yml/badge.svg)
 ![CodeQL](https://github.com/hydrabeer/doorkey/actions/workflows/codeql-analysis.yml/badge.svg)
 ![Checkstyle](https://github.com/hydrabeer/doorkey/actions/workflows/checkstyle.yml/badge.svg)
+
+<img alt="Logo" src="readme_img/doorkey.png" width="300">
+
 ## Table of Contents
 1. [Contributors](#contributors)
 2. [Overview](#overview)
