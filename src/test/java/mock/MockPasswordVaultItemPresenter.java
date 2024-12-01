@@ -14,7 +14,7 @@ public class MockPasswordVaultItemPresenter implements PasswordVaultItemOutputBo
     }
 
     @Override
-    public void deleteItem(PasswordVaultItemOutputData outputData) {
+    public void updateDeleteItem() {
 
     }
 

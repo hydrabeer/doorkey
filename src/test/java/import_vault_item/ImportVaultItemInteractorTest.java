@@ -1,8 +1,8 @@
 package import_vault_item;
 
-import entity.AbstractUser;
 import exception.AuthException;
 import mock.MockImportVaultItemPresenter;
+import mock.MockRepositoryProvider;
 import mock.MockUserRepository;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,20 +10,23 @@ import org.junit.jupiter.api.Test;
 import service.import_vault_item.ImportVaultItemInputData;
 import service.import_vault_item.ImportVaultItemInteractor;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ImportVaultItemInteractorTest {
+    private MockRepositoryProvider repositoryProvider;
     private MockImportVaultItemPresenter presenter;
     private ImportVaultItemInteractor interactor;
     private MockUserRepository userRepository;
-    private AbstractUser user;
 
     @BeforeEach
-    public void setUp() throws AuthException {
-        presenter = new MockImportVaultItemPresenter();
-        interactor = new ImportVaultItemInteractor(presenter);
+    public void setUp() throws AuthException, IOException {
         userRepository = new MockUserRepository();
-        user = userRepository.signupUser("test@example.com", "password");
+        repositoryProvider = new MockRepositoryProvider(userRepository);
+        presenter = new MockImportVaultItemPresenter();
+        interactor = new ImportVaultItemInteractor(repositoryProvider, presenter);
+        userRepository.signupUser("test@example.com", "password");
     }
 
     @Test
@@ -34,9 +37,7 @@ public class ImportVaultItemInteractorTest {
         String importTextJson = importJson.toString();
         ImportVaultItemInputData inputData = new ImportVaultItemInputData(
                 passwordManager,
-                importTextJson,
-                user,
-                userRepository
+                importTextJson
         );
         interactor.importVaultItems(inputData);
         assertTrue(presenter.homeViewDisplayed);
@@ -49,9 +50,7 @@ public class ImportVaultItemInteractorTest {
         String importTextJson = "{}";
         ImportVaultItemInputData inputData = new ImportVaultItemInputData(
                 passwordManager,
-                importTextJson,
-                user,
-                userRepository
+                importTextJson
         );
         interactor.importVaultItems(inputData);
         assertFalse(presenter.homeViewDisplayed);
@@ -65,9 +64,7 @@ public class ImportVaultItemInteractorTest {
         String importTextJson = "{invalidJson";
         ImportVaultItemInputData inputData = new ImportVaultItemInputData(
                 passwordManager,
-                importTextJson,
-                user,
-                userRepository
+                importTextJson
         );
         interactor.importVaultItems(inputData);
         assertFalse(presenter.homeViewDisplayed);
@@ -76,14 +73,12 @@ public class ImportVaultItemInteractorTest {
     }
 
     @Test
-    public void testImportVaultItems_AddVaultItemsIOException() throws AuthException {
+    public void testImportVaultItems_AddVaultItemsIOException() {
         String passwordManager = "1Password";
-        userRepository.setThrowIOException(true);
+        userRepository.setThrowIOExceptionAdd(true);
         ImportVaultItemInputData inputData = new ImportVaultItemInputData(
                 passwordManager,
-                getMockInputJsonString(),
-                user,
-                userRepository
+                getMockInputJsonString()
         );
         interactor.importVaultItems(inputData);
         assertFalse(presenter.homeViewDisplayed);
@@ -92,14 +87,12 @@ public class ImportVaultItemInteractorTest {
     }
 
     @Test
-    public void testImportVaultItems_AddVaultItemsAuthException() throws AuthException {
+    public void testImportVaultItems_AddVaultItemsAuthException() {
         String passwordManager = "1Password";
-        userRepository.setThrowAuthException(true);
+        userRepository.setThrowAuthExceptionAdd(true);
         ImportVaultItemInputData inputData = new ImportVaultItemInputData(
                 passwordManager,
-                getMockInputJsonString(),
-                user,
-                userRepository
+                getMockInputJsonString()
         );
         interactor.importVaultItems(inputData);
         assertFalse(presenter.homeViewDisplayed);
@@ -188,6 +181,5 @@ public class ImportVaultItemInteractorTest {
                 "        }]\n" +
                 "    }]\n" +
                 "}";
-
     }
 }
