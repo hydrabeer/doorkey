@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import service.signup.SignupInputData;
 import service.signup.SignupInteractor;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -93,7 +95,7 @@ public class SignupInteractorTest {
     }
 
     @Test
-    public void testSignup_UserAlreadyExists() throws AuthException {
+    public void testSignup_UserAlreadyExists() throws AuthException, IOException {
         String email = "user@example.com";
         String password = "password123";
         String repeatedPassword = "password123";
@@ -111,7 +113,7 @@ public class SignupInteractorTest {
     }
 
     @Test
-    public void testSignup_Success() throws AuthException {
+    public void testSignup_Success() throws AuthException, IOException {
         String email = "newuser@example.com";
         String password = "password123";
         String repeatedPassword = "password123";
@@ -127,5 +129,18 @@ public class SignupInteractorTest {
         assertTrue(mockSignupPresenter.hasClearedField("repeatedPassword"), "Cleared repeated password error on success");
         assertTrue(mockSignupPresenter.generalErrors.isEmpty(), "No general errors on successful signup");
         assertTrue(mockSignupPresenter.fieldErrors.isEmpty(), "No field-specific errors on successful signup");
+    }
+
+    @Test
+    public void testSignup_IoException() {
+        String email = "newuser@example.com";
+        String password = "password123";
+        String repeatedPassword = "password123";
+        SignupInputData inputData = new SignupInputData(email, password, repeatedPassword);
+        mockUserRepository.setThrowIOExceptionSignup(true);
+
+        signupInteractor.signup(inputData);
+
+        assertFalse(mockSignupPresenter.hasSuccessView(), "No success view for IO exception");
     }
 }

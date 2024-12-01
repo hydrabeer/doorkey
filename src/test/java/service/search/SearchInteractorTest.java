@@ -1,6 +1,7 @@
-package search;
+package service.search;
 
 import entity.AbstractVaultItem;
+import entity.NoteVaultItem;
 import entity.PasswordVaultItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,26 @@ class SearchInteractorTest {
                 testOutputBoundary.searchOutputData.getResults().get(0).getTitle());
         assertEquals("Google Alt",
                 testOutputBoundary.searchOutputData.getResults().get(1).getTitle());
+    }
+
+    @Test
+    void testExecuteWithUsernameResults() {
+        SearchInputData inputData = new SearchInputData("Zach");
+        searchInteractor.execute(inputData);
+
+        assertEquals(1, testOutputBoundary.searchOutputData.getResults().size());
+        assertEquals("CSC207",
+                testOutputBoundary.searchOutputData.getResults().get(0).getTitle());
+    }
+
+    @Test
+    void testExecuteWithNoteResults() {
+        SearchInputData inputData = new SearchInputData("Rec");
+        searchInteractor.execute(inputData);
+
+        assertEquals(1, testOutputBoundary.searchOutputData.getResults().size());
+        assertEquals("Recipe",
+                testOutputBoundary.searchOutputData.getResults().get(0).getTitle());
     }
 
     @Test
@@ -84,7 +105,15 @@ class SearchInteractorTest {
                             "result3",
                             "user3",
                             "password3",
-                            "https://example.com"));
+                            "https://example.com"),
+                    new PasswordVaultItem(
+                            "CSC207",
+                            "zachary",
+                            "password3",
+                            "https://example.com"),
+                    new NoteVaultItem(
+                            "Recipe",
+                            "1 cup of water"));
         }
     }
 }

@@ -1,22 +1,18 @@
 package service.local.create;
 
+import repository.UserRepository;
+
 /**
  * Output data from creating a local .doorkey vault.
  */
 public class CreateLocalVaultOutputData {
-    private final String path;
-    private final String password;
+    private final UserRepository repository;
 
-    public CreateLocalVaultOutputData(String path, String password) {
-        this.path = path;
-        this.password = password;
+    public CreateLocalVaultOutputData(UserRepository repository) {
+        this.repository = repository;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public String getPassword() {
-        return password;
+    public UserRepository getRepository() {
+        return repository;
     }
 }

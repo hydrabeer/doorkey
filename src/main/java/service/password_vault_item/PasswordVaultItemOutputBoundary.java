@@ -11,11 +11,9 @@ public interface PasswordVaultItemOutputBoundary {
     void displayHomeView();
 
     /**
-     * Displays the delete view.
-     *
-     * @param outputData output data object
+     * Updates after the delete item view.
      */
-    void deleteItem(PasswordVaultItemOutputData outputData);
+    void updateDeleteItem();
 
     /**
      * Displays the delete view.

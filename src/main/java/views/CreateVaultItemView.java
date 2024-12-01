@@ -24,8 +24,6 @@ import javax.swing.text.JTextComponent;
 import service.create_vault_item.interface_adapter.CreateVaultItemController;
 import service.create_vault_item.interface_adapter.CreateVaultItemState;
 import service.create_vault_item.interface_adapter.CreateVaultItemViewModel;
-import service.home.interface_adapter.HomeState;
-import service.home.interface_adapter.HomeViewModel;
 import service.password_validation.interface_adapter.PasswordValidationController;
 import service.password_validation.interface_adapter.PasswordValidationViewModel;
 
@@ -37,7 +35,6 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
     private final CreateVaultItemController createVaultItemController;
     private final PasswordValidationViewModel passwordValidationViewModel;
     private final PasswordValidationController passwordValidationController;
-    private final HomeViewModel homeViewModel;
 
     private JTextField urlField;
     private JTextField vaultTitleField;
@@ -60,20 +57,17 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
     /**
      * Constructs the CreateVaultItemView dialog.
      *
-     * @param homeViewModel The view model for the home view.
      * @param createVaultItemViewModel The view model for creating vault items.
      * @param createVaultItemController The controller for creating vault items.
      * @param passwordValidationViewModel The view model for password validation.
      * @param passwordValidationController The controller for password validation.
      */
     public CreateVaultItemView(
-            HomeViewModel homeViewModel,
             CreateVaultItemViewModel createVaultItemViewModel,
             CreateVaultItemController createVaultItemController,
             PasswordValidationViewModel passwordValidationViewModel,
             PasswordValidationController passwordValidationController
     ) {
-        this.homeViewModel = homeViewModel;
         this.createVaultItemViewModel = createVaultItemViewModel;
         this.createVaultItemController = createVaultItemController;
         this.passwordValidationViewModel = passwordValidationViewModel;
@@ -207,18 +201,13 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
         final String password = new String(passwordInputField.getPassword());
         final String repeatedPassword = new String(confirmPasswordField.getPassword());
 
-        final HomeState homeState = homeViewModel.getState();
-        if (homeState.getUser().isPresent() && homeState.getUserRepository().isPresent()) {
-            createVaultItemController.createVaultItem(
-                homeState.getUser().get(),
-                homeState.getUserRepository().get(),
-                url,
-                vaultTitle,
-                username,
-                password,
-                repeatedPassword
-            );
-        }
+        createVaultItemController.createVaultItem(
+            url,
+            vaultTitle,
+            username,
+            password,
+            repeatedPassword
+        );
     }
 
     /**
@@ -239,7 +228,7 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
             case "specialCharReq" ->
                 updateRequirementLabel(specialCharRequirementLabel, passwordValidationViewModel.isSpecialCharReq());
             case "entropy" ->
-                updateStrengthBar((int) passwordValidationViewModel.getEntropy());
+                updateStrengthBar(passwordValidationViewModel.getEntropy());
             default -> {
                 // Nothing more to be done here
             }

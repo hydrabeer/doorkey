@@ -6,10 +6,13 @@ import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import data_access.FireStoreUserDataAccessObject;
+import data_access.FireStoreUserRepository;
+import data_access.LocalVaultUserRepository;
 import data_access.authentication.FirebaseAuthRepository;
 import interface_adapter.net.http.CommonHttpClient;
 import interface_adapter.net.http.HttpClient;
+import repository.CommonRepositoryProvider;
+import repository.RepositoryProvider;
 import service.ViewManagerModel;
 import service.copy_credentials.CopyCredentialsInteractor;
 import service.copy_credentials.interface_adapter.CopyCredentialsController;
@@ -71,11 +74,12 @@ import views.ViewManager;
  * A builder class for the application.
  */
 public class AppBuilder {
-
     private final JFrame mainFrame;
     private final JPanel views;
     private final ViewManagerModel viewManagerModel;
-    private final FireStoreUserDataAccessObject fireStoreUserDataAccessObject;
+    private final FireStoreUserRepository fireStoreUserRepository;
+    private final LocalVaultUserRepository localVaultUserRepository;
+    private final RepositoryProvider repositoryProvider;
     private final HomeViewModel homeViewModel;
     private final PasswordVaultItemViewModel passwordVaultItemViewModel;
     private final CreateVaultItemViewModel createVaultItemViewModel;
@@ -92,6 +96,7 @@ public class AppBuilder {
         // the panels are made prettier, and the support to add/close is added.
         //
         // mainFrame.setUndecorated(true);
+        this.repositoryProvider = new CommonRepositoryProvider();
         this.homeViewModel = new HomeViewModel();
         this.passwordVaultItemViewModel = new PasswordVaultItemViewModel();
         this.importVaultItemViewModel = new ImportVaultItemViewModel();
@@ -106,7 +111,8 @@ public class AppBuilder {
 
         final HttpClient httpClient = new CommonHttpClient();
         final FirebaseAuthRepository firebaseAuthRepository = new FirebaseAuthRepository(httpClient);
-        this.fireStoreUserDataAccessObject = new FireStoreUserDataAccessObject(firebaseAuthRepository, httpClient);
+        this.fireStoreUserRepository = new FireStoreUserRepository(firebaseAuthRepository, httpClient);
+        this.localVaultUserRepository = new LocalVaultUserRepository();
     }
 
     /**
@@ -132,6 +138,7 @@ public class AppBuilder {
                 viewManagerModel
         );
         final CreateVaultItemInteractor createVaultItemInteractor = new CreateVaultItemInteractor(
+                repositoryProvider,
                 createVaultItemPresenter
         );
         final CreateVaultItemController createVaultItemController = new CreateVaultItemController(
@@ -139,7 +146,6 @@ public class AppBuilder {
         );
 
         final CreateVaultItemView createVaultItemView = new CreateVaultItemView(
-                homeViewModel,
                 createVaultItemViewModel,
                 createVaultItemController,
                 passwordValidationViewModel,
@@ -169,9 +175,15 @@ public class AppBuilder {
     public AppBuilder addCreateLocalVaultView() {
         final CreateLocalVaultViewModel createLocalVaultViewModel = new CreateLocalVaultViewModel();
         final CreateLocalVaultPresenter createLocalVaultPresenter = new CreateLocalVaultPresenter(
-                createLocalVaultViewModel, homeViewModel, viewManagerModel);
+                createLocalVaultViewModel,
+                homeViewModel,
+                viewManagerModel
+        );
         final CreateLocalVaultInteractor createLocalVaultInteractor = new CreateLocalVaultInteractor(
-                createLocalVaultPresenter);
+                repositoryProvider,
+                localVaultUserRepository,
+                createLocalVaultPresenter
+        );
         final CreateLocalVaultController createLocalVaultController = new CreateLocalVaultController(
                 createLocalVaultInteractor);
         final CreateLocalVaultView createLocalVaultView = new CreateLocalVaultView(
@@ -188,13 +200,21 @@ public class AppBuilder {
     public AppBuilder addLoadLocalVaultView() {
         final LoadLocalVaultViewModel loadLocalVaultViewModel = new LoadLocalVaultViewModel();
         final LoadLocalVaultPresenter loadLocalVaultPresenter = new LoadLocalVaultPresenter(
-                loadLocalVaultViewModel, homeViewModel, viewManagerModel);
+                loadLocalVaultViewModel,
+                homeViewModel,
+                viewManagerModel
+        );
         final LoadLocalVaultInteractor loadLocalVaultInteractor = new LoadLocalVaultInteractor(
-                loadLocalVaultPresenter);
+                repositoryProvider,
+                localVaultUserRepository,
+                loadLocalVaultPresenter
+        );
         final LoadLocalVaultController loadLocalVaultController = new LoadLocalVaultController(
-                loadLocalVaultInteractor);
+                loadLocalVaultInteractor
+        );
         final LoadLocalVaultView loadLocalVaultView = new LoadLocalVaultView(
-                loadLocalVaultController, loadLocalVaultViewModel, viewManagerModel);
+                loadLocalVaultController, loadLocalVaultViewModel, viewManagerModel
+        );
         views.add(loadLocalVaultView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
         return this;
     }
@@ -210,6 +230,7 @@ public class AppBuilder {
                 viewManagerModel
         );
         final ImportVaultItemInteractor importVaultItemInteractor = new ImportVaultItemInteractor(
+                repositoryProvider,
                 importVaultItemPresenter
         );
         final ImportVaultItemController importVaultItemController = new ImportVaultItemController(
@@ -217,7 +238,6 @@ public class AppBuilder {
         );
         final ImportVaultItemView importVaultItemView = new ImportVaultItemView(
                 importVaultItemViewModel,
-                homeViewModel,
                 importVaultItemController
         );
 
@@ -236,7 +256,10 @@ public class AppBuilder {
                 passwordVaultItemViewModel,
                 viewManagerModel
         );
-        final HomeInteractor homeInteractor = new HomeInteractor(homePresenter);
+        final HomeInteractor homeInteractor = new HomeInteractor(
+                repositoryProvider,
+                homePresenter
+        );
         final HomeController homeController = new HomeController(homeInteractor);
         final HomeView homeView = new HomeView(homeViewModel, homeController);
         views.add(homeView, ViewConstants.HOME_VIEW);
@@ -251,7 +274,7 @@ public class AppBuilder {
     public AppBuilder addSignupView() {
         final SignupViewModel signupViewModel = new SignupViewModel();
         final SignupPresenter signupPresenter = new SignupPresenter(signupViewModel, homeViewModel, viewManagerModel);
-        final SignupInteractor signupInteractor = new SignupInteractor(fireStoreUserDataAccessObject, signupPresenter);
+        final SignupInteractor signupInteractor = new SignupInteractor(fireStoreUserRepository, signupPresenter);
         final SignupController signupController = new SignupController(signupInteractor);
         final SignupView signupView = new SignupView(signupViewModel, signupController, viewManagerModel);
         views.add(signupView, ViewConstants.SIGNUP_VIEW);
@@ -266,7 +289,11 @@ public class AppBuilder {
     public AppBuilder addLoginView() {
         final LoginViewModel loginViewModel = new LoginViewModel();
         final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel, homeViewModel, viewManagerModel);
-        final LoginInteractor loginInteractor = new LoginInteractor(fireStoreUserDataAccessObject, loginPresenter);
+        final LoginInteractor loginInteractor = new LoginInteractor(
+                repositoryProvider,
+                fireStoreUserRepository,
+                loginPresenter
+        );
         final LoginController loginController = new LoginController(loginInteractor);
         final LoginView loginView = new LoginView(loginViewModel, loginController, viewManagerModel);
         views.add(loginView, ViewConstants.LOGIN_VIEW);
@@ -296,9 +323,14 @@ public class AppBuilder {
                 desktopWrapper, urlRedirectPresenter);
         final UrlRedirectController urlRedirectController = new UrlRedirectController(urlRedirectInteractor);
         final PasswordVaultItemPresenter passwordVaultItemPresenter = new PasswordVaultItemPresenter(
-                passwordVaultItemViewModel, viewManagerModel, homeViewModel);
+                passwordVaultItemViewModel,
+                viewManagerModel,
+                homeViewModel
+        );
         final PasswordVaultItemInteractor passwordVaultItemInteractor = new PasswordVaultItemInteractor(
-                passwordVaultItemPresenter);
+                repositoryProvider,
+                passwordVaultItemPresenter
+        );
         final PasswordVaultItemController passwordVaultItemController = new PasswordVaultItemController(
                 passwordVaultItemInteractor);
         final PasswordVaultItemView passwordVaultItemView = new PasswordVaultItemView(

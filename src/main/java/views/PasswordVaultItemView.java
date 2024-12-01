@@ -21,10 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-import entity.AbstractUser;
 import entity.PasswordVaultItem;
 import exception.AuthException;
-import repository.UserRepository;
 import service.copy_credentials.interface_adapter.CopyCredentialsController;
 import service.password_vault_item.interface_adapter.PasswordVaultItemController;
 import service.password_vault_item.interface_adapter.PasswordVaultItemState;
@@ -147,9 +145,7 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
         actionsPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         actionsPanel.setPreferredSize(new Dimension(300, 40));
         actionsPanel.setMaximumSize(new Dimension(300, 40));
-        final JButton deleteButton = addDeleteButton(
-                passwordVaultItemState.getUser(), passwordVaultItemState.getRepository(),
-                passwordVaultItemState.getVaultItem().get());
+        final JButton deleteButton = addDeleteButton(passwordVaultItemState.getVaultItem().get());
         actionsPanel.add(deleteButton);
         actionPanel.removeAll();
         actionPanel.add(actionsPanel);
@@ -288,11 +284,9 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
         return urlButton;
     }
 
-    private JButton addDeleteButton(AbstractUser user, UserRepository userRepository, PasswordVaultItem item) {
+    private JButton addDeleteButton(PasswordVaultItem item) {
         final JButton deleteButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDDD1\uFE0F")
-                .addListener(event -> {
-                    deleteItemSequence(user, userRepository, item);
-                })
+                .addListener(event -> deleteItemSequence(item))
                 .build();
         deleteButton.setBackground(ViewConstants.BACKGROUND_COLOR);
         deleteButton.setForeground(Color.WHITE);
@@ -321,16 +315,13 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
         timer.schedule(timerTask, 10000);
     }
 
-    private void deleteItemSequence(AbstractUser user, UserRepository userRepository, PasswordVaultItem item) {
-        if (passwordVaultItemViewModel.getState().getError().equals(
+    private void deleteItemSequence(PasswordVaultItem item) {
+        if (passwordVaultItemViewModel.getState().getMessage().equals(
                 "Press delete again to confirm. Press copy button to reset")) {
             try {
-                passwordVaultItemController.deleteItem(user, userRepository, item);
+                passwordVaultItemController.deleteItem(item);
             }
-            catch (AuthException exception) {
-                throw new RuntimeException(exception);
-            }
-            catch (IOException exception) {
+            catch (AuthException | IOException exception) {
                 throw new RuntimeException(exception);
             }
         }
@@ -338,7 +329,6 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
             passwordVaultItemController.displayDeleteMessage();
             form.setError(passwordVaultItemViewModel.getState().getMessage());
         }
-
     }
 
     private void setUpMainPanel() {
