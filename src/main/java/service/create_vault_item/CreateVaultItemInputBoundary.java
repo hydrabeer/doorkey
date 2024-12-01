@@ -13,6 +13,11 @@ public interface CreateVaultItemInputBoundary {
     void createVaultItem(CreateVaultItemRequestModel requestModel);
 
     /**
+     * Cancel the create vault item use case.
+     */
+    void cancel();
+
+    /**
      * Display the home view.
      */
     void displayHomeView();
