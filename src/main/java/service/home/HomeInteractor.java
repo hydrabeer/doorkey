@@ -21,4 +21,9 @@ public class HomeInteractor implements HomeInputBoundary {
     public void displayLoginView() {
         homePresenter.displayLoginView();
     }
+
+    @Override
+    public void displayImportView() {
+        homePresenter.displayImportView();
+    }
 }
