@@ -3,6 +3,9 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![JUnit Tests](https://github.com/hydrabeer/doorkey/actions/workflows/ci-test.yml/badge.svg)
 ![CodeQL](https://github.com/hydrabeer/doorkey/actions/workflows/codeql-analysis.yml/badge.svg)
 ![Checkstyle](https://github.com/hydrabeer/doorkey/actions/workflows/checkstyle.yml/badge.svg)
+
+<img alt="Logo" src="readme_img/doorkey.png" width="300">
+
 ## Table of Contents
 1. [Contributors](#contributors)
 2. [Overview](#overview)
@@ -27,7 +30,8 @@
 Doorkey keeps your passwords secure and remembers them for you. Unlike other password managers,
 Doorkey lets you choose between storing your vault locally and in the cloud. Combined with being 
 fully open source, this means Doorkey is configurable to be a true zero-trust solution or an
-industry-standard cloud vault.
+industry-standard cloud vault. Additionally, you can generate securely random passwords and copy them
+to your clipboard for easy pasting.
 ### Why we made it
 Doorkey was created out of a shared passion for cybersecurity and free software. Data breaches are 
 becoming more common and more severe, and the best way to protect yourself is to use unique, complex 
@@ -36,11 +40,12 @@ you can stay safe online.
 
 ## Features
 ### Local and Cloud Storage
-Create a local vault to store your credentials on your device, or use a cloud vault to access your
+Create an encrypted local vault to store your credentials securely on your device, or use a cloud vault to access your
 credentials from anywhere.
 ### Password Generation
 Generate secure, random passwords with Doorkey's password generator. Customize the length,
-character set, and other parameters to satisfy the requirements of any website.
+character set, and other parameters to satisfy the requirements of any website. Passwords are generated using atmospheric noise,
+which is a true source of random and thus highly secure.
 ### Password Strength Analysis
 Get instant feedback on the strength of your passwords with smart password strength analysis.
 ### Search
@@ -66,6 +71,11 @@ Java 21. You can skip this step if you know you have Java 17 or later installed.
 [releases page](https://github.com/hydrabeer/doorkey/releases). 
 - Double-click the downloaded JAR file to run Doorkey.
 
+Alternatively, you can run it from the command line:
+```bash
+java -jar doorkey.jar
+```
+
 On Linux, you may need to make the file executable by running:
 ```bash
 chmod +x doorkey.jar
@@ -78,15 +88,25 @@ clicking Sign Up. If you prefer to use a local vault, click Use Locally. You can
 cloud vault later by signing up for an account. Make sure to choose a strong, memorable password
 for your vault. A great way to do this is to use a 
 [passphrase](https://www.privacyguides.org/en/basics/passwords-overview/#diceware-passphrases).
+
+<img src="readme_img/welcome_view.png" width="300">
+
 ### Adding Credentials
 To add a new credential, click the "+" button. Fill in the title, username, password, and URL 
 fields, and click Save. You can also generate a password by clicking the icon next to the 
 password field. Stay safe online by generating a unique password for each of your accounts.
+
+<img src="readme_img/create_vault_item.png" width="300">
+
 ### Using Credentials
 Once you've added a credential, you can open it by clicking the unlock icon next to the credential.
 From there, you can copy the username or password by clicking the clipboard icon next to the
 field you want to copy. You can also open the website associated with the credential by clicking
 the link icon next to the URL field.
+
+<img src="readme_img/unlock_credential.png" width="100">
+<img src="readme_img/vault_item_view.png" width="300">
+
 ### Editing Credentials
 To edit a credential, open it and click the pencil icon at the top. Make your changes, and click 
 the save icon.
@@ -111,5 +131,11 @@ As busy students, we may not be able to respond to every piece of feedback. Howe
 feedback and will do our best to consider it when planning future updates to Doorkey.
 
 ## Contributing
-Contributions to Doorkey are closed, but reach out via the feedback form if you're interested in
-contributing. We may open contributions if there is sufficient interest.
+We welcome contributions and improvements to Doorkey through pull requests. We are happy to accept
+a variety of improvements, such as bug fixes, new feature implementations, more tests, etc. To do this, you can fork
+the repository with "Fork" in the top right of the page to create your own copy to work on. When you are finished
+implementing your changes, you can create a pull request back to this repository and we will review it.
+
+Pull requests should have a description detailing what changes were made, any introduced regressions or potential incompatibilities,
+and a screenshot and/or instruction on how to use the new changes, if applicable. Make sure all the checks (JUnit tests, etc.) are passing
+before requesting a review as this will ensure the code is ready to be reviewed with no immediate changes.
