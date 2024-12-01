@@ -60,3 +60,16 @@ Future improvements:
 ## Target Users
 
 ## Demographics Who Are Less Likely to Use the Program
+- DoorKey is less likely to be used by individuals who are part of the older demographic and visually impaired 
+individuals. Although DoorKey does much to adhere to the Universal Principles of design there are a few reason why 
+older individuals and visually impaired individuals might be less likely to choose DoorKey. Since DoorKey does not offer
+family features like some other password manager, younger family members are less likely to recommend DoorKey to their 
+older family members. Additionally, since older individuals might be weary about giving their information to DoorKey,
+and they are less likely to be recommended by a family member they might be less likely to use DoorKey. DoorKey has a
+few accessibility concerns that relate to visually impaired and older individuals. Many of the buttons use symbols to 
+indicate their feature instead of text. Although these symbols are universally synonymous with their associated 
+features, older individuals who do not use technology as frequently might be unfamiliar. In addition, visually impaired
+individuals might struggle to read and identify these symbols due to DoorKey not offering an enlarged version of the 
+software or zoom in features. Finally, a lack of text to speech feature might also pose an issue for some individuals.
+
+- 
