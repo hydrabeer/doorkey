@@ -3,7 +3,6 @@ package service.url_redirect;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Desktop wrapper used by urlRedirectInteractor.
