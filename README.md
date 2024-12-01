@@ -95,6 +95,9 @@ for your vault. A great way to do this is to use a
 To add a new credential, click the "+" button. Fill in the title, username, password, and URL 
 fields, and click Save. You can also generate a password by clicking the icon next to the 
 password field. Stay safe online by generating a unique password for each of your accounts.
+
+<img src="readme_img/create_vault_item.png" width="300">
+
 ### Using Credentials
 Once you've added a credential, you can open it by clicking the unlock icon next to the credential.
 From there, you can copy the username or password by clicking the clipboard icon next to the
