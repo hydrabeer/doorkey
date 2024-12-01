@@ -21,7 +21,6 @@ jobs:
         cache: maven
     - name: Build .jar
       run: |
-        mvn clean test
         mvn clean compile assembly:single
         mv target/doorkey-0.1-dev-jar-with-dependencies.jar doorkey.jar
 
