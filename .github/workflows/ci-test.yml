@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -18,15 +18,5 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
-    - name: Install web browser
-      run: |
-        sudo apt update
-        sudo apt upgrade -y
-        sudo apt install -y wget
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo dpkg -i google-chrome-stable_current_amd64.deb
-    - name: Install xvfb
-      run: |
-        sudo apt install -y xvfb
     - name: Run Tests with Maven
-      run: xvfb-run --auto-servernum mvn clean test
+      run: mvn clean test
