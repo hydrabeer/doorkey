@@ -42,7 +42,7 @@ public class PasswordVaultItemPresenter implements PasswordVaultItemOutputBounda
     @Override
     public void displayDeleteMessage() {
         vaultItemViewModel.getState().setMessage(
-                "Press delete again to confirm vault item deletion. \n Press either copy button to reset");
+                "Press delete again to confirm. Press copy button to reset");
     }
 
 }

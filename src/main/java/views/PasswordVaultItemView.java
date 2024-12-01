@@ -323,7 +323,7 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
 
     private void deleteItemSequence(AbstractUser user, UserRepository userRepository, PasswordVaultItem item) {
         if (passwordVaultItemViewModel.getState().getError().equals(
-               "Press delete again to confirm vault item deletion. Press either copy button to reset")) {
+                "Press delete again to confirm. Press copy button to reset")) {
             try {
                 passwordVaultItemController.deleteItem(user, userRepository, item);
             }
