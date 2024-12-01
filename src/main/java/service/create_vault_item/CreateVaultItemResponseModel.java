@@ -1,5 +1,8 @@
 package service.create_vault_item;
 
+/**
+ * The CreateVaultItem Reponse Model.
+ */
 public class CreateVaultItemResponseModel {
 
     private final boolean success;
@@ -10,7 +13,6 @@ public class CreateVaultItemResponseModel {
         this.message = message;
     }
 
-    // Getters
     public boolean isSuccess() {
         return success;
     }
