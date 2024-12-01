@@ -210,7 +210,7 @@ public class AppBuilder {
                 desktopWrapper, urlRedirectPresenter);
         final UrlRedirectController urlRedirectController = new UrlRedirectController(urlRedirectInteractor);
         final PasswordVaultItemPresenter passwordVaultItemPresenter = new PasswordVaultItemPresenter(
-                passwordVaultItemViewModel, viewManagerModel);
+                passwordVaultItemViewModel, viewManagerModel, homeViewModel);
         final PasswordVaultItemInteractor passwordVaultItemInteractor = new PasswordVaultItemInteractor(
                 passwordVaultItemPresenter);
         final PasswordVaultItemController passwordVaultItemController = new PasswordVaultItemController(
