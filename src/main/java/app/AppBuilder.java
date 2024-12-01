@@ -1,7 +1,6 @@
 package app;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
+import java.awt.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -38,8 +37,10 @@ import service.signup.SignupInteractor;
 import service.signup.interface_adapter.SignupController;
 import service.signup.interface_adapter.SignupPresenter;
 import service.signup.interface_adapter.SignupViewModel;
+import service.url_redirect.DesktopWrapper;
+import service.url_redirect.RealDesktopWrapper;
 import service.url_redirect.UrlRedirectInteractor;
-import service.url_redirect.UrlRedirectPresenter;
+import service.url_redirect.interface_adapter.UrlRedirectPresenter;
 import service.url_redirect.interface_adapter.UrlRedirectController;
 import views.CreateLocalVaultView;
 import views.HomeView;
@@ -204,7 +205,9 @@ public class AppBuilder {
         final UrlRedirectPresenter urlRedirectPresenter = new UrlRedirectPresenter(
                 passwordVaultItemViewModel
         );
-        final UrlRedirectInteractor urlRedirectInteractor = new UrlRedirectInteractor(urlRedirectPresenter);
+        final DesktopWrapper desktopWrapper = new RealDesktopWrapper();
+        final UrlRedirectInteractor urlRedirectInteractor = new UrlRedirectInteractor(
+                desktopWrapper, urlRedirectPresenter);
         final UrlRedirectController urlRedirectController = new UrlRedirectController(urlRedirectInteractor);
         final PasswordVaultItemPresenter passwordVaultItemPresenter = new PasswordVaultItemPresenter(
                 passwordVaultItemViewModel, viewManagerModel);
