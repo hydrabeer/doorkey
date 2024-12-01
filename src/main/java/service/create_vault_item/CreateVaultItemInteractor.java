@@ -50,7 +50,7 @@ public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
 
             presenter.presentCreateVaultItemResponse(responseModel);
         }
-        catch (AuthException | IOException ex) { 
+        catch (AuthException | IOException exception) { 
             presenter.displayErrorMessage("Error occured saving vault item");
         }
     }
