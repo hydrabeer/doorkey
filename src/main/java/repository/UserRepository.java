@@ -33,22 +33,32 @@ public interface UserRepository {
     AbstractUser signInUser(String email, String password) throws AuthException, IOException;
 
     /**
+     * Signs out the currently signed-in user.
+     * If already signed out, does nothing.
+     */
+    void signOutUser();
+
+    /**
+     * Gets the currently signed-in user.
+     * @return The currently signed-in user.
+     */
+    AbstractUser getCurrentUser();
+
+    /**
      * Add an item to the user's vault.
      *
-     * @param user The user to add the item to.
      * @param item The item to add to the user's vault.
      * @throws AuthException If the item could not be added to the user's vault.
      * @throws IOException If there was an issue updating and saving the local vault to disk.
      */
-    void addVaultItem(AbstractUser user, AbstractVaultItem item) throws AuthException, IOException;
+    void addVaultItem(AbstractVaultItem item) throws AuthException, IOException;
 
     /**
      * Remove an item from the user's vault.
      *
-     * @param user The user to remove the item from.
      * @param item The item to remove from the user's vault.
      * @throws AuthException If the item could not be removed from the user's vault.
      * @throws IOException If there was an issue updating and saving the local vault to disk.
      */
-    void removeVaultItem(AbstractUser user, AbstractVaultItem item) throws AuthException, IOException;
+    void removeVaultItem(AbstractVaultItem item) throws AuthException, IOException;
 }
