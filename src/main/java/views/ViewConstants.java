@@ -24,4 +24,5 @@ public final class ViewConstants {
     public static final String HOME_VIEW = "home";
     public static final String PASSWORD_VAULT_ITEM_VIEW = "password_vault_item";
     public static final String SEARCH_VIEW = "search";
+    public static final String IMPORT_VAULT_ITEM_VIEW = "import_vault_item";
 }

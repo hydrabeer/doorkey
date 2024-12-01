@@ -30,6 +30,7 @@ public class Main {
                 .addLoadLocalVaultView()
                 .addCreateLocalVaultView()
                 .addPasswordVaultItemView()
+                .addImportVaultItemView()
                 .setInitialView(ViewConstants.LOGIN_VIEW)
                 .build();
 

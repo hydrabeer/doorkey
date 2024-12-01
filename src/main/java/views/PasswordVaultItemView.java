@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,6 +21,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import entity.AbstractUser;
+import entity.PasswordVaultItem;
+import exception.AuthException;
+import repository.UserRepository;
 import service.copy_credentials.interface_adapter.CopyCredentialsController;
 import service.password_vault_item.interface_adapter.PasswordVaultItemController;
 import service.password_vault_item.interface_adapter.PasswordVaultItemState;
@@ -70,6 +75,7 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
             urlDisplay.getHeight(),
             () -> getState().getUrl()
     );
+    private final JPanel actionPanel = new JPanel();
 
     public PasswordVaultItemView(
             CopyCredentialsController copyCredentialsController,
@@ -87,7 +93,7 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
 
         addVaultItemTitle();
 
-        addActionsPanel();
+        add(actionPanel);
 
         addUsernamePanel();
 
@@ -118,6 +124,7 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
         usernameDisplay.setText(passwordVaultItemState.getUsername());
         passwordDisplay.setText(hidePassword);
         urlDisplay.setText(passwordVaultItemState.getUrl());
+        addActionsPanel(passwordVaultItemState);
     }
 
     private void addBackButton() {
@@ -129,16 +136,23 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
         add(backButton);
     }
 
-    private void addActionsPanel() {
+    private void addActionsPanel(PasswordVaultItemState passwordVaultItemState) {
+        if (passwordVaultItemState.getVaultItem().isEmpty()) {
+            return;
+        }
+        actionPanel.setPreferredSize(new Dimension(300, 50));
+        actionPanel.setMaximumSize(new Dimension(300, 50));
+        actionPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         final JPanel actionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         actionsPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         actionsPanel.setPreferredSize(new Dimension(300, 40));
         actionsPanel.setMaximumSize(new Dimension(300, 40));
-        final JButton editButton = addEditButton();
-        final JButton deleteButton = addDeleteButton();
-        actionsPanel.add(editButton);
+        final JButton deleteButton = addDeleteButton(
+                passwordVaultItemState.getUser(), passwordVaultItemState.getRepository(),
+                passwordVaultItemState.getVaultItem().get());
         actionsPanel.add(deleteButton);
-        add(actionsPanel);
+        actionPanel.removeAll();
+        actionPanel.add(actionsPanel);
     }
 
     private void addVaultItemTitle() {
@@ -274,26 +288,10 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
         return urlButton;
     }
 
-    private JButton addEditButton() {
-        final JButton editButton = new DoorkeyButton.DoorkeyButtonBuilder("✏")
-                .addListener(event -> {
-                    // TODO: Implement navigation controller.
-                    showPlaceholderPage();
-                })
-                .build();
-        editButton.setBackground(ViewConstants.BACKGROUND_COLOR);
-        editButton.setForeground(Color.WHITE);
-        editButton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.WHITE, 1, true),
-                BorderFactory.createEmptyBorder(5, 9, 5, 9)));
-        return editButton;
-    }
-
-    private JButton addDeleteButton() {
+    private JButton addDeleteButton(AbstractUser user, UserRepository userRepository, PasswordVaultItem item) {
         final JButton deleteButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDDD1\uFE0F")
                 .addListener(event -> {
-                    // TODO: Implement navigation controller.
-                    showPlaceholderPage();
+                    deleteItemSequence(user, userRepository, item);
                 })
                 .build();
         deleteButton.setBackground(ViewConstants.BACKGROUND_COLOR);
@@ -310,7 +308,7 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
             form.setError(passwordVaultItemViewModel.getState().getMessage());
         }
         else {
-            CopyCredentialsController.copyPasswordClicked(copyText);
+            copyCredentialsController.copyPasswordClicked(copyText);
             form.setError(passwordVaultItemViewModel.getState().getMessage());
         }
         copyCredentialsController.clearClipboard();
@@ -323,21 +321,24 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
         timer.schedule(timerTask, 10000);
     }
 
-    private void showPlaceholderPage() {
-        final JPanel newPanel = new JPanel(new BorderLayout());
+    private void deleteItemSequence(AbstractUser user, UserRepository userRepository, PasswordVaultItem item) {
+        if (passwordVaultItemViewModel.getState().getError().equals(
+                "Press delete again to confirm. Press copy button to reset")) {
+            try {
+                passwordVaultItemController.deleteItem(user, userRepository, item);
+            }
+            catch (AuthException exception) {
+                throw new RuntimeException(exception);
+            }
+            catch (IOException exception) {
+                throw new RuntimeException(exception);
+            }
+        }
+        else {
+            passwordVaultItemController.displayDeleteMessage();
+            form.setError(passwordVaultItemViewModel.getState().getMessage());
+        }
 
-        final JButton switchButton = new JButton(
-                "Coming Soon 2025"
-        );
-        switchButton.addActionListener(event -> {
-            revalidate();
-            repaint();
-        });
-
-        newPanel.add(switchButton);
-
-        revalidate();
-        repaint();
     }
 
     private void setUpMainPanel() {

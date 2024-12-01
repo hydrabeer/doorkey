@@ -28,20 +28,16 @@ public class UrlRedirectInteractor implements UrlRedirectInputBoundary {
                 desktopWrapper.browse(new URI(urlInputData.getUrl()));
             }
             else {
-                System.out.println("a");
                 boundary.displayError("Opening URLs is not supported on this system.");
             }
         }
         catch (URISyntaxException exception) {
-            System.out.println("b");
             boundary.displayError("Invalid URL: " + exception.getMessage());
         }
         catch (IOException exception) {
-            System.out.println("c");
             boundary.displayError("I/O Error while trying to open the URL: " + exception.getMessage());
         }
         catch (SecurityException exception) {
-            System.out.println("d");
             boundary.displayError("Insufficient permissions to open the URL: " + exception.getMessage());
         }
     }
