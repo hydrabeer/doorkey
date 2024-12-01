@@ -22,8 +22,8 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y snapd
-        snap refresh
-        snap install firefox
+        sudo snap refresh
+        sudo snap install firefox
         sudo apt install -y chromium
     - name: Install xvfb
       run: |
