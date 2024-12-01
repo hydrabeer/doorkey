@@ -1,8 +1,6 @@
 package local.create;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import exception.AuthException;
 import mock.MockCreateLocalVaultPresenter;
 import mock.MockRepositoryProvider;
 import mock.MockUserRepository;
@@ -10,8 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.local.create.CreateLocalVaultInputData;
 import service.local.create.CreateLocalVaultInteractor;
+import service.local.create.CreateLocalVaultOutputData;
 
 import javax.swing.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateLocalVaultInteractorTest {
     private MockRepositoryProvider repositoryProvider;
@@ -91,5 +92,30 @@ public class CreateLocalVaultInteractorTest {
         // Path and password removed from output data - handled in interactor
         // assertEquals("password", presenter.successViews.get(0).getPassword());
         // assertEquals("valid.doorkey", presenter.successViews.get(0).getPath());
+    }
+
+    @Test
+    public void createLocalVaultDuplicateUserTest() {
+        JFileChooser fileChooser = new JFileChooser() {
+            @Override
+            public java.io.File getSelectedFile() {
+                return new java.io.File("valid.doorkey") {
+                    @Override
+                    public String getAbsolutePath() {
+                        return "valid.doorkey";
+                    }
+                };
+            }
+        };
+        inputData = new CreateLocalVaultInputData(fileChooser, "password");
+        interactor.createLocalVault(inputData);
+        interactor.createLocalVault(inputData); // duplicate call to cover throws branch
+        assertFalse(presenter.generalErrors.isEmpty());
+    }
+
+    @Test
+    public void createLocalVaultOutputDataTest() {
+        CreateLocalVaultOutputData outputData = new CreateLocalVaultOutputData(userRepository);
+        assertEquals(outputData.getRepository(), userRepository);
     }
 }
