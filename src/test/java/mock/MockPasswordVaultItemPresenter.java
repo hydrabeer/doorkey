@@ -1,7 +1,6 @@
 package mock;
 
 import service.password_vault_item.PasswordVaultItemOutputBoundary;
-import service.password_vault_item.PasswordVaultItemOutputData;
 
 import java.util.ArrayList;
 import java.util.List;

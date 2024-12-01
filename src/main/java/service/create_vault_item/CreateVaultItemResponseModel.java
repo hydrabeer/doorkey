@@ -1,7 +1,7 @@
 package service.create_vault_item;
 
 /**
- * The CreateVaultItem Reponse Model.
+ * The CreateVaultItem response Model.
  */
 public class CreateVaultItemResponseModel {
 

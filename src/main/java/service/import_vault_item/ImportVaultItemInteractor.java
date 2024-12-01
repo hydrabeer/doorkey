@@ -6,20 +6,25 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import entity.AbstractUser;
 import entity.AbstractVaultItem;
 import exception.AuthException;
 import interface_adapter.vault_imports.ImportFactory;
 import interface_adapter.vault_imports.PasswordManager;
+import repository.RepositoryProvider;
 import repository.UserRepository;
 
 /**
  * The import vault item interactor.
  */
 public class ImportVaultItemInteractor implements ImportVaultItemInputBoundary {
+    private final RepositoryProvider repositoryProvider;
     private final ImportVaultItemOutputBoundary presenter;
 
-    public ImportVaultItemInteractor(ImportVaultItemOutputBoundary presenter) {
+    public ImportVaultItemInteractor(
+            RepositoryProvider repositoryProvider,
+            ImportVaultItemOutputBoundary presenter
+    ) {
+        this.repositoryProvider = repositoryProvider;
         this.presenter = presenter;
     }
 
@@ -49,8 +54,8 @@ public class ImportVaultItemInteractor implements ImportVaultItemInputBoundary {
             return;
         }
 
-        final UserRepository userRepository = importVaultItemInputData.getUserRepository();
-        final AbstractUser user = importVaultItemInputData.getUser();
+        // Why unchecked is safe: At this point, the user must've logged in.
+        final UserRepository userRepository = repositoryProvider.getRepositoryUnchecked();
 
         final List<AbstractVaultItem> vaultItems = ImportFactory.createVaultItems(
                 enumPasswordManager,
@@ -58,7 +63,7 @@ public class ImportVaultItemInteractor implements ImportVaultItemInputBoundary {
         );
         try {
             for (AbstractVaultItem vaultItem : vaultItems) {
-                userRepository.addVaultItem(user, vaultItem);
+                userRepository.addVaultItem(vaultItem);
             }
             displayHomeView();
         }

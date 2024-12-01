@@ -1,10 +1,5 @@
 package service.local.load.interface_adapter;
 
-import java.io.IOException;
-
-import data_access.LocalVaultUserDataAccessObject;
-import entity.AbstractUser;
-import exception.AuthException;
 import repository.UserRepository;
 import service.ViewManagerModel;
 import service.home.interface_adapter.HomeState;
@@ -33,25 +28,18 @@ public class LoadLocalVaultPresenter implements LoadLocalVaultOutputBoundary {
 
     @Override
     public void prepareSuccessView(LoadLocalVaultOutputData loadLocalVaultOutputData) {
+        final UserRepository repository = loadLocalVaultOutputData.getRepository();
+
         final HomeState currentHomeViewState = homeViewModel.getState();
 
-        final UserRepository repository = new LocalVaultUserDataAccessObject();
-        try {
-            final AbstractUser user = repository.signInUser(loadLocalVaultOutputData.getPath(),
-                    loadLocalVaultOutputData.getPassword());
+        currentHomeViewState.setUser(repository.getCurrentUser());
+        currentHomeViewState.setUserRepository(repository);
 
-            currentHomeViewState.setUser(user);
-            currentHomeViewState.setUserRepository(repository);
+        homeViewModel.setState(currentHomeViewState);
+        homeViewModel.onStateChanged();
 
-            homeViewModel.setState(currentHomeViewState);
-            homeViewModel.onStateChanged();
-
-            this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
-            this.viewManagerModel.onStateChanged();
-        }
-        catch (AuthException | IOException exception) {
-            prepareErrorView(exception.getMessage());
-        }
+        this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
+        this.viewManagerModel.onStateChanged();
     }
 
     @Override

@@ -1,10 +1,8 @@
 package service.password_vault_item.interface_adapter;
 
 import service.ViewManagerModel;
-import service.home.interface_adapter.HomeState;
 import service.home.interface_adapter.HomeViewModel;
 import service.password_vault_item.PasswordVaultItemOutputBoundary;
-import service.password_vault_item.PasswordVaultItemOutputData;
 import views.ViewConstants;
 
 /**
@@ -17,8 +15,10 @@ public class PasswordVaultItemPresenter implements PasswordVaultItemOutputBounda
     private final HomeViewModel homeViewModel;
 
     public PasswordVaultItemPresenter(
-            PasswordVaultItemViewModel vaultItemViewModel, ViewManagerModel viewManagerModel,
-            HomeViewModel homeViewModel) {
+            PasswordVaultItemViewModel vaultItemViewModel,
+            ViewManagerModel viewManagerModel,
+            HomeViewModel homeViewModel
+    ) {
         this.vaultItemViewModel = vaultItemViewModel;
         this.viewManagerModel = viewManagerModel;
         this.homeViewModel = homeViewModel;
@@ -31,9 +31,8 @@ public class PasswordVaultItemPresenter implements PasswordVaultItemOutputBounda
     }
 
     @Override
-    public void deleteItem(PasswordVaultItemOutputData passwordVaultItemOutputData) {
-        this.homeViewModel.setState(new HomeState(
-                passwordVaultItemOutputData.getUser(), passwordVaultItemOutputData.getUserRepository()));
+    public void updateDeleteItem() {
+        // Update HomeViewModel state as an item was just deleted.
         this.homeViewModel.onStateChanged();
         this.viewManagerModel.setState(ViewConstants.HOME_VIEW);
         this.viewManagerModel.onStateChanged();
@@ -42,7 +41,8 @@ public class PasswordVaultItemPresenter implements PasswordVaultItemOutputBounda
     @Override
     public void displayDeleteMessage() {
         vaultItemViewModel.getState().setMessage(
-                "Press delete again to confirm. Press copy button to reset");
+                "Press delete again to confirm. Press copy button to reset"
+        );
     }
 
 }

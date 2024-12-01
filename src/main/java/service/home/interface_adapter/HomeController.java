@@ -11,7 +11,6 @@ import service.home.HomeInputData;
  * The Home controller.
  */
 public class HomeController {
-
     private final HomeInputBoundary interactor;
 
     public HomeController(HomeInputBoundary interactor) {
@@ -35,8 +34,8 @@ public class HomeController {
     /**
      * Display login view.
      */
-    public void displayLoginView() {
-        interactor.displayLoginView();
+    public void signOut() {
+        interactor.signOut();
     }
 
     /**
