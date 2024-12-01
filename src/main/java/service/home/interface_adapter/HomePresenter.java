@@ -45,15 +45,21 @@ public class HomePresenter implements HomeOutputBoundary {
             //                );
             //                noteVaultItemViewModel.onStateChanged();
             //            }
-            default -> throw new InvalidVaultItemException("Unhandled vault item type");
+            default -> throw new InvalidVaultItemException("Unhandled vault item type: " + item.getType());
         }
+    }
+
+    @Override
+    public void displayImportView() {
+        viewManagerModel.setState(ViewConstants.IMPORT_VAULT_ITEM_VIEW);
+        viewManagerModel.onStateChanged();
     }
 
     @Override
     public void displayLoginView() {
         homeViewModel.setState(new HomeState());
         homeViewModel.onStateChanged();
-        this.viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
-        this.viewManagerModel.onStateChanged();
+        viewManagerModel.setState(ViewConstants.LOGIN_VIEW);
+        viewManagerModel.onStateChanged();
     }
 }

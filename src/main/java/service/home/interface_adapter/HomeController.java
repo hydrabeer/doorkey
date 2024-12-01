@@ -31,4 +31,11 @@ public class HomeController {
     public void displayLoginView() {
         interactor.displayLoginView();
     }
+
+    /**
+     * Display the import item view.
+     */
+    public void displayImportView() {
+        interactor.displayImportView();
+    }
 }

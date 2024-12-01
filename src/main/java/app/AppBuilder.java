@@ -18,6 +18,10 @@ import service.home.HomeInteractor;
 import service.home.interface_adapter.HomeController;
 import service.home.interface_adapter.HomePresenter;
 import service.home.interface_adapter.HomeViewModel;
+import service.import_vault_item.ImportVaultItemInteractor;
+import service.import_vault_item.interface_adapter.ImportVaultItemController;
+import service.import_vault_item.interface_adapter.ImportVaultItemPresenter;
+import service.import_vault_item.interface_adapter.ImportVaultItemViewModel;
 import service.local.create.CreateLocalVaultInteractor;
 import service.local.create.interface_adapter.CreateLocalVaultController;
 import service.local.create.interface_adapter.CreateLocalVaultPresenter;
@@ -43,6 +47,7 @@ import service.url_redirect.UrlRedirectPresenter;
 import service.url_redirect.interface_adapter.UrlRedirectController;
 import views.CreateLocalVaultView;
 import views.HomeView;
+import views.ImportVaultItemView;
 import views.LoadLocalVaultView;
 import views.LocalVaultView;
 import views.LoginView;
@@ -61,6 +66,7 @@ public class AppBuilder {
     private final FireStoreUserDataAccessObject fireStoreUserDataAccessObject;
     private final HomeViewModel homeViewModel;
     private final PasswordVaultItemViewModel passwordVaultItemViewModel;
+    private final ImportVaultItemViewModel importVaultItemViewModel;
 
     public AppBuilder(String title, int width, int height) {
         this.mainFrame = new JFrame(title);
@@ -74,7 +80,9 @@ public class AppBuilder {
         //
         // mainFrame.setUndecorated(true);
 
-        homeViewModel = new HomeViewModel();
+        this.homeViewModel = new HomeViewModel();
+        this.passwordVaultItemViewModel = new PasswordVaultItemViewModel();
+        this.importVaultItemViewModel = new ImportVaultItemViewModel();
 
         final CardLayout cardLayout = new CardLayout();
         this.views = new JPanel(cardLayout);
@@ -86,7 +94,6 @@ public class AppBuilder {
         final HttpClient httpClient = new CommonHttpClient();
         final FirebaseAuthRepository firebaseAuthRepository = new FirebaseAuthRepository(httpClient);
         this.fireStoreUserDataAccessObject = new FireStoreUserDataAccessObject(firebaseAuthRepository, httpClient);
-        this.passwordVaultItemViewModel = new PasswordVaultItemViewModel();
     }
 
     /**
@@ -135,6 +142,32 @@ public class AppBuilder {
         final LoadLocalVaultView loadLocalVaultView = new LoadLocalVaultView(
                 loadLocalVaultController, loadLocalVaultViewModel, viewManagerModel);
         views.add(loadLocalVaultView, ViewConstants.LOAD_LOCAL_VAULT_VIEW);
+        return this;
+    }
+
+    /**
+     * Adds the ImportVaultItemView to the viewsPanel.
+     * @return The AppBuilder instance.
+     */
+    public AppBuilder addImportVaultItemView() {
+        final ImportVaultItemPresenter importVaultItemPresenter = new ImportVaultItemPresenter(
+                importVaultItemViewModel,
+                homeViewModel,
+                viewManagerModel
+        );
+        final ImportVaultItemInteractor importVaultItemInteractor = new ImportVaultItemInteractor(
+                importVaultItemPresenter
+        );
+        final ImportVaultItemController importVaultItemController = new ImportVaultItemController(
+                importVaultItemInteractor
+        );
+        final ImportVaultItemView importVaultItemView = new ImportVaultItemView(
+                importVaultItemViewModel,
+                homeViewModel,
+                importVaultItemController
+        );
+
+        views.add(importVaultItemView, ViewConstants.IMPORT_VAULT_ITEM_VIEW);
         return this;
     }
 
