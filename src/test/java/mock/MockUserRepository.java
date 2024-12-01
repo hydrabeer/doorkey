@@ -8,6 +8,7 @@ import exception.AuthException;
 import interface_adapter.net.auth.AuthErrorReason;
 import repository.UserRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.Map;
 public class MockUserRepository implements UserRepository {
     private final Map<String, AbstractUser> users = new HashMap<>();
     private final Map<String, String> passwords = new HashMap<>();
+    private boolean throwIOException = false;
+    private boolean throwAuthException = false;
 
     @Override
     public AbstractUser signupUser(String email, String password) throws AuthException {
@@ -40,7 +43,13 @@ public class MockUserRepository implements UserRepository {
     }
 
     @Override
-    public void addVaultItem(AbstractUser user, AbstractVaultItem item) {
+    public void addVaultItem(AbstractUser user, AbstractVaultItem item) throws IOException, AuthException {
+        if (throwIOException) {
+            throw new IOException("IO error");
+        }
+        if (throwAuthException) {
+            throw new AuthException(AuthErrorReason.UNKNOWN, "Auth error");
+        }
         user.getVault().addItem(item);
     }
 
@@ -49,5 +58,13 @@ public class MockUserRepository implements UserRepository {
         List<AbstractVaultItem> items = user.getVault().getItems();
         items.remove(item);
         user.getVault().setItems(items);
+    }
+
+    public void setThrowIOException(boolean throwIOException) {
+        this.throwIOException = throwIOException;
+    }
+
+    public void setThrowAuthException(boolean throwAuthException) {
+        this.throwAuthException = throwAuthException;
     }
 }
