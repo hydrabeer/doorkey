@@ -51,6 +51,8 @@ which is a true source of random and thus highly secure.
 Get instant feedback on the strength of your passwords with smart password strength analysis.
 ### Search
 Find your credentials quickly with Doorkey's search feature.
+### Import from Your Favourite Password Manager
+Easily import your credentials from other supported password managers to Doorkey by providing a JSON export.
 ### One-Click Credential Copying
 Copy your username and password to your clipboard with a single click to quickly log in to your 
 accounts without having to remember or type out your credentials. Your clipboard is 
@@ -111,6 +113,19 @@ To delete a credential, open it and click the trash icon at the top.
 ### Searching
 To search for a credential, type your search query in the search bar at the top of the main vault
 screen. You can search by title or by username.
+### Import Passwords
+To import your passwords from another password manager, choose it from the list below and follow their instructions for exporting to 
+JSON.
+
+- [1Password](https://support.1password.com/export/)
+
+Then, create or open an existing vault in Doorkey and click on the import button (the rightmost button in the picture below), 
+choose your previous password manager, and copy the JSON file contents into the text area. Finally, click **Import** to import 
+your passwords.
+
+<img src="readme_img/home_buttons.png" width="120">
+<img src="readme_img/import_view.png" width="300">
+
 ## License
 Doorkey is covered by the [GPLv3](https://www.gnu.org/licenses/gpl-3.0) (GNU General Public License version 3).
 Check out the [quick guide](https://www.gnu.org/licenses/quick-guide-gplv3) to the license.
