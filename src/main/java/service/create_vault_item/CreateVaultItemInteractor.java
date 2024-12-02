@@ -64,6 +64,7 @@ public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
         }
 
         final boolean isPhishing = phishingUrlValidator.isPhishingUrl(url);
+        System.out.println(isPhishing);
         if (isPhishing) {
             presenter.displayErrorMessage("Entered a Phishing URL.");
             return;

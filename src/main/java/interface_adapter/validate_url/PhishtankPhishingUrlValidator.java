@@ -28,9 +28,14 @@ public class PhishtankPhishingUrlValidator implements PhishingUrlValidator {
     @Override
     public boolean isPhishingUrl(URL url) {
         try {
+            String urlString = url.toString();
+            if (!urlString.endsWith("/")) {
+                urlString += '/';
+            }
+
             final HttpResponse response = client.post(
                     PHISHTANK_API_URL,
-                    "url=" + url + "&format=json",
+                    "url=" + urlString + "&format=json",
                     PHISHTANK_HEADERS
             );
             final JSONObject jsonResponse = response.bodyToJsonObject();
