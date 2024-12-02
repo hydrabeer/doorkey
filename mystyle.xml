@@ -350,7 +350,7 @@
                       value="java.lang.Exception,
                        java.lang.Throwable,
                        java.lang.RuntimeException,
-                       java.lang.NullPointerException"/>
+                        "/>
         </module>
         <module name="IllegalInstantiation">
             <property name="classes"

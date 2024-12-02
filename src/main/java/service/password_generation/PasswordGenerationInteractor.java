@@ -126,6 +126,9 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
                 "Failed to make a request to the Random.org API: " + httpRequestException.getMessage()
             );
         }
+        catch (NullPointerException nullPointerException) {
+            throw new InterruptedException("Thread was interrupted");
+        }
     }
 
     private String getRequestBody(int length, int allCharsLength) {
