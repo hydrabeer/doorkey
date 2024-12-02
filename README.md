@@ -120,7 +120,7 @@ your previous password manager. Then, click on the import button in Doorkey (the
 and choose your previous password manager and copy the JSON file contents into the text area.
 Click the import button to import your passwords.
 
-<img src="readme_img/home_buttons.png" width="80">
+<img src="readme_img/home_buttons.png" width="120">
 <img src="readme_img/import_view.png" width="300">
 
 ## License
