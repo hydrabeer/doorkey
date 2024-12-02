@@ -15,10 +15,10 @@ import org.junit.jupiter.api.Test;
 import repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 class SearchInteractorTest {
-
+    private MockRepositoryProvider repositoryProvider;
+    private UserRepository userRepository;
     private SearchInputBoundary searchInteractor;
     private TestSearchOutputBoundary testOutputBoundary;
 
@@ -89,6 +89,17 @@ class SearchInteractorTest {
     @Test
     void testExecuteWithNoResults() {
         SearchInputData inputData = new SearchInputData("noresults");
+        searchInteractor.execute(inputData);
+
+        List<AbstractVaultItem> results = testOutputBoundary.searchOutputData.getResults();
+        assertEquals(new ArrayList<>(), results);
+    }
+
+    @Test
+    void testRepositoryProvider_isEmpty() {
+        repositoryProvider.clearRepository();
+
+        SearchInputData inputData = new SearchInputData("SearchItems");
         searchInteractor.execute(inputData);
 
         List<AbstractVaultItem> results = testOutputBoundary.searchOutputData.getResults();
