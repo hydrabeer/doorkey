@@ -324,7 +324,6 @@ public class FireStoreUserRepository implements UserRepository {
         return postData.toString();
     }
 
-    
     private AbstractVaultItem encryptVaultItem(AbstractVaultItem item) {
         if (item instanceof PasswordVaultItem) {
             final PasswordVaultItem copy = new PasswordVaultItem(
@@ -352,5 +351,4 @@ public class FireStoreUserRepository implements UserRepository {
         }
         return item;
     }
-
 }

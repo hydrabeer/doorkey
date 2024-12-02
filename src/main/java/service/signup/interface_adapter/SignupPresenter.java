@@ -28,7 +28,7 @@ public class SignupPresenter implements SignupOutputBoundary {
     @Override
     public void prepareSuccessView(SignupOutputData signupOutputData) {
         final HomeState currentHomeViewState = homeViewModel.getState();
-        currentHomeViewState.setUser(signupOutputData.getUser());
+        currentHomeViewState.setUser(signupOutputData.getUserRepository().getCurrentUser());
         currentHomeViewState.setUserRepository(signupOutputData.getUserRepository());
 
         homeViewModel.setState(currentHomeViewState);
