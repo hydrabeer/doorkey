@@ -107,9 +107,6 @@ the link icon next to the URL field.
 <img src="readme_img/unlock_credential.png" width="100">
 <img src="readme_img/vault_item_view.png" width="300">
 
-### Editing Credentials
-To edit a credential, open it and click the pencil icon at the top. Make your changes, and click 
-the save icon.
 ### Deleting Credentials
 To delete a credential, open it and click the trash icon at the top.
 ### Searching
