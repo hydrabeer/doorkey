@@ -4,15 +4,12 @@ import entity.AbstractVaultItem;
 import entity.PasswordVaultItem;
 import exception.InvalidVaultItemException;
 import mock.MockHomePresenter;
-import mock.MockLoginPresenter;
 import mock.MockRepositoryProvider;
 import mock.MockUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repository.UserRepository;
 import service.home.HomeInputData;
 import service.home.HomeInteractor;
-import service.login.LoginInteractor;
 
 public class HomeInteractorTest {
     private MockUserRepository mockUserRepository = new MockUserRepository();
