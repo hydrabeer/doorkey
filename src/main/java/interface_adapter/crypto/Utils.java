@@ -21,6 +21,7 @@ public class Utils {
      *
      * @param base64 the Base64 string to decode
      * @return the decoded byte array
+     * @throws IllegalArgumentException if the base64 provided is invalid
      */
     public static byte[] decodeFromBase64(String base64) throws IllegalArgumentException {
         return Base64.getDecoder().decode(base64);

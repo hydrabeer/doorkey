@@ -91,10 +91,11 @@ public class FireStoreUserRepository implements UserRepository {
 
             final List<AbstractVaultItem> vaultItems = currentUser.getVault().getItems();
             for (int i = 0; i < vaultItems.size(); i++) {
-                AbstractVaultItem item = vaultItems.get(i);
+                final AbstractVaultItem item = vaultItems.get(i);
                 try {
                     vaultItems.set(i, decryptVaultItem(item));
-                } catch (InvalidCipherTextException e) {
+                }
+                catch (InvalidCipherTextException exception) {
                     throw new AuthException(AuthErrorReason.WRONG_CREDENTIALS, "Invalid password");
                 }
             }
@@ -327,7 +328,9 @@ public class FireStoreUserRepository implements UserRepository {
     private AbstractVaultItem encryptVaultItem(AbstractVaultItem item) {
         if (item instanceof PasswordVaultItem) {
             final String plain = ((PasswordVaultItem) item).getPassword();
-            final String encrypted = Utils.encodeToBase64(new ChaCha20Cipher().encrypt(this.currentUser.getPassword(), plain));
+            final String encrypted = Utils.encodeToBase64(
+                new ChaCha20Cipher().encrypt(this.currentUser.getPassword(), plain)
+            );
             ((PasswordVaultItem) item).setPassword(encrypted);
         }
         return item;
@@ -336,7 +339,9 @@ public class FireStoreUserRepository implements UserRepository {
     private AbstractVaultItem decryptVaultItem(AbstractVaultItem item) throws InvalidCipherTextException {
         if (item instanceof PasswordVaultItem) {
             final String encrypted = ((PasswordVaultItem) item).getPassword();
-            final String decrypted = new ChaCha20Cipher().decrypt(this.currentUser.getPassword(), Utils.decodeFromBase64(encrypted));
+            final String decrypted = new ChaCha20Cipher().decrypt(
+                this.currentUser.getPassword(), Utils.decodeFromBase64(encrypted)
+            );
             ((PasswordVaultItem) item).setPassword(decrypted);
         }
         return item;
