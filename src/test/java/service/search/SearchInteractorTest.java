@@ -1,18 +1,18 @@
 package service.search;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import entity.AbstractVaultItem;
 import entity.NoteVaultItem;
 import entity.PasswordVaultItem;
+import exception.AuthException;
+import mock.MockRepositoryProvider;
+import mock.MockUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.search.SearchDataAccessInterface;
-import service.search.SearchInputBoundary;
-import service.search.SearchInteractor;
-import service.search.SearchOutputBoundary;
-import service.search.SearchOutputData;
-import service.search.SearchInputData;
-
-import java.util.List;
+import repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -23,10 +23,35 @@ class SearchInteractorTest {
     private TestSearchOutputBoundary testOutputBoundary;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws AuthException, IOException {
         testOutputBoundary = new TestSearchOutputBoundary();
-        TestSearchDataAccessObject testDataAccess = new TestSearchDataAccessObject();
-        searchInteractor = new SearchInteractor(testOutputBoundary, testDataAccess);
+        userRepository = new MockUserRepository();
+        repositoryProvider = new MockRepositoryProvider(userRepository);
+        userRepository.signupUser("h@gmail.com", "password123");
+
+        userRepository.addVaultItem(new PasswordVaultItem(
+                        "Google",
+                        "hydrabeer",
+                        "password",
+                        "https://accounts.google.com/"
+                )
+        );
+        userRepository.addVaultItem(new PasswordVaultItem(
+                        "Google Alt",
+                        "drake",
+                        "password",
+                        "https://accounts.google.com/"
+                )
+        );
+        userRepository.addVaultItem(new PasswordVaultItem(
+                        "CSC207",
+                        "Zach",
+                        "password",
+                        "https://accounts.google.com/"
+                )
+        );
+        userRepository.addVaultItem(new NoteVaultItem("Recipe", "Recipe for cookies"));
+        searchInteractor = new SearchInteractor(repositoryProvider, testOutputBoundary);
     }
 
     @Test
@@ -66,54 +91,17 @@ class SearchInteractorTest {
         SearchInputData inputData = new SearchInputData("noresults");
         searchInteractor.execute(inputData);
 
-        assertNull(testOutputBoundary.searchOutputData);
-        assertEquals("No results found for \"noresults\".",
-                testOutputBoundary.noResultsMessage);
+        List<AbstractVaultItem> results = testOutputBoundary.searchOutputData.getResults();
+        assertEquals(new ArrayList<>(), results);
     }
 
     private static class TestSearchOutputBoundary implements SearchOutputBoundary {
 
         private SearchOutputData searchOutputData;
-        private String noResultsMessage;
 
         @Override
         public void prepareResultsView(SearchOutputData searchOutputData) {
             this.searchOutputData = searchOutputData;
-        }
-
-        @Override
-        public void prepareNoResultsView(String message) {
-            this.noResultsMessage = message;
-        }
-    }
-
-    private static class TestSearchDataAccessObject implements SearchDataAccessInterface {
-
-        @Override
-        public List<AbstractVaultItem> getItems() {
-            return List.of(new PasswordVaultItem(
-                            "Google",
-                            "user1",
-                            "password1",
-                            "https://example.com"),
-                    new PasswordVaultItem(
-                            "Google Alt",
-                            "user2",
-                            "password2",
-                            "https://example.com"),
-                    new PasswordVaultItem(
-                            "result3",
-                            "user3",
-                            "password3",
-                            "https://example.com"),
-                    new PasswordVaultItem(
-                            "CSC207",
-                            "zachary",
-                            "password3",
-                            "https://example.com"),
-                    new NoteVaultItem(
-                            "Recipe",
-                            "1 cup of water"));
         }
     }
 }
