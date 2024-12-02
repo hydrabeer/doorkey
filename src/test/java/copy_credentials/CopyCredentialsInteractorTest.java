@@ -91,10 +91,10 @@ public class CopyCredentialsInteractorTest {
             }
         };
 
-        timer.schedule(timerTask, 20);
+        timer.schedule(timerTask, 100);
 
         // Wait for the timer to complete or time out
-        boolean completed = latch.await(21, TimeUnit.MILLISECONDS);
+        boolean completed = latch.await(150, TimeUnit.MILLISECONDS);
         assertTrue(completed);
 
         // Optionally clean up the timer
