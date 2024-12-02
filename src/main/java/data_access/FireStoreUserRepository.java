@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,8 +14,11 @@ import entity.AbstractUser;
 import entity.AbstractVaultItem;
 import entity.CloudUser;
 import entity.CloudVault;
+import entity.PasswordVaultItem;
 import exception.AuthException;
 import exception.HttpRequestException;
+import interface_adapter.crypto.Utils;
+import interface_adapter.crypto.cipher.ChaCha20Cipher;
 import interface_adapter.firestore.FirestoreJsonAdapter;
 import interface_adapter.net.auth.AuthErrorReason;
 import interface_adapter.net.auth.RemoteAuth;
@@ -84,6 +88,19 @@ public class FireStoreUserRepository implements UserRepository {
 
             final CloudUser user = new CloudUser(email, password, vault, auth);
             this.currentUser = user;
+
+            final List<AbstractVaultItem> vaultItems = currentUser.getVault().getItems();
+            for (int i = 0; i < vaultItems.size(); i++) {
+                final AbstractVaultItem item = vaultItems.get(i);
+                try {
+                    vaultItems.set(i, decryptVaultItem(item));
+                }
+                catch (InvalidCipherTextException exception) {
+                    throw new AuthException(AuthErrorReason.WRONG_CREDENTIALS, "Invalid password");
+                }
+            }
+            currentUser.getVault().setItems(vaultItems);
+
             return user;
         }
         catch (HttpRequestException httpRequestException) {
@@ -153,7 +170,7 @@ public class FireStoreUserRepository implements UserRepository {
         // Converts to firestore JSON format (inserting stringValue, etc.)
         final ArrayList<JSONObject> vaultItems = new ArrayList<>();
         for (AbstractVaultItem vaultItem : cloudUser.getVault().getItems()) {
-            vaultItems.add(FirestoreJsonAdapter.toFirestoreJson(vaultItem.toJSONObject()));
+            vaultItems.add(FirestoreJsonAdapter.toFirestoreJson(encryptVaultItem(vaultItem).toJSONObject()));
         }
 
         final String body = createItemsMap(vaultItems);
@@ -306,4 +323,34 @@ public class FireStoreUserRepository implements UserRepository {
 
         return postData.toString();
     }
+
+    
+    private AbstractVaultItem encryptVaultItem(AbstractVaultItem item) {
+        if (item instanceof PasswordVaultItem) {
+            final PasswordVaultItem copy = new PasswordVaultItem(
+                ((PasswordVaultItem) item).getTitle(),
+                ((PasswordVaultItem) item).getUsername(),
+                ((PasswordVaultItem) item).getPassword(),
+                ((PasswordVaultItem) item).getUrl()
+            );
+            final String encrypted = Utils.encodeToBase64(
+                new ChaCha20Cipher().encrypt(this.currentUser.getPassword(), copy.getPassword())
+            );
+            copy.setPassword(encrypted);
+            return copy;
+        }
+        return item;
+    }
+
+    private AbstractVaultItem decryptVaultItem(AbstractVaultItem item) throws InvalidCipherTextException {
+        if (item instanceof PasswordVaultItem) {
+            final String encrypted = ((PasswordVaultItem) item).getPassword();
+            final String decrypted = new ChaCha20Cipher().decrypt(
+                this.currentUser.getPassword(), Utils.decodeFromBase64(encrypted)
+            );
+            ((PasswordVaultItem) item).setPassword(decrypted);
+        }
+        return item;
+    }
+
 }
