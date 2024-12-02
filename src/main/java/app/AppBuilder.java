@@ -300,7 +300,11 @@ public class AppBuilder {
     public AppBuilder addSignupView() {
         final SignupViewModel signupViewModel = new SignupViewModel();
         final SignupPresenter signupPresenter = new SignupPresenter(signupViewModel, homeViewModel, viewManagerModel);
-        final SignupInteractor signupInteractor = new SignupInteractor(fireStoreUserRepository, signupPresenter);
+        final SignupInteractor signupInteractor = new SignupInteractor(
+                repositoryProvider,
+                fireStoreUserRepository,
+                signupPresenter
+        );
         final SignupController signupController = new SignupController(signupInteractor);
         final SignupView signupView = new SignupView(signupViewModel, signupController, viewManagerModel);
         views.add(signupView, ViewConstants.SIGNUP_VIEW);
