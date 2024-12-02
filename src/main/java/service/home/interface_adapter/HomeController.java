@@ -21,13 +21,10 @@ public class HomeController {
      * Display a vault item.
      *
      * @param vaultItem The vault item to display.
-     * @param user The user of vault item.
-     * @param repository The user repository.
      * @throws InvalidVaultItemException If the vault item is invalid.
      */
-    public void displayVaultItem(AbstractVaultItem vaultItem,
-                                 AbstractUser user, UserRepository repository) throws InvalidVaultItemException {
-        final HomeInputData homeInputData = new HomeInputData(vaultItem, user, repository);
+    public void displayVaultItem(AbstractVaultItem vaultItem) throws InvalidVaultItemException {
+        final HomeInputData homeInputData = new HomeInputData(vaultItem);
         interactor.displayVaultItem(homeInputData);
     }
 

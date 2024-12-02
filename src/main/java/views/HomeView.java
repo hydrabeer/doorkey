@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Objects;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -23,13 +22,13 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import entity.AbstractUser;
 import entity.AbstractVaultItem;
 import exception.InvalidVaultItemException;
-import repository.UserRepository;
 import service.home.interface_adapter.HomeController;
-import service.home.interface_adapter.HomeState;
 import service.home.interface_adapter.HomeViewModel;
+import service.search.interface_adapter.SearchController;
+import service.search.interface_adapter.SearchState;
+import service.search.interface_adapter.SearchViewModel;
 import views.components.DoorkeyButton;
 import views.components.DoorkeyFont;
 
@@ -39,7 +38,8 @@ import views.components.DoorkeyFont;
 public class HomeView extends JPanel implements ActionListener, PropertyChangeListener {
     private final HomeController homeController;
     private final HomeViewModel homeViewModel;
-    private final JLabel userInfo = new JLabel();
+    private final SearchController searchController;
+    private final SearchViewModel searchViewModel;
     private final JPanel vaultPanel = new JPanel();
     private final JButton addItemButton = createAddButton();
     private final JButton importItemButton = createImportButton();
@@ -47,11 +47,17 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
 
     public HomeView(
             HomeViewModel homeViewModel,
-            HomeController homeController
+            HomeController homeController,
+            SearchViewModel searchViewModel,
+            SearchController searchController
     ) {
         this.homeController = homeController;
         this.homeViewModel = homeViewModel;
+        this.searchController = searchController;
+        this.searchViewModel = searchViewModel;
         this.homeViewModel.addPropertyChangeListener(this);
+        this.searchViewModel.addPropertyChangeListener(this::updateVaultView);
+
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -73,22 +79,19 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
 
         add(vaultPanel, BorderLayout.CENTER);
 
+        searchController.execute("");
+
         addSearchPanel();
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        final HomeState homeState = (HomeState) evt.getNewValue();
-        dispatchStates(homeState);
+        rerenderVaultPanel(searchField.getText());
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("Action performed: " + e.getActionCommand());
-    }
-
-    private void dispatchStates(HomeState homeState) {
-        setVaultItems(homeState);
     }
 
     private void setUpMainPanel() {
@@ -98,20 +101,10 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     }
 
     private void onSearchFieldChanged(DocumentEvent event) {
-        final String currentSearchQuery = searchField.getText();
-        rerenderVaultPanel(homeViewModel.getState(), currentSearchQuery);
+        rerenderVaultPanel(searchField.getText());
     }
 
-    private void setVaultItems(HomeState homeState) {
-        if (homeState.getUser().isPresent()) {
-            final String email = homeState.getUser().get().getEmail();
-            userInfo.setText(Objects.requireNonNullElse(email, "Used locally - no email"));
-        }
-
-        rerenderVaultPanel(homeState, searchField.getText());
-    }
-
-    private void rerenderVaultPanel(HomeState homeState, String searchQuery) {
+    private void rerenderVaultPanel(String searchQuery) {
         if (homeViewModel.getState().getUser().isEmpty()) {
             return;
         }
@@ -120,20 +113,19 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
             return;
         }
 
+        searchController.execute(searchQuery);
+    }
+
+    private void updateVaultView(PropertyChangeEvent event) {
         final JPanel parentPanel = new JPanel();
         parentPanel.setLayout(new BoxLayout(parentPanel, BoxLayout.Y_AXIS));
         parentPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         parentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20));
 
-        for (AbstractVaultItem vaultItem : homeViewModel.getState().getUser().get().getVault().getItems()) {
-            final String vaultItemTitle = vaultItem.getTitle().toLowerCase();
-            if (vaultItemTitle.contains(searchQuery)) {
-                parentPanel.add(addVaultItem(vaultItem,
-                        homeState.getUser().get(),
-                        homeState.getUserRepository().get())
-                );
-                parentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-            }
+        final SearchState state = (SearchState) event.getNewValue();
+        for (AbstractVaultItem vaultItem : state.getItems()) {
+            parentPanel.add(addVaultItem(vaultItem));
+            parentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
         final JScrollPane scrollPane = new JScrollPane(parentPanel);
@@ -152,7 +144,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         vaultPanel.repaint();
     }
 
-    private JPanel addVaultItem(AbstractVaultItem vaultItem, AbstractUser user, UserRepository userRepository) {
+    private JPanel addVaultItem(AbstractVaultItem vaultItem) {
         final JPanel vaultItemPanel = new JPanel();
         vaultItemPanel.setLayout(new BorderLayout());
         vaultItemPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -168,7 +160,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         final JLabel subTitle = new JLabel(vaultItem.getType());
         subTitle.setForeground(Color.WHITE);
         subTitle.setFont(new DoorkeyFont());
-        final JButton accessButton = addAccessButton(subTitle.getHeight(), vaultItem, user, userRepository);
+        final JButton accessButton = addAccessButton(subTitle.getHeight(), vaultItem);
         vaultItemPanel.add(title, BorderLayout.NORTH);
         vaultItemPanel.add(subTitle, BorderLayout.SOUTH);
         vaultItemPanel.add(accessButton, BorderLayout.EAST);
@@ -176,12 +168,12 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     }
 
     private JButton addAccessButton(
-            int height, AbstractVaultItem vaultItem, AbstractUser user, UserRepository repository) {
+            int height, AbstractVaultItem vaultItem) {
         final JButton accessButton = new DoorkeyButton.DoorkeyButtonBuilder("\uD83D\uDD13")
                 // button text is unlock character
                 .addListener(event -> {
                     try {
-                        homeController.displayVaultItem(vaultItem, user, repository);
+                        homeController.displayVaultItem(vaultItem);
                     }
                     catch (InvalidVaultItemException exception) {
                         throw new RuntimeException(exception);
