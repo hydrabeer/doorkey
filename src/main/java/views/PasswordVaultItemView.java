@@ -38,8 +38,8 @@ import views.components.DoorkeyForm;
 public class PasswordVaultItemView extends JPanel implements ActionListener, PropertyChangeListener {
     // Constants
     private static final String USERNAME = "Username:";
-    private static final String PASSWORD = "Password:";
-    private static final String URL = "URL:    ";
+    private static final String PASSWORD = "Password: ";
+    private static final String URL = "URL:         ";
 
     private final String hidePassword = "**********";
     private final CopyCredentialsController copyCredentialsController;
