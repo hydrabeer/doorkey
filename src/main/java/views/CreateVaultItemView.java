@@ -91,8 +91,11 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
         final CreateVaultItemState state = (CreateVaultItemState) evt.getNewValue();
         final String errorMessage = state.getErrorMessage();
 
-        if (errorMessage.isEmpty()) {
+        if (!errorMessage.isEmpty()) {
             JOptionPane.showMessageDialog(this, errorMessage);
+        }
+        if (!state.getSuccessMessage().isEmpty()) {
+            JOptionPane.showMessageDialog(this, state.getSuccessMessage());
         }
 
         final boolean shouldClearFields = state.getClearFields();
