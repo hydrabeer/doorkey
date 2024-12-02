@@ -9,9 +9,7 @@ import entity.AbstractVaultItem;
  */
 public class SearchState {
 
-    private String query;
     private List<AbstractVaultItem> items;
-    private String noResultsMessage;
 
     public List<AbstractVaultItem> getItems() {
         return items;
@@ -21,19 +19,4 @@ public class SearchState {
         this.items = items;
     }
 
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public String getNoResultsMessage() {
-        return noResultsMessage;
-    }
-
-    public void setNoResultsMessage(String noResultsMessage) {
-        this.noResultsMessage = noResultsMessage;
-    }
 }
