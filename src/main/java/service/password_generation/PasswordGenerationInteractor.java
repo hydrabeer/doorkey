@@ -49,7 +49,7 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
     @Override
     public void generate() {
         try {
-            final int passwordLength = 12;
+            final int passwordLength = 16;
             final String password = generatePassword(passwordLength);
 
             final PasswordGenerationResponseModel responseModel = new PasswordGenerationResponseModel(

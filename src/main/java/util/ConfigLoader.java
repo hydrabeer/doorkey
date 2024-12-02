@@ -21,6 +21,11 @@ public class ConfigLoader {
         }
     }
 
+    public ConfigLoader(String key, String value) {
+        properties = new Properties();
+        properties.setProperty(key, value);
+    }
+
     /**
      * Retrieves the value associated with the given key.
      *
