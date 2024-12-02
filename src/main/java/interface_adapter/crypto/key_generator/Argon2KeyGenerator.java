@@ -10,9 +10,9 @@ public class Argon2KeyGenerator implements KeyGenerator {
 
     private static final int ARGON2_VERSION = Argon2Parameters.ARGON2_VERSION_13;
     private static final int ARGON2_TYPE = Argon2Parameters.ARGON2_d;
-    private static final int ARGON2_ITERATIONS = 4;
-    private static final int ARGON2_MEM_AS_KB = 262144;
-    private static final int ARGON2_PARALLELISM = 4;
+    private static final int ARGON2_ITERATIONS = 2;
+    private static final int ARGON2_MEM_AS_KB = 65536;
+    private static final int ARGON2_PARALLELISM = 2;
     private static final int ARGON2_OUTPUT_LENGTH = 32;
 
     private static Argon2Parameters getParameters(byte[] salt) {

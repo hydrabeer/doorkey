@@ -5,12 +5,18 @@ package service.copy_credentials;
  */
 public class UsernameInputData {
     private String username;
+    private int time;
 
-    public UsernameInputData(String username) {
+    public UsernameInputData(String username, int time) {
+        this.time = time;
         this.username = username;
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public int getTime() {
+        return time;
     }
 }

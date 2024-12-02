@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import mock.MockLoadLocalVaultPresenter;
 import service.local.load.LoadLocalVaultInputData;
 import service.local.load.LoadLocalVaultInteractor;
+import service.local.load.LoadLocalVaultOutputData;
 
 import java.io.IOException;
 
@@ -101,4 +102,35 @@ public class LoadLocalVaultInteractorTest {
         // assertEquals("password", presenter.successViews.get(0).getPassword());
         // assertEquals("valid.doorkey", presenter.successViews.get(0).getRepository().getCurrentUser().getVault().getSavePath());
     }
+
+    @Test
+    public void loadLocalVaultInteractorDuplicateUserTest() {
+        JFileChooser fileChooser = new JFileChooser() {
+            @Override
+            public java.io.File getSelectedFile() {
+                return new java.io.File("valid.doorkey") {
+                    @Override
+                    public String getAbsolutePath() {
+                        return "valid.doorkey";
+                    }
+                };
+            }
+        };
+        inputData = new LoadLocalVaultInputData(fileChooser, "password");
+        try {
+            userRepository.signupUser("valid.doorkey", "password");
+        } catch (IOException | AuthException e) {
+            fail("Exception thrown");
+        }
+        userRepository.setThrowIOExceptionSignin(true);
+        interactor.loadLocalVault(inputData);
+        assertEquals(1, presenter.generalErrors.size());
+    }
+
+    @Test
+    public void loadLocalVaultOutputDataTest() {
+        LoadLocalVaultOutputData outputData = new LoadLocalVaultOutputData(userRepository);
+        assertEquals(outputData.getRepository(), userRepository);
+    }
+
 }

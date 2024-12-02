@@ -2,8 +2,8 @@ package service.signup;
 
 import java.io.IOException;
 
-import entity.AbstractUser;
 import exception.AuthException;
+import repository.RepositoryProvider;
 import repository.UserRepository;
 
 /**
@@ -14,11 +14,17 @@ public class SignupInteractor implements SignupInputBoundary {
     private static final String PASSWORD_FIELD = "password";
     private static final String REPEATED_PASSWORD_FIELD = "repeatedPassword";
 
-    private final UserRepository userRepository;
+    private final RepositoryProvider repositoryProvider;
+    private final UserRepository remoteUserRepository;
     private final SignupOutputBoundary signupPresenter;
 
-    public SignupInteractor(UserRepository userRepository, SignupOutputBoundary outputPresenter) {
-        this.userRepository = userRepository;
+    public SignupInteractor(
+            RepositoryProvider repositoryProvider,
+            UserRepository remoteUserRepository,
+            SignupOutputBoundary outputPresenter
+    ) {
+        this.repositoryProvider = repositoryProvider;
+        this.remoteUserRepository = remoteUserRepository;
         this.signupPresenter = outputPresenter;
     }
 
@@ -33,13 +39,12 @@ public class SignupInteractor implements SignupInputBoundary {
         signupPresenter.clearError(REPEATED_PASSWORD_FIELD);
 
         try {
-            final AbstractUser user = this.userRepository.signupUser(
+            this.remoteUserRepository.signupUser(
                     signupInputData.getEmail(),
                     signupInputData.getPassword()
             );
-
-            final SignupOutputData outputData = new SignupOutputData(user, this.userRepository);
-            signupPresenter.prepareSuccessView(outputData);
+            repositoryProvider.setRepository(remoteUserRepository);
+            signupPresenter.prepareSuccessView(new SignupOutputData(remoteUserRepository));
         }
         catch (AuthException authException) {
             signupPresenter.prepareErrorView(authException.getViewMessage());
