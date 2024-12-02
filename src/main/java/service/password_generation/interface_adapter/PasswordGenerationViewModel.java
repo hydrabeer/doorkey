@@ -7,7 +7,6 @@ import java.beans.PropertyChangeSupport;
  * The ViewModel for password generation, holding the generated password and status.
  */
 public class PasswordGenerationViewModel {
-
     private final PropertyChangeSupport support;
 
     private String generatedPassword;
@@ -39,17 +38,6 @@ public class PasswordGenerationViewModel {
         final String previousPassword = this.generatedPassword;
         this.generatedPassword = generatedPassword;
         support.firePropertyChange("generatedPassword", previousPassword, generatedPassword);
-    }
-
-    /**
-     * Sets the generation success status.
-     *
-     * @param generationSuccess true if generation was successful, false otherwise
-     */
-    public void setGenerationSuccess(boolean generationSuccess) {
-        final boolean previousStatus = this.generationSuccess;
-        this.generationSuccess = generationSuccess;
-        support.firePropertyChange("generationSuccess", previousStatus, generationSuccess);
     }
 
     /**
