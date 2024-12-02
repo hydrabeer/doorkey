@@ -327,11 +327,17 @@ public class FireStoreUserRepository implements UserRepository {
     
     private AbstractVaultItem encryptVaultItem(AbstractVaultItem item) {
         if (item instanceof PasswordVaultItem) {
-            final String plain = ((PasswordVaultItem) item).getPassword();
-            final String encrypted = Utils.encodeToBase64(
-                new ChaCha20Cipher().encrypt(this.currentUser.getPassword(), plain)
+            PasswordVaultItem copy = new PasswordVaultItem(
+                ((PasswordVaultItem) item).getTitle(),
+                ((PasswordVaultItem) item).getUsername(),
+                ((PasswordVaultItem) item).getPassword(),
+                ((PasswordVaultItem) item).getUrl()
             );
-            ((PasswordVaultItem) item).setPassword(encrypted);
+            final String encrypted = Utils.encodeToBase64(
+                new ChaCha20Cipher().encrypt(this.currentUser.getPassword(), copy.getPassword())
+            );
+            copy.setPassword(encrypted);
+            return copy;
         }
         return item;
     }
