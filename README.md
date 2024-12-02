@@ -114,11 +114,15 @@ To delete a credential, open it and click the trash icon at the top.
 ### Searching
 To search for a credential, type your search query in the search bar at the top of the main vault
 screen. You can search by title or by username.
-### Import from Your Favourite Password Manager
-To import your passwords from another password manager, you must first export your passwords to a JSON file from
-your previous password manager. Then, click on the import button in Doorkey (the rightmost button in the picture below)
-and choose your previous password manager and copy the JSON file contents into the text area.
-Click the import button to import your passwords.
+### Import Passwords
+To import your passwords from another password manager, choose it from the list below and follow their instructions for exporting to 
+JSON.
+
+- [1Password](https://support.1password.com/export/)
+
+Then, create or open an existing vault in Doorkey and click on the import button (the rightmost button in the picture below), 
+choose your previous password manager, and copy the JSON file contents into the text area. Finally, click **Import** to import 
+your passwords.
 
 <img src="readme_img/home_buttons.png" width="120">
 <img src="readme_img/import_view.png" width="300">
