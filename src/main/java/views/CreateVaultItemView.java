@@ -24,6 +24,8 @@ import javax.swing.text.JTextComponent;
 import service.create_vault_item.interface_adapter.CreateVaultItemController;
 import service.create_vault_item.interface_adapter.CreateVaultItemState;
 import service.create_vault_item.interface_adapter.CreateVaultItemViewModel;
+import service.password_generation.interface_adapter.PasswordGenerationController;
+import service.password_generation.interface_adapter.PasswordGenerationViewModel;
 import service.password_validation.interface_adapter.PasswordValidationController;
 import service.password_validation.interface_adapter.PasswordValidationViewModel;
 
@@ -33,6 +35,8 @@ import service.password_validation.interface_adapter.PasswordValidationViewModel
 public class CreateVaultItemView extends JPanel implements PropertyChangeListener {
     private final CreateVaultItemViewModel createVaultItemViewModel;
     private final CreateVaultItemController createVaultItemController;
+    private final PasswordGenerationViewModel passwordGenerationViewModel;
+    private final PasswordGenerationController passwordGenerationController;
     private final PasswordValidationViewModel passwordValidationViewModel;
     private final PasswordValidationController passwordValidationController;
 
@@ -51,6 +55,7 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
 
     private final JButton saveButton = createStyledButton("Save", 90, 35);
     private final JButton cancelButton = createStyledButton("Cancel", 90, 35);
+    private final JButton passwordGenerationButton = createStyledButton("Generate Password", 140, 25);
 
     private final int componentWidth = 300;
 
@@ -59,17 +64,23 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
      *
      * @param createVaultItemViewModel The view model for creating vault items.
      * @param createVaultItemController The controller for creating vault items.
+     * @param passwordGenerationViewModel The view model for password generation.
+     * @param passwordGenerationController The controller for password generation.
      * @param passwordValidationViewModel The view model for password validation.
      * @param passwordValidationController The controller for password validation.
      */
     public CreateVaultItemView(
             CreateVaultItemViewModel createVaultItemViewModel,
             CreateVaultItemController createVaultItemController,
+            PasswordGenerationViewModel passwordGenerationViewModel,
+            PasswordGenerationController passwordGenerationController,
             PasswordValidationViewModel passwordValidationViewModel,
             PasswordValidationController passwordValidationController
     ) {
         this.createVaultItemViewModel = createVaultItemViewModel;
         this.createVaultItemController = createVaultItemController;
+        this.passwordGenerationViewModel = passwordGenerationViewModel;
+        this.passwordGenerationController = passwordGenerationController;
         this.passwordValidationViewModel = passwordValidationViewModel;
         this.passwordValidationController = passwordValidationController;
         this.createVaultItemViewModel.addPropertyChangeListener(this);
@@ -81,6 +92,10 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
 
         passwordValidationViewModel.addPropertyChangeListener(evt -> {
             updatePasswordValidationView(evt);
+        });
+
+        passwordGenerationViewModel.addPropertyChangeListener(evt -> {
+            onPasswordGeneration(evt);
         });
 
         passwordValidationController.validatePassword("", false);
@@ -104,6 +119,20 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
         }
     }
 
+    private void onPasswordGeneration(PropertyChangeEvent evt) {
+        if ("generatedPassword".equals(evt.getPropertyName())) {
+            final String generatedPasword = (String) evt.getNewValue();
+            passwordInputField.setText(generatedPasword);
+            confirmPasswordField.setText(generatedPasword);
+        }
+        else if ("errorMessage".equals(evt.getPropertyName())) {
+            final String errorMessage = (String) evt.getNewValue();
+            if (!errorMessage.isEmpty()) {
+                JOptionPane.showMessageDialog(this, errorMessage);
+            }
+        }
+    }
+
     private void resetTextFieldValues() {
         urlField.setText("");
         vaultTitleField.setText("");
@@ -122,6 +151,7 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
         vaultTitleField = createTextField(15);
         usernameField = createTextField(15);
         passwordInputField = createPasswordField(15);
+
         confirmPasswordField = createPasswordField(15);
 
         lengthRequirementLabel = createRequirementLabel("At least 8 characters", requirementFont);
@@ -141,7 +171,7 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
     private void layoutComponents() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(Color.BLACK);
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.setBorder(BorderFactory.createEmptyBorder(30, 100, 10, 10));
 
         final JPanel contentPanel = createContentPanel();
 
@@ -157,7 +187,8 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
         contentPanel.add(createLabeledField("Enter your username", usernameField));
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        contentPanel.add(createLabeledField("Enter your password", passwordInputField));
+        // Replace the existing password field with the new method
+        contentPanel.add(createLabeledPasswordFieldWithGenerateButton("Enter your password", passwordInputField));
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         contentPanel.add(createGuidelinesSection());
@@ -179,6 +210,9 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
      * Registers event handlers for the UI components.
      */
     private void registerEventHandlers() {
+        passwordGenerationButton.addActionListener(event -> {
+            passwordGenerationController.generatePassword();
+        });
         saveButton.addActionListener(event -> onSaveButtonClicked());
 
         cancelButton.addActionListener(event -> {
@@ -386,7 +420,7 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
      * @return Configured JLabel.
      */
     private JLabel createTitleLabel() {
-        final JLabel titleLabel = new JLabel("Create Vault Item");
+        final JLabel titleLabel = new JLabel("                Create Vault Item");
         titleLabel.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.BOLD, 18));
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -416,6 +450,43 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
         panel.add(label);
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(field);
+
+        return panel;
+    }
+
+    /**
+     * Creates a panel with a label, password field, and generate button aligned horizontally.
+     *
+     * @param labelText The text for the label.
+     * @param field The password field component.
+     * @return A JPanel containing the label, password field, and generate button.
+     */
+    private JPanel createLabeledPasswordFieldWithGenerateButton(String labelText, JPasswordField field) {
+        final JPanel panel = new JPanel();
+        panel.setBackground(Color.BLACK);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        final JLabel label = new JLabel(labelText);
+        label.setFont(new Font(ViewConstants.DEFAULT_FONT_NAME, Font.PLAIN, 12));
+        label.setForeground(Color.WHITE);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        final JPanel fieldButtonPanel = new JPanel();
+        fieldButtonPanel.setBackground(Color.BLACK);
+        fieldButtonPanel.setLayout(new BoxLayout(fieldButtonPanel, BoxLayout.X_AXIS));
+        fieldButtonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        field.setMaximumSize(new Dimension(componentWidth - 100, 25));
+        passwordGenerationButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+        fieldButtonPanel.add(field);
+        fieldButtonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        fieldButtonPanel.add(passwordGenerationButton);
+
+        panel.add(label);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
+        panel.add(fieldButtonPanel);
 
         return panel;
     }
@@ -482,7 +553,7 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
     }
 
     /**
-     * Creates the buttons panel.
+     * Creates the buttons panel without the generate button.
      *
      * @return Configured JPanel.
      */
@@ -503,7 +574,6 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
      * Simplified DocumentListener for convenience.
      */
     private abstract class SimpleDocumentListener implements javax.swing.event.DocumentListener {
-
         /**
          * Updates a Document Event.
          * @param event The event which is being updated.
