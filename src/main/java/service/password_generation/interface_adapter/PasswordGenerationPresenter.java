@@ -17,7 +17,6 @@ public class PasswordGenerationPresenter implements PasswordGenerationOutputBoun
     @Override
     public void present(PasswordGenerationResponseModel responseModel) {
         viewModel.setGeneratedPassword(responseModel.getGeneratedPassword());
-        viewModel.setGenerationSuccess(responseModel.isGenerationSuccess());
         viewModel.setErrorMessage(responseModel.getErrorMessage());
     }
 }
