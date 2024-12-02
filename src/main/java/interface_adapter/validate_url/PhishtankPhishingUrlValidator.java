@@ -30,7 +30,7 @@ public class PhishtankPhishingUrlValidator implements PhishingUrlValidator {
         try {
             final HttpResponse response = client.post(
                     PHISHTANK_API_URL,
-                    "url=" + url + "&format=json",
+                    "url=" + url + '/' + "&format=json",
                     PHISHTANK_HEADERS
             );
             final JSONObject jsonResponse = response.bodyToJsonObject();
