@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Objects;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,6 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import entity.AbstractUser;
 import entity.AbstractVaultItem;
@@ -40,6 +43,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     private final JPanel vaultPanel = new JPanel();
     private final JButton addItemButton = createAddButton();
     private final JButton importItemButton = createImportButton();
+    private final JTextField searchField = createSearchField();
 
     public HomeView(
             HomeViewModel homeViewModel,
@@ -48,13 +52,28 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         this.homeController = homeController;
         this.homeViewModel = homeViewModel;
         this.homeViewModel.addPropertyChangeListener(this);
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                onSearchFieldChanged(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                onSearchFieldChanged(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                onSearchFieldChanged(e);
+            }
+        });
 
         setUpMainPanel();
 
         add(vaultPanel, BorderLayout.CENTER);
 
         addSearchPanel();
-
     }
 
     @Override
@@ -78,22 +97,21 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         this.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
     }
 
-    private void setVaultItems(HomeState homeState) {
-        final JPanel parentPanel = new JPanel();
-        parentPanel.setLayout(new BoxLayout(parentPanel, BoxLayout.Y_AXIS));
-        parentPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        parentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20));
+    private void onSearchFieldChanged(DocumentEvent event) {
+        final String currentSearchQuery = searchField.getText();
+        rerenderVaultPanel(homeViewModel.getState(), currentSearchQuery);
+    }
 
+    private void setVaultItems(HomeState homeState) {
         if (homeState.getUser().isPresent()) {
             final String email = homeState.getUser().get().getEmail();
-            if (email != null) {
-                userInfo.setText(email);
-            }
-            else {
-                userInfo.setText("Used locally - no email");
-            }
+            userInfo.setText(Objects.requireNonNullElse(email, "Used locally - no email"));
         }
 
+        rerenderVaultPanel(homeState, searchField.getText());
+    }
+
+    private void rerenderVaultPanel(HomeState homeState, String searchQuery) {
         if (homeViewModel.getState().getUser().isEmpty()) {
             return;
         }
@@ -102,10 +120,23 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
             return;
         }
 
+        final JPanel parentPanel = new JPanel();
+        parentPanel.setLayout(new BoxLayout(parentPanel, BoxLayout.Y_AXIS));
+        parentPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
+        parentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20));
+
         for (AbstractVaultItem vaultItem : homeViewModel.getState().getUser().get().getVault().getItems()) {
-            parentPanel.add(addVaultItem(vaultItem, homeState.getUser().get(), homeState.getUserRepository().get()));
-            parentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            final String vaultItemTitle = vaultItem.getTitle().toLowerCase();
+            if (vaultItemTitle.contains(searchQuery)) {
+                parentPanel.add(addVaultItem(vaultItem,
+                        homeState.getUser().get(),
+                        homeState.getUserRepository().get())
+                );
+                System.out.println("Added item: " + vaultItem.getTitle());
+                parentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
         }
+
         final JScrollPane scrollPane = new JScrollPane(parentPanel);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -192,7 +223,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         searchLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         topPanel.add(searchLabel);
 
-        topPanel.add(createSearchPanel(), BorderLayout.NORTH);
+        topPanel.add(searchField, BorderLayout.NORTH);
         rightPanel.add(topPanel, BorderLayout.NORTH);
 
         addToButtonPanel(rightPanel);
@@ -216,21 +247,21 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         add(rightPanel, BorderLayout.CENTER);
     }
 
-    private JTextField createSearchPanel() {
-        final JTextField searchField = new JTextField();
-        searchField.setFont(new DoorkeyFont());
-        searchField.setBackground(ViewConstants.BACKGROUND_COLOR);
-        searchField.setForeground(Color.WHITE);
-        searchField.setCaretColor(Color.WHITE);
-        searchField.setBorder(BorderFactory.createCompoundBorder(
+    private JTextField createSearchField() {
+        final JTextField search = new JTextField();
+        search.setFont(new DoorkeyFont());
+        search.setBackground(ViewConstants.BACKGROUND_COLOR);
+        search.setForeground(Color.WHITE);
+        search.setCaretColor(Color.WHITE);
+        search.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.WHITE, 1, true),
                 BorderFactory.createEmptyBorder(4, 10, 4, 10))
         );
+        search.setPreferredSize(new Dimension(250, 30));
+        search.setMaximumSize(new Dimension(250, 30));
+        search.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        searchField.setPreferredSize(new Dimension(250, 30));
-        searchField.setMaximumSize(new Dimension(250, 30));
-        searchField.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return searchField;
+        return search;
     }
 
     private JButton createSignOutButton() {
