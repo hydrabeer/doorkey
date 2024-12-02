@@ -149,6 +149,8 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         vaultPanel.add(scrollPane);
         vaultPanel.setPreferredSize(new Dimension(150, 500));
         vaultPanel.setMaximumSize(new Dimension(150, 500));
+        vaultPanel.revalidate();
+        vaultPanel.repaint();
     }
 
     private JPanel addVaultItem(AbstractVaultItem vaultItem, AbstractUser user, UserRepository userRepository) {
@@ -280,9 +282,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
 
     private JButton createAddButton() {
         final JButton addButton = new DoorkeyButton.DoorkeyButtonBuilder("➕")
-                .addListener(event -> {
-                    homeController.displayCreateVaultItemView();
-                }
+                .addListener(event -> homeController.displayCreateVaultItemView()
                 ).build();
         addButton.setBackground(ViewConstants.BACKGROUND_COLOR);
         addButton.setForeground(Color.WHITE);
