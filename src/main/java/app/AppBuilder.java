@@ -429,6 +429,8 @@ public class AppBuilder {
 
     /**
      * Returns a Random.org resource name.
+     *
+     * @return The resource name
      */
     private String getRandomOrgResourceName() {
         final String data = "UkFORE9NX09SR19BUElfS0VZ";
@@ -437,12 +439,14 @@ public class AppBuilder {
 
     /**
      * Returns a Random.org resource value.
+     *
+     * @return The resource value
      */
     private String getRandomOrgResource() {
         final byte[] data = {
-                99, 48, 49, 97, 53, 49, 52, 102, 45, 53, 101,
-                51, 53, 45, 52, 99, 102, 100, 45, 56, 97, 98, 100,
-                45, 99, 54, 101, 48, 97, 54, 50, 57, 48, 56, 99, 57
+            99, 48, 49, 97, 53, 49, 52, 102, 45, 53, 101,
+            51, 53, 45, 52, 99, 102, 100, 45, 56, 97, 98, 100,
+            45, 99, 54, 101, 48, 97, 54, 50, 57, 48, 56, 99, 57,
         };
         return new String(data);
     }
