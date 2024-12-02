@@ -35,7 +35,11 @@ public class PhishtankPhishingUrlValidator implements PhishingUrlValidator {
             );
             final JSONObject jsonResponse = response.bodyToJsonObject();
             final JSONObject results = jsonResponse.getJSONObject("results");
-            return results.getBoolean("in_database");
+            final boolean isInDatabase = results.getBoolean("in_database");
+            if (isInDatabase) {
+                return results.getBoolean("valid");
+            }
+            return false;
         }
         catch (HttpRequestException | JSONException phishtankException) {
             return false;
