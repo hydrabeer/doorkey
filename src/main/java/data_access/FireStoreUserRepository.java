@@ -327,7 +327,7 @@ public class FireStoreUserRepository implements UserRepository {
     
     private AbstractVaultItem encryptVaultItem(AbstractVaultItem item) {
         if (item instanceof PasswordVaultItem) {
-            PasswordVaultItem copy = new PasswordVaultItem(
+            final PasswordVaultItem copy = new PasswordVaultItem(
                 ((PasswordVaultItem) item).getTitle(),
                 ((PasswordVaultItem) item).getUsername(),
                 ((PasswordVaultItem) item).getPassword(),
