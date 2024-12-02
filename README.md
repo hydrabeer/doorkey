@@ -43,8 +43,7 @@ you can stay safe online.
 Create an encrypted local vault to store your credentials securely on your device, or use a cloud vault to access your
 credentials from anywhere.
 ### Password Generation
-Generate secure, random passwords with Doorkey's password generator. Customize the length,
-character set, and other parameters to satisfy the requirements of any website. Passwords are generated using atmospheric noise,
+Generate secure, random passwords with Doorkey's password generator. Passwords are generated using atmospheric noise,
 which is a true source of random and thus highly secure.
 ### Password Strength Analysis
 Get instant feedback on the strength of your passwords with smart password strength analysis.
@@ -56,8 +55,6 @@ accounts without having to remember or type out your credentials. Your clipboard
 automatically cleared after a short period of time, so your credentials are never left exposed.
 ### One Click to Open Website
 Save time by opening the website associated with your credentials with a single click.
-### Secure Notes
-Store sensitive information like security questions, answers, and other notes in a secure note.
 
 ## Installation
 Doorkey requires Java to run and has been tested on Java 17 and later. Using earlier versions
