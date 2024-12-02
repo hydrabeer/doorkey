@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import exception.HttpRequestException;
@@ -57,9 +58,10 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
             );
     
             presenter.present(responseModel);
-        } catch (IOException | InterruptedException e) {
-            final PasswordGenerationResponseModel responseModel = new PasswordGenerationResponseModel(
-                    null,
+        } catch (JSONException | IOException | InterruptedException e) {
+            final PasswordGenerationResponseModel responseModel;
+            responseModel = new PasswordGenerationResponseModel(
+                    "",
                     false,
                     e.getMessage()
             );
@@ -118,6 +120,8 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
             return passwordBuilder.toString();
         } catch (HttpRequestException httpRequestException) {
             throw new IOException("Failed to make a request to the Random.org API: " + httpRequestException.getMessage());
+        } catch (NullPointerException nullPointerException) {
+            throw new InterruptedException("Thread was interrupted");
         }
     }
 
