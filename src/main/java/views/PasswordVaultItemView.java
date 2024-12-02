@@ -298,21 +298,21 @@ public class PasswordVaultItemView extends JPanel implements ActionListener, Pro
 
     private void copyMessageSequence(String type, String copyText) {
         if ("username".equals(type)) {
-            copyCredentialsController.copyUsernameClicked(copyText);
+            copyCredentialsController.copyUsernameClicked(copyText, 100000);
             form.setError(passwordVaultItemViewModel.getState().getMessage());
         }
         else {
-            copyCredentialsController.copyPasswordClicked(copyText);
+            copyCredentialsController.copyPasswordClicked(copyText, 100000);
             form.setError(passwordVaultItemViewModel.getState().getMessage());
         }
-        copyCredentialsController.clearClipboard();
+        copyCredentialsController.clearClipboard(100000);
         final java.util.Timer timer = new Timer();
         final TimerTask timerTask = new TimerTask() {
             public void run() {
                 form.setError(passwordVaultItemViewModel.getState().getMessage());
             }
         };
-        timer.schedule(timerTask, 10000);
+        timer.schedule(timerTask, 100000);
     }
 
     private void deleteItemSequence(PasswordVaultItem item) {
