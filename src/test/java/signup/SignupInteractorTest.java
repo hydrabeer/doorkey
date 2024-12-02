@@ -2,6 +2,7 @@ package signup;
 
 import entity.AbstractUser;
 import exception.AuthException;
+import mock.MockRepositoryProvider;
 import mock.MockSignupPresenter;
 import mock.MockUserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,14 +19,19 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class SignupInteractorTest {
     private MockUserRepository mockUserRepository = new MockUserRepository();
+    private MockRepositoryProvider mockRepositoryProvider = new MockRepositoryProvider(mockUserRepository);
     private MockSignupPresenter mockSignupPresenter = new MockSignupPresenter();
-    private SignupInteractor signupInteractor = new SignupInteractor(mockUserRepository, mockSignupPresenter);
+    private SignupInteractor signupInteractor = new SignupInteractor(mockRepositoryProvider,
+            mockUserRepository,
+            mockSignupPresenter
+    );
 
     @BeforeEach
     public void setUp() {
         mockUserRepository = new MockUserRepository();
+        mockRepositoryProvider = new MockRepositoryProvider(mockUserRepository);
         mockSignupPresenter = new MockSignupPresenter();
-        signupInteractor = new SignupInteractor(mockUserRepository, mockSignupPresenter);
+        signupInteractor = new SignupInteractor(mockRepositoryProvider, mockUserRepository, mockSignupPresenter);
     }
 
     @Test
@@ -123,7 +129,11 @@ public class SignupInteractorTest {
 
         assertTrue(mockSignupPresenter.hasSuccessView(), "Success view for valid signup");
         AbstractUser signedUpUser = mockUserRepository.signInUser(email, password);
-        assertEquals(signedUpUser, mockSignupPresenter.successViews.get(0).getUser(), "Signed up user matches");
+        assertEquals(
+                signedUpUser,
+                mockSignupPresenter.successViews.get(0).getUserRepository().getCurrentUser(),
+                "Signed up user matches"
+        );
         assertTrue(mockSignupPresenter.hasClearedField("email"), "Cleared email error on success");
         assertTrue(mockSignupPresenter.hasClearedField("password"), "Cleared password error on success");
         assertTrue(mockSignupPresenter.hasClearedField("repeatedPassword"), "Cleared repeated password error on success");
