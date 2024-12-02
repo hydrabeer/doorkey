@@ -27,6 +27,7 @@ public class CreateVaultItemPresenter implements CreateVaultItemOutputBoundary {
     @Override
     public void presentCreateVaultItemResponse(CreateVaultItemResponseModel responseModel) {
         if (responseModel.isSuccess()) {
+            viewModel.getState().setErrorMessage("");
             viewModel.getState().setSuccessMessage(responseModel.getMessage());
             viewModel.getState().setClearFields(true);
             viewModel.onStateChanged();
@@ -38,6 +39,7 @@ public class CreateVaultItemPresenter implements CreateVaultItemOutputBoundary {
         }
         else {
             viewModel.getState().setErrorMessage(responseModel.getMessage());
+            viewModel.getState().setSuccessMessage("");
             viewModel.onStateChanged();
         }
     }
@@ -45,12 +47,15 @@ public class CreateVaultItemPresenter implements CreateVaultItemOutputBoundary {
     @Override
     public void displayErrorMessage(String error) {
         viewModel.getState().setErrorMessage(error);
+        viewModel.getState().setSuccessMessage("");
         viewModel.onStateChanged();
     }
 
     @Override
     public void cancel() {
         viewModel.getState().setClearFields(true);
+        viewModel.getState().setErrorMessage("");
+        viewModel.getState().setSuccessMessage("");
         viewModel.onStateChanged();
         viewModel.getState().setClearFields(false);
         displayHomeView();
@@ -58,6 +63,11 @@ public class CreateVaultItemPresenter implements CreateVaultItemOutputBoundary {
 
     @Override
     public void displayHomeView() {
+        viewModel.getState().setSuccessMessage("");
+        viewModel.getState().setErrorMessage("");
+        viewModel.getState().setClearFields(true);
+        viewModel.onStateChanged();
+        viewModel.getState().setClearFields(false);
         viewManagerModel.setState(ViewConstants.HOME_VIEW);
         viewManagerModel.onStateChanged();
     }

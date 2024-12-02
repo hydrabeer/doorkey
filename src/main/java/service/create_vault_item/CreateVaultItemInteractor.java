@@ -44,9 +44,19 @@ public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
         // Why safe: at this point, user must've already logged in.
         final UserRepository userRepository = repositoryProvider.getRepositoryUnchecked();
 
+        String urlString = requestModel.getUrl();
+        if (!urlString.startsWith("http://") && !urlString.startsWith("https://")) {
+            urlString = "https://" + urlString;
+        }
+
+        if (!urlString.contains(".")) {
+            presenter.displayErrorMessage("Invalid URL");
+            return;
+        }
+
         final URL url;
         try {
-            url = new URL(requestModel.getUrl());
+            url = new URL(urlString);
         }
         catch (MalformedURLException malformedUrlException) {
             presenter.displayErrorMessage("Invalid URL");
@@ -64,7 +74,7 @@ public class CreateVaultItemInteractor implements CreateVaultItemInputBoundary {
                     requestModel.getVaultTitle(),
                     requestModel.getUsername(),
                     requestModel.getPassword(),
-                    requestModel.getUrl()
+                    url.toString()
             );
 
             userRepository.addVaultItem(vaultItem);
