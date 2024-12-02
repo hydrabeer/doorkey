@@ -6,7 +6,7 @@
 
 <img alt="Logo" src="readme_img/doorkey.png" width="300">
 
-<img alt="UML Diagram" src="readme_img/doorkey-uml-compact.png" width="600">
+<img alt="UML Diagram" src="readme_img/doorkey-uml-compact.png" width="700">
 
 ## Table of Contents
 1. [Contributors](#contributors)
