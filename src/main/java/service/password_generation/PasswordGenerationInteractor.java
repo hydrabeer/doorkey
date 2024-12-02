@@ -16,18 +16,19 @@ import interface_adapter.net.http.HttpResponse;
  * business logic for generating passwords by communicating directly with the Random.org API.
  */
 public class PasswordGenerationInteractor implements PasswordGenerationInputBoundary {
+    private static final String RANDOM_ORG_API_URL = "https://api.random.org/json-rpc/4/invoke";
+
     private final PasswordGenerationOutputBoundary presenter;
     private final HttpClient httpClient;
     private final String apiKey;
-
-    private static final String RANDOM_ORG_API_URL = "https://api.random.org/json-rpc/4/invoke";
 
     /**
      * Constructs a new PasswordGenerationInteractor with the specified presenter and API key.
      *
      * @param httpClient The HTTP client to use for making requests.
-     * @param presenter The presenter to handle the response.
-     * @param apiKey    The Random.org API key.
+     * @param presenter  The presenter to handle the response.
+     * @param apiKey     The Random.org API key.
+     * @throws IllegalArgumentException if the API key is null or empty.
      */
     public PasswordGenerationInteractor(
         HttpClient httpClient,
@@ -48,22 +49,22 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
     @Override
     public void generate() {
         try {
-            int passwordLength = 12;
-            String password = generatePassword(passwordLength);
+            final int passwordLength = 12;
+            final String password = generatePassword(passwordLength);
 
             final PasswordGenerationResponseModel responseModel = new PasswordGenerationResponseModel(
-                    password,
-                    true,
-                    ""
+                password,
+                true,
+                ""
             );
-    
+
             presenter.present(responseModel);
-        } catch (JSONException | IOException | InterruptedException e) {
+        } catch (JSONException | IOException | InterruptedException exception) {
             final PasswordGenerationResponseModel responseModel;
             responseModel = new PasswordGenerationResponseModel(
-                    "",
-                    false,
-                    e.getMessage()
+                "",
+                false,
+                exception.getMessage()
             );
             presenter.present(responseModel);
         }
@@ -78,17 +79,17 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
      * @throws InterruptedException If the operation is interrupted.
      */
     private String generatePassword(int length) throws IOException, InterruptedException {
-        String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String lower = "abcdefghijklmnopqrstuvwxyz";
-        String digits = "0123456789";
-        String special = "!@#$%^&*()-_=+[]{}|;:',.<>/?";
+        final String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String lower = "abcdefghijklmnopqrstuvwxyz";
+        final String digits = "0123456789";
+        final String special = "!@#$%^&*()-_=+[]{}|;:',.<>/?";
 
-        String allChars = upper + lower + digits + special;
+        final String allChars = upper + lower + digits + special;
 
-        String requestBody = getRequestBody(length, allChars.length());
+        final String requestBody = getRequestBody(length, allChars.length());
 
         try {
-            HttpResponse response = httpClient.post(
+            final HttpResponse response = httpClient.post(
                 RANDOM_ORG_API_URL,
                 requestBody,
                 new HashMap<String, String>() {{
@@ -96,42 +97,42 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
                 }}
             );
 
-            JSONObject jsonResponse = response.bodyToJsonObject();
+            final JSONObject jsonResponse = response.bodyToJsonObject();
 
             if (jsonResponse.has("error")) {
-                String errorMessage = jsonResponse.getJSONObject("error").getString("message");
+                final String errorMessage = jsonResponse.getJSONObject("error").getString("message");
                 throw new IOException("Random.org API error: " + errorMessage);
             }
 
-            List<Object> randomObjectNumbers = jsonResponse.getJSONObject("result")
+            final List<Object> randomObjectNumbers = jsonResponse.getJSONObject("result")
                 .getJSONObject("random")
                 .getJSONArray("data")
                 .toList();
 
-            List<Integer> randomNumbers = randomObjectNumbers.stream()
+            final List<Integer> randomNumbers = randomObjectNumbers.stream()
                 .map(number -> (int) number)
                 .toList();
 
-            StringBuilder passwordBuilder = new StringBuilder();
-            for (Integer number : randomNumbers) {
+            final StringBuilder passwordBuilder = new StringBuilder();
+            for (final Integer number : randomNumbers) {
                 passwordBuilder.append(allChars.charAt(number));
             }
 
             return passwordBuilder.toString();
         } catch (HttpRequestException httpRequestException) {
-            throw new IOException("Failed to make a request to the Random.org API: " + httpRequestException.getMessage());
-        } catch (NullPointerException nullPointerException) {
-            throw new InterruptedException("Thread was interrupted");
+            throw new IOException(
+                "Failed to make a request to the Random.org API: " + httpRequestException.getMessage()
+            );
         }
     }
 
     private String getRequestBody(int length, int allCharsLength) {
-        JSONObject mainObject = new JSONObject();
+        final JSONObject mainObject = new JSONObject();
         mainObject.put("jsonrpc", "2.0");
         mainObject.put("method", "generateIntegers");
         mainObject.put("id", 42);
 
-        JSONObject paramsObject = new JSONObject();
+        final JSONObject paramsObject = new JSONObject();
         paramsObject.put("apiKey", apiKey);
         paramsObject.put("n", length);
         paramsObject.put("min", 0);
