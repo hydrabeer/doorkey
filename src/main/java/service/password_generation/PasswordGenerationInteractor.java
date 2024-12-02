@@ -1,41 +1,44 @@
 package service.password_generation;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.json.JSONObject;
+
+import exception.HttpRequestException;
+import interface_adapter.net.http.HttpClient;
+import interface_adapter.net.http.HttpResponse;
 
 /**
  * The interactor for the password generation use case. Implements the
  * business logic for generating passwords by communicating directly with the Random.org API.
  */
 public class PasswordGenerationInteractor implements PasswordGenerationInputBoundary {
-
     private final PasswordGenerationOutputBoundary presenter;
-    private final String apiKey;
     private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
+    private final String apiKey;
+
+    private static final String RANDOM_ORG_API_URL = "https://api.random.org/json-rpc/4/invoke";
 
     /**
      * Constructs a new PasswordGenerationInteractor with the specified presenter and API key.
      *
+     * @param httpClient The HTTP client to use for making requests.
      * @param presenter The presenter to handle the response.
      * @param apiKey    The Random.org API key.
      */
-    public PasswordGenerationInteractor(PasswordGenerationOutputBoundary presenter, String apiKey) {
+    public PasswordGenerationInteractor(
+        HttpClient httpClient,
+        PasswordGenerationOutputBoundary presenter,
+        String apiKey
+    ) {
         if (apiKey == null || apiKey.isEmpty()) {
             throw new IllegalArgumentException("Random.org API key must be provided.");
         }
         this.presenter = presenter;
         this.apiKey = apiKey;
-        this.httpClient = HttpClient.newHttpClient();
-        this.objectMapper = new ObjectMapper();
+        this.httpClient = httpClient;
     }
 
     /**
@@ -50,9 +53,9 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
             final PasswordGenerationResponseModel responseModel = new PasswordGenerationResponseModel(
                     password,
                     true,
-                    null
+                    ""
             );
-
+    
             presenter.present(responseModel);
         } catch (IOException | InterruptedException e) {
             final PasswordGenerationResponseModel responseModel = new PasswordGenerationResponseModel(
@@ -73,7 +76,6 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
      * @throws InterruptedException If the operation is interrupted.
      */
     private String generatePassword(int length) throws IOException, InterruptedException {
-
         String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lower = "abcdefghijklmnopqrstuvwxyz";
         String digits = "0123456789";
@@ -81,47 +83,59 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
 
         String allChars = upper + lower + digits + special;
 
-        ObjectNode mainNode = objectMapper.createObjectNode();
-        mainNode.put("jsonrpc", "2.0");
-        mainNode.put("method", "generateIntegers");
-        mainNode.put("id", 42);
+        String requestBody = getRequestBody(length, allChars.length());
 
-        ObjectNode paramsNode = objectMapper.createObjectNode();
-        paramsNode.put("apiKey", apiKey);
-        paramsNode.put("n", length);
-        paramsNode.put("min", 0);
-        paramsNode.put("max", allChars.length() - 1);
-        paramsNode.put("replacement", true);
+        try {
+            HttpResponse response = httpClient.post(
+                RANDOM_ORG_API_URL,
+                requestBody,
+                new HashMap<String, String>() {{
+                    put("Content-Type", "application/json");
+                }}
+            );
 
-        mainNode.set("params", paramsNode);
+            JSONObject jsonResponse = response.bodyToJsonObject();
 
-        String requestBody = objectMapper.writeValueAsString(mainNode);
+            if (jsonResponse.has("error")) {
+                String errorMessage = jsonResponse.getJSONObject("error").getString("message");
+                throw new IOException("Random.org API error: " + errorMessage);
+            }
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.random.org/json-rpc/4/invoke"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                .build();
+            List<Object> randomObjectNumbers = jsonResponse.getJSONObject("result")
+                .getJSONObject("random")
+                .getJSONArray("data")
+                .toList();
 
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            List<Integer> randomNumbers = randomObjectNumbers.stream()
+                .map(number -> (int) number)
+                .toList();
 
-        JsonNode jsonResponse = objectMapper.readTree(response.body());
+            StringBuilder passwordBuilder = new StringBuilder();
+            for (Integer number : randomNumbers) {
+                passwordBuilder.append(allChars.charAt(number));
+            }
 
-        if (jsonResponse.has("error")) {
-            String errorMessage = jsonResponse.get("error").get("message").asText();
-            throw new IOException("Random.org API error: " + errorMessage);
+            return passwordBuilder.toString();
+        } catch (HttpRequestException httpRequestException) {
+            throw new IOException("Failed to make a request to the Random.org API: " + httpRequestException.getMessage());
         }
+    }
 
-        List<Integer> randomNumbers = objectMapper.convertValue(
-                jsonResponse.at("/result/random/data"),
-                objectMapper.getTypeFactory().constructCollectionType(List.class, Integer.class)
-        );
+    private String getRequestBody(int length, int allCharsLength) {
+        JSONObject mainObject = new JSONObject();
+        mainObject.put("jsonrpc", "2.0");
+        mainObject.put("method", "generateIntegers");
+        mainObject.put("id", 42);
 
-        StringBuilder passwordBuilder = new StringBuilder();
-        for (Integer number : randomNumbers) {
-            passwordBuilder.append(allChars.charAt(number));
-        }
+        JSONObject paramsObject = new JSONObject();
+        paramsObject.put("apiKey", apiKey);
+        paramsObject.put("n", length);
+        paramsObject.put("min", 0);
+        paramsObject.put("max", allCharsLength - 1);
+        paramsObject.put("replacement", true);
 
-        return passwordBuilder.toString();
+        mainObject.put("params", paramsObject);
+
+        return mainObject.toString();
     }
 }
