@@ -2,6 +2,7 @@ package app;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -43,6 +44,10 @@ import service.login.LoginInteractor;
 import service.login.interface_adapter.LoginController;
 import service.login.interface_adapter.LoginPresenter;
 import service.login.interface_adapter.LoginViewModel;
+import service.password_generation.PasswordGenerationInteractor;
+import service.password_generation.interface_adapter.PasswordGenerationController;
+import service.password_generation.interface_adapter.PasswordGenerationPresenter;
+import service.password_generation.interface_adapter.PasswordGenerationViewModel;
 import service.password_validation.PasswordValidationInteractor;
 import service.password_validation.interface_adapter.PasswordValidationController;
 import service.password_validation.interface_adapter.PasswordValidationPresenter;
@@ -64,6 +69,7 @@ import service.url_redirect.RealDesktopWrapper;
 import service.url_redirect.UrlRedirectInteractor;
 import service.url_redirect.interface_adapter.UrlRedirectController;
 import service.url_redirect.interface_adapter.UrlRedirectPresenter;
+import util.ConfigLoader;
 import views.CreateLocalVaultView;
 import views.CreateVaultItemView;
 import views.HomeView;
@@ -91,6 +97,7 @@ public class AppBuilder {
     private final PasswordVaultItemViewModel passwordVaultItemViewModel;
     private final CreateVaultItemViewModel createVaultItemViewModel;
     private final ImportVaultItemViewModel importVaultItemViewModel;
+    private final ConfigLoader configLoader;
 
     public AppBuilder(String title, int width, int height) {
         this.mainFrame = new JFrame(title);
@@ -121,6 +128,14 @@ public class AppBuilder {
         final FirebaseAuthRepository firebaseAuthRepository = new FirebaseAuthRepository(httpClient);
         this.fireStoreUserRepository = new FireStoreUserRepository(firebaseAuthRepository, httpClient);
         this.localVaultUserRepository = new LocalVaultUserRepository();
+        try {
+                this.configLoader = new ConfigLoader();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load config file. "
+               + "Please create a config file in main/resources/config.properties"
+               + " with the following properties: RANDOM_ORG_API_KEY"
+        );
+        }
     }
 
     /**
@@ -129,6 +144,7 @@ public class AppBuilder {
      * @return The AppBuilder instance.
      */
     public AppBuilder addCreateVaultItemView() {
+        
         final PasswordValidationViewModel passwordValidationViewModel = new PasswordValidationViewModel();
         final PasswordValidationPresenter passwordValidationPresenter = new PasswordValidationPresenter(
                 passwordValidationViewModel
@@ -139,10 +155,26 @@ public class AppBuilder {
         final PasswordValidationController passwordValidationController = new PasswordValidationController(
                 passwordValidationInteractor
         );
-
+        String apiKey = configLoader.getProperty("RANDOM_ORG_API_KEY");
+        if (apiKey == null || apiKey.isEmpty()) {
+            System.err.println("Error: RANDOM_ORG_API_KEY is not set in config.properties.");
+        }
         final HttpClient client = new CommonHttpClient();
-        final PhishingUrlValidator phishtankPhishingUrlValidator =
-                new PhishtankPhishingUrlValidator(client);
+        final PasswordGenerationViewModel passwordGenerationViewModel = new PasswordGenerationViewModel();
+        final PasswordGenerationPresenter passwordGenerationPresenter = new PasswordGenerationPresenter(
+                passwordGenerationViewModel
+        );
+        final PasswordGenerationInteractor passwordGenerationInteractor = new PasswordGenerationInteractor(
+                client,
+                passwordGenerationPresenter, apiKey
+        );
+        final PasswordGenerationController passwordGenerationController = new PasswordGenerationController(
+                passwordGenerationInteractor
+        );
+
+        final PhishingUrlValidator phishtankPhishingUrlValidator = new PhishtankPhishingUrlValidator(
+                client
+        );
         final CreateVaultItemPresenter createVaultItemPresenter = new CreateVaultItemPresenter(
                 createVaultItemViewModel,
                 homeViewModel,
@@ -160,6 +192,8 @@ public class AppBuilder {
         final CreateVaultItemView createVaultItemView = new CreateVaultItemView(
                 createVaultItemViewModel,
                 createVaultItemController,
+                passwordGenerationViewModel,
+                passwordGenerationController,
                 passwordValidationViewModel,
                 passwordValidationController
         );
