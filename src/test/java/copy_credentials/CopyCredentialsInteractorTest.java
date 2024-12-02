@@ -64,7 +64,7 @@ public class CopyCredentialsInteractorTest {
         };
         CopyCredentialsInputBoundary copyCredentialsInputBoundary = new CopyCredentialsInteractor(
                 copyCredenentialsOutputBoundary);
-        TimeInputData timeInputData = new TimeInputData(5);
+        TimeInputData timeInputData = new TimeInputData(20);
         // Set the clipboard to the test password
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(testPassword), null);
 
@@ -91,10 +91,10 @@ public class CopyCredentialsInteractorTest {
             }
         };
 
-        timer.schedule(timerTask, 100);
+        timer.schedule(timerTask, 350);
 
         // Wait for the timer to complete or time out
-        boolean completed = latch.await(150, TimeUnit.MILLISECONDS);
+        boolean completed = latch.await(400, TimeUnit.MILLISECONDS);
         assertTrue(completed);
 
         // Optionally clean up the timer
