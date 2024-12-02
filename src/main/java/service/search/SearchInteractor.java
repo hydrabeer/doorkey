@@ -25,34 +25,34 @@ public class SearchInteractor implements SearchInputBoundary {
     }
 
     @Override
-    public void execute(SearchInputData inputData) {
-        final String query = inputData.getQuery();
+    public void execute(SearchInputData searchInputData) {
+        final String query = searchInputData.getQuery().toLowerCase();
         final List<AbstractVaultItem> results = new ArrayList<>();
 
-        final Optional<UserRepository> repositoryOptional = repositoryProvider.getRepository();
-        if (repositoryOptional.isEmpty()) {
+        final Optional<UserRepository> repository = repositoryProvider.getRepository();
+        if (repository.isEmpty()) {
             searchPresenter.prepareResultsView(new SearchOutputData(results));
             return;
         }
 
-        final List<AbstractVaultItem> vaultItems = repositoryOptional.get()
+        final List<AbstractVaultItem> vaultItems = repository
+                .get()
                 .getCurrentUser()
                 .getVault()
                 .getItems();
 
         for (AbstractVaultItem item : vaultItems) {
-            if (item.getTitle().toLowerCase().contains(query.toLowerCase())) {
+            if (item.getTitle().toLowerCase().contains(query)) {
                 results.add(item);
             }
             else if (item instanceof PasswordVaultItem) {
-                final String usernameField = ((PasswordVaultItem) item).getUsername();
-                if (usernameField.toLowerCase().contains(query.toLowerCase())) {
+                final String username = ((PasswordVaultItem) item).getUsername();
+                if (username.toLowerCase().contains(query)) {
                     results.add(item);
                 }
             }
         }
 
-        final SearchOutputData outputData = new SearchOutputData(results);
-        searchPresenter.prepareResultsView(outputData);
+        searchPresenter.prepareResultsView(new SearchOutputData(results));
     }
 }
