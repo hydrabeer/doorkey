@@ -19,6 +19,7 @@ public interface CopyCredentialsInputBoundary {
 
     /**
      * Clear system clipboard after 10 seconds and display message.
+     * @param time time in milliseconds after clipboard is cleared
      */
-    void clearClipboard();
+    void clearClipboard(int time);
 }
