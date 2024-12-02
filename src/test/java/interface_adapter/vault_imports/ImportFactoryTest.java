@@ -8,13 +8,14 @@ import entity.AbstractVaultItem;
 import entity.PasswordVaultItem;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ImportFactoryTest {
 
     @Test
-    void testCreateVaultItemsWithOnePassword() throws Exception {
+    void testCreateVaultItemsWithOnePassword() {
         JSONObject input = new JSONObject();
         JSONArray accounts = new JSONArray();
         JSONObject account = new JSONObject();
@@ -41,7 +42,7 @@ class ImportFactoryTest {
         input.put("accounts", accounts);
 
         List<AbstractVaultItem> result = ImportFactory.createVaultItems(PasswordManager.ONE_PASSWORD, input);
-        assertEquals(1, result.size());
+        assertEquals(1, Objects.requireNonNull(result).size());
         PasswordVaultItem vaultItem = (PasswordVaultItem) result.get(0);
         assertEquals("Example", vaultItem.getTitle());
         assertEquals("test_user", vaultItem.getUsername());
