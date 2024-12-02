@@ -120,7 +120,7 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         final JPanel parentPanel = new JPanel();
         parentPanel.setLayout(new BoxLayout(parentPanel, BoxLayout.Y_AXIS));
         parentPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
-        parentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20));
+        parentPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 15));
 
         final SearchState state = (SearchState) event.getNewValue();
         for (AbstractVaultItem vaultItem : state.getItems()) {
@@ -132,14 +132,14 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBackground(ViewConstants.BACKGROUND_COLOR);
-        scrollPane.setPreferredSize(new Dimension(150, 470));
-        scrollPane.setMaximumSize(new Dimension(150, 470));
+        scrollPane.setPreferredSize(new Dimension(200, 470));
+        scrollPane.setMaximumSize(new Dimension(200, 470));
         // Baris: Added this line to remove all the components from the vaultPanel
         vaultPanel.removeAll();
         vaultPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         vaultPanel.add(scrollPane);
-        vaultPanel.setPreferredSize(new Dimension(150, 500));
-        vaultPanel.setMaximumSize(new Dimension(150, 500));
+        vaultPanel.setPreferredSize(new Dimension(200, 500));
+        vaultPanel.setMaximumSize(new Dimension(200, 500));
         vaultPanel.revalidate();
         vaultPanel.repaint();
     }
@@ -149,18 +149,23 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         vaultItemPanel.setLayout(new BorderLayout());
         vaultItemPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.WHITE),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
-        vaultItemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+        vaultItemPanel.setPreferredSize(new Dimension(170, 80));
+        vaultItemPanel.setMaximumSize(new Dimension(170, 80));
 
         vaultItemPanel.setBackground(ViewConstants.BACKGROUND_COLOR);
         final JLabel title = new JLabel(vaultItem.getTitle());
+        title.setPreferredSize(new Dimension(170, title.getPreferredSize().height));
+        title.setMaximumSize(new Dimension(170, title.getPreferredSize().height));
         title.setForeground(Color.WHITE);
         title.setFont(new DoorkeyFont());
         final JLabel subTitle = new JLabel(vaultItem.getType());
         subTitle.setForeground(Color.WHITE);
         subTitle.setFont(new DoorkeyFont());
-        final JButton accessButton = addAccessButton(subTitle.getHeight(), vaultItem);
+        subTitle.setPreferredSize(new Dimension(170, title.getPreferredSize().height));
+        subTitle.setMaximumSize(new Dimension(170, title.getPreferredSize().height));
+        final JButton accessButton = addAccessButton(5, vaultItem);
         vaultItemPanel.add(title, BorderLayout.NORTH);
         vaultItemPanel.add(subTitle, BorderLayout.SOUTH);
         vaultItemPanel.add(accessButton, BorderLayout.EAST);
@@ -221,8 +226,8 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
 
         addToButtonPanel(rightPanel);
 
-        rightPanel.setPreferredSize(new Dimension(200, 470));
-        rightPanel.setMaximumSize(new Dimension(200, 470));
+        rightPanel.setPreferredSize(new Dimension(260, 470));
+        rightPanel.setMaximumSize(new Dimension(260, 470));
         add(rightPanel, BorderLayout.CENTER);
     }
 
@@ -235,8 +240,8 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         buttonPanel.add(addItemButton, BorderLayout.CENTER);
         buttonPanel.add(importItemButton, BorderLayout.CENTER);
         rightPanel.add(buttonPanel, BorderLayout.SOUTH);
-        rightPanel.setPreferredSize(new Dimension(250, 470));
-        rightPanel.setMaximumSize(new Dimension(250, 470));
+        rightPanel.setPreferredSize(new Dimension(260, 470));
+        rightPanel.setMaximumSize(new Dimension(260, 470));
         add(rightPanel, BorderLayout.CENTER);
     }
 
@@ -250,8 +255,8 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
                 BorderFactory.createLineBorder(Color.WHITE, 1, true),
                 BorderFactory.createEmptyBorder(4, 10, 4, 10))
         );
-        search.setPreferredSize(new Dimension(250, 30));
-        search.setMaximumSize(new Dimension(250, 30));
+        search.setPreferredSize(new Dimension(260, 30));
+        search.setMaximumSize(new Dimension(260, 30));
         search.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         return search;
