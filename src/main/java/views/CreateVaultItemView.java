@@ -95,16 +95,7 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
         });
 
         passwordGenerationViewModel.addPropertyChangeListener(evt -> {
-            if ("generatedPassword".equals(evt.getPropertyName())) {
-                final String generatedPasword = (String) evt.getNewValue();
-                passwordInputField.setText(generatedPasword);
-                confirmPasswordField.setText(generatedPasword);
-            } else if ("errorMessage".equals(evt.getPropertyName())) {
-                final String errorMessage = (String) evt.getNewValue();
-                if (!errorMessage.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, errorMessage);
-                }
-            }
+            onPasswordGeneration(evt);
         });
 
         passwordValidationController.validatePassword("", false);
@@ -125,6 +116,20 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
         final boolean shouldClearFields = state.getClearFields();
         if (shouldClearFields) {
             resetTextFieldValues();
+        }
+    }
+
+    private void onPasswordGeneration(PropertyChangeEvent evt) {
+        if ("generatedPassword".equals(evt.getPropertyName())) {
+            final String generatedPasword = (String) evt.getNewValue();
+            passwordInputField.setText(generatedPasword);
+            confirmPasswordField.setText(generatedPasword);
+        }
+        else if ("errorMessage".equals(evt.getPropertyName())) {
+            final String errorMessage = (String) evt.getNewValue();
+            if (!errorMessage.isEmpty()) {
+                JOptionPane.showMessageDialog(this, errorMessage);
+            }
         }
     }
 
@@ -467,13 +472,12 @@ public class CreateVaultItemView extends JPanel implements PropertyChangeListene
         label.setForeground(Color.WHITE);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // Panel for password field and generate button
         final JPanel fieldButtonPanel = new JPanel();
         fieldButtonPanel.setBackground(Color.BLACK);
         fieldButtonPanel.setLayout(new BoxLayout(fieldButtonPanel, BoxLayout.X_AXIS));
         fieldButtonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        field.setMaximumSize(new Dimension(componentWidth - 100, 25)); // Adjust width to accommodate button
+        field.setMaximumSize(new Dimension(componentWidth - 100, 25));
         passwordGenerationButton.setAlignmentY(Component.CENTER_ALIGNMENT);
 
         fieldButtonPanel.add(field);

@@ -93,9 +93,9 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
             final HttpResponse response = httpClient.post(
                 RANDOM_ORG_API_URL,
                 requestBody,
-                    new HashMap<String, String>() {{
+                        new HashMap<>() {{
                         put("Content-Type", "application/json");
-                }}
+                        }}
             );
 
             final JSONObject jsonResponse = response.bodyToJsonObject();
@@ -121,8 +121,7 @@ public class PasswordGenerationInteractor implements PasswordGenerationInputBoun
 
             return passwordBuilder.toString();
         }
-        catch (HttpRequestException httpRequestException)
-        {
+        catch (HttpRequestException httpRequestException) {
             throw new IOException(
                 "Failed to make a request to the Random.org API: " + httpRequestException.getMessage()
             );

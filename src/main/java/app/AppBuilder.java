@@ -129,8 +129,9 @@ public class AppBuilder {
         this.fireStoreUserRepository = new FireStoreUserRepository(firebaseAuthRepository, httpClient);
         this.localVaultUserRepository = new LocalVaultUserRepository();
         try {
-                this.configLoader = new ConfigLoader();
-        } catch (IOException e) {
+            this.configLoader = new ConfigLoader();
+        }
+        catch (IOException ioException) {
             throw new RuntimeException("Failed to load config file. "
                + "Please create a config file in main/resources/config.properties"
                + " with the following properties: RANDOM_ORG_API_KEY"
@@ -155,7 +156,7 @@ public class AppBuilder {
         final PasswordValidationController passwordValidationController = new PasswordValidationController(
                 passwordValidationInteractor
         );
-        String apiKey = configLoader.getProperty("RANDOM_ORG_API_KEY");
+        final String apiKey = configLoader.getProperty("RANDOM_ORG_API_KEY");
         if (apiKey == null || apiKey.isEmpty()) {
             System.err.println("Error: RANDOM_ORG_API_KEY is not set in config.properties.");
         }
