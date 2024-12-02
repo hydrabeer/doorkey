@@ -132,7 +132,6 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
                         homeState.getUser().get(),
                         homeState.getUserRepository().get())
                 );
-                System.out.println("Added item: " + vaultItem.getTitle());
                 parentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
             }
         }
