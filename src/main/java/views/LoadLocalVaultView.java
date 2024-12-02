@@ -95,7 +95,7 @@ public class LoadLocalVaultView extends JPanel implements ActionListener, Proper
             form.setError("");
         }
         else {
-            form.setError("Invalid vault selection or empty password.");
+            form.setError("Invalid vault selection or wrong password.");
         }
     }
 

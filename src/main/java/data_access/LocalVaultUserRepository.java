@@ -4,10 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bouncycastle.crypto.InvalidCipherTextException;
+
 import entity.AbstractUser;
 import entity.AbstractVaultItem;
 import entity.LocalUser;
 import entity.LocalVault;
+import interface_adapter.crypto.Utils;
+import interface_adapter.crypto.cipher.ChaCha20Cipher;
 import repository.UserRepository;
 
 /**
@@ -53,8 +57,10 @@ public class LocalVaultUserRepository implements UserRepository {
         try {
             final String content = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(path)));
 
+            final String decrypted = new ChaCha20Cipher().decrypt(password, Utils.decodeFromBase64(content));
+
             final LocalVault vault = new LocalVault(new ArrayList<>(), this.path, this.password);
-            vault.loadFromJSON(content);
+            vault.loadFromJSON(decrypted);
 
             this.currentUser = new LocalUser(vault, this.password);
             return this.currentUser;
@@ -64,6 +70,9 @@ public class LocalVaultUserRepository implements UserRepository {
         }
         catch (exception.InvalidVaultItemException exception) {
             throw new IOException("Failed to load invalid vault item; wrong password?");
+        }
+        catch (InvalidCipherTextException | IllegalArgumentException exception) {
+            throw new IOException("Unable to decrypt vault; wrong password?");
         }
     }
 
@@ -120,6 +129,7 @@ public class LocalVaultUserRepository implements UserRepository {
      */
     private void saveVaultToDisk(LocalUser user) throws IOException {
         final String exported = user.getVault().toJSON();
-        java.nio.file.Files.write(java.nio.file.Paths.get(this.path), exported.getBytes());
+        final String encrypted = Utils.encodeToBase64(new ChaCha20Cipher().encrypt(password, exported));
+        java.nio.file.Files.write(java.nio.file.Paths.get(this.path), encrypted.getBytes());
     }
 }

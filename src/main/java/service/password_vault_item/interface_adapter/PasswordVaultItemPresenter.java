@@ -44,5 +44,4 @@ public class PasswordVaultItemPresenter implements PasswordVaultItemOutputBounda
                 "Press delete again to confirm. Press copy button to reset"
         );
     }
-
 }

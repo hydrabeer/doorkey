@@ -11,6 +11,8 @@ import data_access.LocalVaultUserRepository;
 import data_access.authentication.FirebaseAuthRepository;
 import interface_adapter.net.http.CommonHttpClient;
 import interface_adapter.net.http.HttpClient;
+import interface_adapter.validate_url.PhishingUrlValidator;
+import interface_adapter.validate_url.PhishtankPhishingUrlValidator;
 import repository.CommonRepositoryProvider;
 import repository.RepositoryProvider;
 import service.ViewManagerModel;
@@ -49,6 +51,10 @@ import service.password_vault_item.PasswordVaultItemInteractor;
 import service.password_vault_item.interface_adapter.PasswordVaultItemController;
 import service.password_vault_item.interface_adapter.PasswordVaultItemPresenter;
 import service.password_vault_item.interface_adapter.PasswordVaultItemViewModel;
+import service.search.SearchInteractor;
+import service.search.interface_adapter.SearchController;
+import service.search.interface_adapter.SearchPresenter;
+import service.search.interface_adapter.SearchViewModel;
 import service.signup.SignupInteractor;
 import service.signup.interface_adapter.SignupController;
 import service.signup.interface_adapter.SignupPresenter;
@@ -81,6 +87,7 @@ public class AppBuilder {
     private final LocalVaultUserRepository localVaultUserRepository;
     private final RepositoryProvider repositoryProvider;
     private final HomeViewModel homeViewModel;
+    private final SearchViewModel searchViewModel;
     private final PasswordVaultItemViewModel passwordVaultItemViewModel;
     private final CreateVaultItemViewModel createVaultItemViewModel;
     private final ImportVaultItemViewModel importVaultItemViewModel;
@@ -98,6 +105,7 @@ public class AppBuilder {
         // mainFrame.setUndecorated(true);
         this.repositoryProvider = new CommonRepositoryProvider();
         this.homeViewModel = new HomeViewModel();
+        this.searchViewModel = new SearchViewModel();
         this.passwordVaultItemViewModel = new PasswordVaultItemViewModel();
         this.importVaultItemViewModel = new ImportVaultItemViewModel();
         this.createVaultItemViewModel = new CreateVaultItemViewModel();
@@ -132,6 +140,9 @@ public class AppBuilder {
                 passwordValidationInteractor
         );
 
+        final HttpClient client = new CommonHttpClient();
+        final PhishingUrlValidator phishtankPhishingUrlValidator =
+                new PhishtankPhishingUrlValidator(client);
         final CreateVaultItemPresenter createVaultItemPresenter = new CreateVaultItemPresenter(
                 createVaultItemViewModel,
                 homeViewModel,
@@ -139,6 +150,7 @@ public class AppBuilder {
         );
         final CreateVaultItemInteractor createVaultItemInteractor = new CreateVaultItemInteractor(
                 repositoryProvider,
+                phishtankPhishingUrlValidator,
                 createVaultItemPresenter
         );
         final CreateVaultItemController createVaultItemController = new CreateVaultItemController(
@@ -261,7 +273,21 @@ public class AppBuilder {
                 homePresenter
         );
         final HomeController homeController = new HomeController(homeInteractor);
-        final HomeView homeView = new HomeView(homeViewModel, homeController);
+        final SearchPresenter searchPresenter = new SearchPresenter(
+                searchViewModel,
+                viewManagerModel
+        );
+        final SearchInteractor searchInteractor = new SearchInteractor(
+                repositoryProvider,
+                searchPresenter
+        );
+        final SearchController searchController = new SearchController(searchInteractor);
+        final HomeView homeView = new HomeView(
+                homeViewModel,
+                homeController,
+                searchViewModel,
+                searchController
+        );
         views.add(homeView, ViewConstants.HOME_VIEW);
         return this;
     }
