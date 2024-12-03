@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfigLoaderTest {
 
@@ -27,6 +26,12 @@ public class ConfigLoaderTest {
     public void testLoadPropertyFromConstructor() {
         ConfigLoader configLoaderWithProperty = new ConfigLoader("testKey", "testValue");
         assertEquals("testValue", configLoaderWithProperty.getProperty("testKey"));
+    }
+
+    @Test
+    public void testLoadNonExistentPropertyFromConstructor() {
+        ConfigLoader configLoaderWithProperty = new ConfigLoader("key", "value");
+        assertNull(configLoaderWithProperty.getProperty("nonexistent"));
     }
 
     @Test
