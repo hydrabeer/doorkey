@@ -8,14 +8,17 @@ import java.util.Properties;
  * Utility class to load configuration properties.
  */
 public class ConfigLoader {
-    private static final String CONFIG_FILE = "config.properties";
     private final Properties properties;
 
     public ConfigLoader() throws IOException {
+        this("config.properties");
+    }
+
+    public ConfigLoader(String filePath) throws IOException {
         properties = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream(CONFIG_FILE)) {
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream(filePath)) {
             if (input == null) {
-                throw new IOException("Unable to find " + CONFIG_FILE);
+                throw new IOException("Unable to find " + filePath);
             }
             properties.load(input);
         }
