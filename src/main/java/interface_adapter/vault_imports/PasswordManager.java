@@ -5,4 +5,6 @@ package interface_adapter.vault_imports;
  */
 public enum PasswordManager {
     ONE_PASSWORD,
+    // Test value for unsupported password manager
+    UNSUPPORTED
 }

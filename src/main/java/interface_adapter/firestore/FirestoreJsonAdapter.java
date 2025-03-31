@@ -78,7 +78,7 @@ public class FirestoreJsonAdapter {
             final JSONArray regularArray = new JSONArray();
             for (int i = 0; i < firestoreArray.length(); i++) {
                 final JSONObject arrayElement = firestoreArray.getJSONObject(i);
-                final Object value = convertFirestoreValue(arrayElement.get(VALUE));
+                final Object value = convertFirestoreValue(arrayElement);
                 regularArray.put(value);
             }
             return regularArray;
